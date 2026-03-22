@@ -1,4 +1,99 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from de!"
+
+	"nav_about": "Über mich",
+	"nav_experience": "Erfahrung",
+	"nav_projects": "Projekte",
+	"nav_skills": "Kompetenzen",
+	"nav_education": "Ausbildung",
+	"nav_contact": "Kontakt",
+
+	"hero_title": "Data Science & Softwareentwicklung",
+	"hero_subtitle": "Entwicklung datengetriebener Systeme und Entwicklertools mit Rust, Python und SvelteKit.",
+	"hero_scroll": "Scrollen zum Entdecken",
+
+	"about_heading": "Über mich",
+	"about_p1": "Mathematik-Absolvent der Galatasaray-Universität mit einer Bestnote-Abschlussarbeit über Reinforcement Learning. Ich verbinde eine starke akademische Grundlage in Data Science, Optimierung und maschinellem Lernen mit praktischer Erfahrung im Aufbau von Unternehmenssystemen und Cloud-Plattformen.",
+	"about_p2": "Mein gesamtes Studium wurde vier Jahre lang auf Französisch unterrichtet, was mir eine mehrsprachige Perspektive verleiht, die meine Herangehensweise an internationale Engineering-Herausforderungen prägt.",
+	"about_languages_heading": "Sprachen",
+	"about_lang_tr": "Türkisch — Muttersprache",
+	"about_lang_en": "Englisch — Berufliche Kenntnisse (B2+)",
+	"about_lang_fr": "Französisch — Berufliche Kenntnisse (B2+)",
+
+	"experience_heading": "Erfahrung",
+	"exp_otokoc_title": "Softwareentwickler-Praktikant",
+	"exp_otokoc_company": "Otokoç Otomotiv",
+	"exp_otokoc_d1": "Mitwirkung an der Backend-Entwicklung von ERP-Unternehmenssystemen mit .NET und SQL Server in den Bereichen Finanzen und Betrieb.",
+	"exp_otokoc_d2": "Entwicklung und Optimierung von T-SQL Stored Procedures für operative Workflows, Reporting-Pipelines und Datentransformationsprozesse.",
+	"exp_otokoc_d3": "Entwurf komplexer Abfragen über hochrelationale Schemata zur Unterstützung von Systembetrieb und analytischem Reporting.",
+	"exp_otokoc_d4": "Erstellung von SSIS-Paketen zur Automatisierung wiederkehrender Datenintegrations- und ETL-Prozesse.",
+	"exp_otokoc_d5": "Entwicklung von SSRS-Berichten, die von Geschäftsteams für operatives Monitoring und Entscheidungsfindung genutzt werden.",
+	"exp_otokoc_d6": "Zusammenarbeit an über 20 Ergebnissen mit agilen Methoden und Azure DevOps in funktionsübergreifenden Teams.",
+	"exp_vakif_title": "Praktikant Datenanalyse",
+	"exp_vakif_company": "Vakıf Katılım Bank",
+	"exp_vakif_d1": "Analyse finanzieller und operativer Datensätze mit SQL und Python zur Unterstützung der Entscheidungsfindung des oberen Managements.",
+	"exp_vakif_d2": "Entwicklung strukturierter Berichte und Dashboards mit Business-Intelligence-Tools zur Datenvisualisierung.",
+	"exp_vakif_d3": "Zusammenarbeit mit Finanz- und Compliance-Teams zur Optimierung von Datenworkflows und Sicherstellung der regulatorischen Konformität.",
+
+	"projects_heading": "Projekte",
+	"status_ongoing": "Laufend",
+	"status_completed": "Abgeschlossen",
+	"view_github": "Auf GitHub ansehen",
+	"private_repo": "Privates Repository",
+
+	"project_klauthed_title": "Klauthed",
+	"project_klauthed_desc": "Multi-Tenant Identity-Provider-Plattform auf Unternehmensniveau, die mit Auth0, Clerk und Azure AD konkurriert. Konzipiert für 10K bis 1M+ monatlich aktive Nutzer.",
+	"project_klauthed_h1": "15 Rust-Microservices mit 7 gemeinsam genutzten Bibliotheken",
+	"project_klauthed_h2": "OAuth/OIDC, Social Login, MFA, benutzerdefinierte Domains",
+	"project_klauthed_h3": "Compliance-Ziele: SOC2, HIPAA, DSGVO, ISO27001",
+	"project_klauthed_h4": "CockroachDB, Redis Cluster, NATS JetStream, ClickHouse",
+
+	"project_scivex_title": "Scivex",
+	"project_scivex_desc": "Eine umfassende Rust-Bibliothek, die das gesamte Python Data-Science-Ökosystem durch einen einzigen, von Grund auf neu entwickelten Cargo-Workspace ersetzt. Reines Rust, keine externen mathematischen Abhängigkeiten.",
+	"project_scivex_h1": "13 Sub-Crates: Tensoren, DataFrames, ML, neuronale Netze, Visualisierung und mehr",
+	"project_scivex_h2": "855 Tests, plattformübergreifend (Linux, macOS, Windows)",
+	"project_scivex_h3": "Implementierung von BLAS, LAPACK, FFT von Grund auf",
+	"project_scivex_h4": "Ersetzt NumPy, Pandas, SciPy, scikit-learn, PyTorch, Matplotlib in einem Crate",
+
+	"project_pm_title": "Immobilienverwaltungsplattform",
+	"project_pm_desc": "Multi-Tenant-SaaS-Plattform zur Immobilienverwaltung mit sauberer Architektur. Verwaltet über 100 Immobilienanzeigen mit automatisierter Mietverfolgung, Kostenanalyse und Mieterverwaltung.",
+	"project_pm_h1": "5-Schichten Clean Architecture mit CQRS und MediatR",
+	"project_pm_h2": "169 Tests über Anwendungs- und API-Schichten",
+	"project_pm_h3": "Multi-Tenancy mit Isolation auf Zeilenebene, JWT-Authentifizierung, Redis-Caching",
+
+	"project_spacex_title": "SpaceX Falcon 9 Landeprognose",
+	"project_spacex_desc": "Klassifikationsmodelle zur Vorhersage des Landeerfolgs der ersten Stufe anhand von Starttelemetriedaten, mit End-to-End-Datenpipeline und interaktiven Geodatenvisualisierungen.",
+	"project_spacex_h1": "85 % Genauigkeit mit logistischer Regression, SVM, Entscheidungsbäumen, KNN",
+	"project_spacex_h2": "Komplette Pipeline: API-Erfassung, Bereinigung, Feature Engineering, Kreuzvalidierung",
+	"project_spacex_h3": "Interaktive Karten und Diagramme mit Folium und Plotly",
+
+	"project_da_title": "Portfolio für Datenanalyse realer Datensätze",
+	"project_da_desc": "Analyse mehrerer Datensätze mit Immobilienpreisvorhersage, Kundensegmentierung und Markttrendklassifikation mit statistischen Methoden.",
+	"project_da_h1": "Regression, K-Means-Clustering und Klassifikation auf realen Datensätzen",
+	"project_da_h2": "Statistische Hypothesentests und Feature-Selektion für die Modellinterpretierbarkeit",
+
+	"skills_heading": "Kompetenzen",
+	"skills_languages": "Programmiersprachen",
+	"skills_ds_ml": "Data Science & ML",
+	"skills_viz": "Visualisierung & BI",
+	"skills_db": "Datenbanken",
+	"skills_eng": "Softwareentwicklung",
+
+	"education_heading": "Ausbildung",
+	"edu_gsu_degree": "B.Sc. in Mathematik",
+	"edu_gsu_institution": "Galatasaray-Universität",
+	"edu_gsu_h1": "Abschlussarbeit: Reinforcement Learning — Note: AA (4.0/4.0)",
+	"edu_gsu_h2": "Betreuerin: Assoc. Prof. Dr. Ayşegül Ulus",
+	"edu_gsu_h3": "Unterrichtssprache: Französisch (vollständiges 4-Jahres-Curriculum)",
+	"edu_gsu_h4": "Vorstandsmitglied des Mathematik-Clubs, Vorstandsmitglied des Fotografie-Clubs",
+	"cert_ibm_name": "IBM Data Science Professional Certificate",
+
+	"education_certificates_heading": "Zertifikate",
+
+	"contact_heading": "Kontakt",
+	"contact_cta": "Lassen Sie uns zusammenarbeiten",
+	"contact_description": "Ich bin stets offen für neue Möglichkeiten, Kooperationen und interessante Gespräche. Zögern Sie nicht, mich zu kontaktieren.",
+	"contact_email": "E-Mail senden",
+
+	"footer_rights": "Alle Rechte vorbehalten."
 }

@@ -1,4 +1,99 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from es!"
+
+	"nav_about": "Sobre mí",
+	"nav_experience": "Experiencia",
+	"nav_projects": "Proyectos",
+	"nav_skills": "Habilidades",
+	"nav_education": "Formación",
+	"nav_contact": "Contacto",
+
+	"hero_title": "Data Science e Ingeniería de Software",
+	"hero_subtitle": "Desarrollo de sistemas basados en datos y herramientas para desarrolladores con Rust, Python y SvelteKit.",
+	"hero_scroll": "Desplázate para explorar",
+
+	"about_heading": "Sobre mí",
+	"about_p1": "Graduado en Matemáticas por la Universidad de Galatasaray con una tesis de calificación perfecta sobre aprendizaje por refuerzo. Combino una sólida formación académica en data science, optimización y aprendizaje automático con experiencia práctica en la construcción de sistemas empresariales y plataformas en la nube.",
+	"about_p2": "Mi plan de estudios universitario se impartió íntegramente en francés durante cuatro años, lo que me otorga una perspectiva multilingüe que define mi enfoque ante los desafíos de ingeniería a nivel internacional.",
+	"about_languages_heading": "Idiomas",
+	"about_lang_tr": "Turco — Nativo",
+	"about_lang_en": "Inglés — Profesional (B2+)",
+	"about_lang_fr": "Francés — Profesional (B2+)",
+
+	"experience_heading": "Experiencia",
+	"exp_otokoc_title": "Practicante de Ingeniería de Software",
+	"exp_otokoc_company": "Otokoç Otomotiv",
+	"exp_otokoc_d1": "Contribución al desarrollo backend de sistemas ERP empresariales con .NET y SQL Server, en los ámbitos financiero y operativo.",
+	"exp_otokoc_d2": "Desarrollo y optimización de procedimientos almacenados T-SQL para flujos operativos, pipelines de reporting y procesos de transformación de datos.",
+	"exp_otokoc_d3": "Diseño de consultas complejas sobre esquemas altamente relacionales para apoyar las operaciones del sistema y el reporting analítico.",
+	"exp_otokoc_d4": "Creación de paquetes SSIS para automatizar procesos recurrentes de integración de datos y ETL.",
+	"exp_otokoc_d5": "Desarrollo de informes SSRS utilizados por los equipos de negocio para el monitoreo operativo y la toma de decisiones.",
+	"exp_otokoc_d6": "Colaboración en más de 20 entregables utilizando metodologías ágiles y Azure DevOps con equipos multifuncionales.",
+	"exp_vakif_title": "Practicante de Análisis de Datos",
+	"exp_vakif_company": "Vakıf Katılım Bank",
+	"exp_vakif_d1": "Análisis de conjuntos de datos financieros y operativos con SQL y Python para apoyar la toma de decisiones de la alta dirección.",
+	"exp_vakif_d2": "Desarrollo de informes estructurados y paneles de control utilizando herramientas de business intelligence para la visualización de datos.",
+	"exp_vakif_d3": "Colaboración con los equipos de finanzas y cumplimiento para optimizar los flujos de datos y garantizar el cumplimiento normativo.",
+
+	"projects_heading": "Proyectos",
+	"status_ongoing": "En curso",
+	"status_completed": "Completado",
+	"view_github": "Ver en GitHub",
+	"private_repo": "Repositorio privado",
+
+	"project_klauthed_title": "Klauthed",
+	"project_klauthed_desc": "Plataforma multi-tenant de proveedor de identidad de nivel empresarial, compitiendo con Auth0, Clerk y Azure AD. Diseñada para entre 10K y más de 1M de usuarios activos mensuales.",
+	"project_klauthed_h1": "15 microservicios Rust con 7 bibliotecas compartidas",
+	"project_klauthed_h2": "OAuth/OIDC, inicio de sesión social, MFA, dominios personalizados",
+	"project_klauthed_h3": "Objetivos de cumplimiento SOC2, HIPAA, RGPD, ISO27001",
+	"project_klauthed_h4": "CockroachDB, Redis Cluster, NATS JetStream, ClickHouse",
+
+	"project_scivex_title": "Scivex",
+	"project_scivex_desc": "Una biblioteca Rust integral que reemplaza todo el ecosistema de data science de Python con un único workspace Cargo desarrollado desde cero. Rust puro, sin dependencias matemáticas externas.",
+	"project_scivex_h1": "13 sub-crates: tensores, DataFrames, ML, redes neuronales, visualización y más",
+	"project_scivex_h2": "855 tests, multiplataforma (Linux, macOS, Windows)",
+	"project_scivex_h3": "Implementación de BLAS, LAPACK, FFT desde los principios fundamentales",
+	"project_scivex_h4": "Reemplaza NumPy, Pandas, SciPy, scikit-learn, PyTorch, Matplotlib en un solo crate",
+
+	"project_pm_title": "Plataforma de Gestión Inmobiliaria",
+	"project_pm_desc": "Plataforma SaaS multi-tenant de gestión inmobiliaria con arquitectura limpia. Gestiona más de 100 anuncios de propiedades con seguimiento automatizado de alquileres, análisis de gastos y gestión de inquilinos.",
+	"project_pm_h1": "Arquitectura limpia de 5 capas con CQRS y MediatR",
+	"project_pm_h2": "169 tests en las capas de aplicación y API",
+	"project_pm_h3": "Multi-tenancy con aislamiento a nivel de fila, autenticación JWT, caché Redis",
+
+	"project_spacex_title": "Predicción de aterrizaje SpaceX Falcon 9",
+	"project_spacex_desc": "Modelos de clasificación que predicen el éxito del aterrizaje de la primera etapa a partir de datos telemétricos de lanzamiento, con un pipeline de datos de extremo a extremo y visualizaciones geoespaciales interactivas.",
+	"project_spacex_h1": "85 % de precisión con regresión logística, SVM, árboles de decisión, KNN",
+	"project_spacex_h2": "Pipeline completo: recopilación API, limpieza, ingeniería de características, validación cruzada",
+	"project_spacex_h3": "Mapas y gráficos interactivos con Folium y Plotly",
+
+	"project_da_title": "Portfolio de Análisis de Datos Reales",
+	"project_da_desc": "Análisis de múltiples conjuntos de datos que abarca predicción de precios de vivienda, segmentación de clientes y clasificación de tendencias de mercado con métodos estadísticos.",
+	"project_da_h1": "Regresión, clustering K-Means y clasificación en conjuntos de datos reales",
+	"project_da_h2": "Pruebas de hipótesis estadísticas y selección de características para la interpretabilidad de modelos",
+
+	"skills_heading": "Habilidades",
+	"skills_languages": "Lenguajes",
+	"skills_ds_ml": "Data Science & ML",
+	"skills_viz": "Visualización & BI",
+	"skills_db": "Bases de datos",
+	"skills_eng": "Ingeniería de Software",
+
+	"education_heading": "Formación",
+	"edu_gsu_degree": "Grado en Matemáticas",
+	"edu_gsu_institution": "Universidad de Galatasaray",
+	"edu_gsu_h1": "Tesis: Aprendizaje por refuerzo — Nota: AA (4.0/4.0)",
+	"edu_gsu_h2": "Directora de tesis: Assoc. Prof. Dr. Ayşegül Ulus",
+	"edu_gsu_h3": "Idioma de instrucción: francés (plan de estudios completo de 4 años)",
+	"edu_gsu_h4": "Miembro de la junta del Club de Matemáticas, Miembro de la junta del Club de Fotografía",
+	"cert_ibm_name": "IBM Data Science Professional Certificate",
+
+	"education_certificates_heading": "Certificados",
+
+	"contact_heading": "Contacto",
+	"contact_cta": "Trabajemos juntos",
+	"contact_description": "Siempre estoy abierto a nuevas oportunidades, colaboraciones y conversaciones interesantes. No dudes en contactarme.",
+	"contact_email": "Enviar un correo",
+
+	"footer_rights": "Todos los derechos reservados."
 }
