@@ -1,4 +1,99 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from tr!"
+
+	"nav_about": "Hakkımda",
+	"nav_experience": "Deneyim",
+	"nav_projects": "Projeler",
+	"nav_skills": "Yetenekler",
+	"nav_education": "Eğitim",
+	"nav_contact": "İletişim",
+
+	"hero_title": "Veri Bilimi & Yazılım Mühendisliği",
+	"hero_subtitle": "Rust, Python ve SvelteKit ile veri odaklı sistemler ve geliştirici araçları inşa ediyorum.",
+	"hero_scroll": "Keşfetmek için kaydırın",
+
+	"about_heading": "Hakkımda",
+	"about_p1": "Galatasaray Üniversitesi Matematik bölümü mezunuyum. Pekiştirmeli Öğrenme konulu tezim tam not ile değerlendirildi. Veri bilimi, optimizasyon ve makine öğrenmesi alanlarındaki güçlü akademik altyapımı, kurumsal sistemler ve bulut platformları geliştirme deneyimimle birleştiriyorum.",
+	"about_p2": "Dört yıllık akademik müfredatım tamamen Fransızca olarak verildi; bu da uluslararası mühendislik zorluklarına yaklaşımımı şekillendiren çok dilli bir bakış açısı kazandırdı.",
+	"about_languages_heading": "Diller",
+	"about_lang_tr": "Türkçe — Ana Dil",
+	"about_lang_en": "İngilizce — Profesyonel Çalışma Düzeyi (B2+)",
+	"about_lang_fr": "Fransızca — Profesyonel Çalışma Düzeyi (B2+)",
+
+	"experience_heading": "Deneyim",
+	"exp_otokoc_title": "Yazılım Mühendisi Stajyeri",
+	"exp_otokoc_company": "Otokoç Otomotiv",
+	"exp_otokoc_d1": "Finans ve operasyonel alanları destekleyen kurumsal ERP sistemlerinin .NET ve SQL Server ile backend geliştirmesine katkıda bulundum.",
+	"exp_otokoc_d2": "Operasyonel iş akışları, raporlama hatları ve veri dönüşüm süreçleri için T-SQL stored procedure'ler geliştirdim ve optimize ettim.",
+	"exp_otokoc_d3": "Sistem operasyonlarını ve analitik raporlamayı desteklemek için ilişkisel şemalar üzerinde karmaşık sorgular tasarladım.",
+	"exp_otokoc_d4": "Tekrarlayan veri entegrasyonu ve ETL süreçlerini otomatikleştirmek için SSIS paketleri oluşturdum.",
+	"exp_otokoc_d5": "İş ekiplerinin operasyonel izleme ve karar alma süreçlerinde kullandığı SSRS raporları geliştirdim.",
+	"exp_otokoc_d6": "Çapraz fonksiyonel ekiplerle Agile metodolojileri ve Azure DevOps kullanarak 20+ teslimat üzerinde çalıştım.",
+	"exp_vakif_title": "Veri Analitiği Stajyeri",
+	"exp_vakif_company": "Vakıf Katılım Bankası",
+	"exp_vakif_d1": "Üst yönetim karar alma süreçlerini desteklemek için SQL ve Python kullanarak finansal ve operasyonel veri setlerini analiz ettim.",
+	"exp_vakif_d2": "Veri görselleştirme için iş zekası araçlarını kullanarak yapılandırılmış raporlar ve gösterge panelleri geliştirdim.",
+	"exp_vakif_d3": "Veri iş akışlarını düzenlemek ve düzenleyici uyumu sağlamak için finans ve uyum ekipleriyle işbirliği yaptım.",
+
+	"projects_heading": "Projeler",
+	"status_ongoing": "Devam Ediyor",
+	"status_completed": "Tamamlandı",
+	"view_github": "GitHub'da Görüntüle",
+	"private_repo": "Özel Depo",
+
+	"project_klauthed_title": "Klauthed",
+	"project_klauthed_desc": "Auth0, Clerk ve Azure AD ile rekabet eden kurumsal düzeyde çok kiracılı Kimlik Sağlayıcı platformu. 10K ile 1M+ aylık aktif kullanıcı için tasarlandı.",
+	"project_klauthed_h1": "7 paylaşılan kütüphane ile 15 Rust mikroservisi",
+	"project_klauthed_h2": "OAuth/OIDC, sosyal giriş, MFA, özel alan adları",
+	"project_klauthed_h3": "SOC2, HIPAA, GDPR, ISO27001 uyumluluk hedefleri",
+	"project_klauthed_h4": "CockroachDB, Redis Cluster, NATS JetStream, ClickHouse",
+
+	"project_scivex_title": "Scivex",
+	"project_scivex_desc": "Tüm Python veri bilimi ekosistemini tek bir sıfırdan yazılmış Cargo workspace ile değiştiren kapsamlı bir Rust kütüphanesi. Saf Rust, sıfır harici matematik bağımlılığı.",
+	"project_scivex_h1": "13 alt-crate: tensörler, DataFrame'ler, ML, sinir ağları, görselleştirme ve daha fazlası",
+	"project_scivex_h2": "855 test, çapraz platform (Linux, macOS, Windows)",
+	"project_scivex_h3": "BLAS, LAPACK, FFT'yi temel prensiplerden uygular",
+	"project_scivex_h4": "NumPy, Pandas, SciPy, scikit-learn, PyTorch, Matplotlib'i tek bir crate'te değiştirir",
+
+	"project_pm_title": "Mülk Yönetim Platformu",
+	"project_pm_desc": "Temiz mimari ile çok kiracılı SaaS mülk yönetim platformu. Otomatik kira takibi, gider analitiği ve kiracı yönetimi ile 100+ mülk listesini yönetir.",
+	"project_pm_h1": "CQRS ve MediatR ile 5 katmanlı temiz mimari",
+	"project_pm_h2": "Uygulama ve API katmanlarında 169 test",
+	"project_pm_h3": "Satır düzeyinde izolasyonla çok kiracılık, JWT kimlik doğrulama, Redis önbellekleme",
+
+	"project_spacex_title": "SpaceX Falcon 9 İniş Tahmini",
+	"project_spacex_desc": "Fırlatma telemetri verilerinden birinci aşama iniş başarısını tahmin eden sınıflandırma modelleri, uçtan uca veri hattı ve etkileşimli coğrafi görselleştirmeler.",
+	"project_spacex_h1": "Lojistik Regresyon, SVM, Karar Ağaçları, KNN ile %85 doğruluk",
+	"project_spacex_h2": "Tam hat: API toplama, temizleme, özellik mühendisliği, çapraz doğrulama",
+	"project_spacex_h3": "Folium ve Plotly ile etkileşimli haritalar ve grafikler",
+
+	"project_da_title": "Gerçek Dünya Veri Analizi Portföyü",
+	"project_da_desc": "İstatistiksel yöntemlerle konut fiyat tahmini, müşteri segmentasyonu ve pazar trendi sınıflandırmasını kapsayan çoklu veri seti analizi.",
+	"project_da_h1": "Gerçek veri setleri üzerinde regresyon, K-Means kümeleme ve sınıflandırma",
+	"project_da_h2": "Model yorumlanabilirliği için istatistiksel hipotez testi ve özellik seçimi",
+
+	"skills_heading": "Yetenekler",
+	"skills_languages": "Diller",
+	"skills_ds_ml": "Veri Bilimi & ML",
+	"skills_viz": "Görselleştirme & İş Zekası",
+	"skills_db": "Veritabanları",
+	"skills_eng": "Yazılım Mühendisliği",
+
+	"education_heading": "Eğitim",
+	"edu_gsu_degree": "Matematik Lisans",
+	"edu_gsu_institution": "Galatasaray Üniversitesi",
+	"edu_gsu_h1": "Tez: Pekiştirmeli Öğrenme — Not: AA (4.0/4.0)",
+	"edu_gsu_h2": "Danışman: Doç. Dr. Ayşegül Ulus",
+	"edu_gsu_h3": "Öğretim dili: Fransızca (4 yıllık tam müfredat)",
+	"edu_gsu_h4": "Matematik Kulübü Yönetim Kurulu Üyesi, Fotoğrafçılık Kulübü Yönetim Kurulu Üyesi",
+	"cert_ibm_name": "IBM Veri Bilimi Profesyonel Sertifikası",
+
+	"education_certificates_heading": "Sertifikalar",
+
+	"contact_heading": "İletişim",
+	"contact_cta": "Birlikte çalışalım",
+	"contact_description": "Yeni fırsatlara, işbirliklerine ve ilginç sohbetlere her zaman açığım. Benimle iletişime geçmekten çekinmeyin.",
+	"contact_email": "E-posta gönder",
+
+	"footer_rights": "Tüm hakları saklıdır."
 }

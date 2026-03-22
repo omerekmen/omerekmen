@@ -1,4 +1,99 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from en!"
+
+	"nav_about": "About",
+	"nav_experience": "Experience",
+	"nav_projects": "Projects",
+	"nav_skills": "Skills",
+	"nav_education": "Education",
+	"nav_contact": "Contact",
+
+	"hero_title": "Data Science & Software Engineering",
+	"hero_subtitle": "Building data-driven systems and developer tools with Rust, Python, and SvelteKit.",
+	"hero_scroll": "Scroll to explore",
+
+	"about_heading": "About",
+	"about_p1": "Mathematics graduate from Galatasaray University with a perfect-scored thesis on Reinforcement Learning. I combine a strong academic foundation in data science, optimization, and machine learning with hands-on experience building enterprise systems and cloud platforms.",
+	"about_p2": "My academic curriculum was delivered entirely in French over four years, giving me a multilingual perspective that shapes how I approach international engineering challenges.",
+	"about_languages_heading": "Languages",
+	"about_lang_tr": "Turkish — Native",
+	"about_lang_en": "English — Professional Working (B2+)",
+	"about_lang_fr": "French — Professional Working (B2+)",
+
+	"experience_heading": "Experience",
+	"exp_otokoc_title": "Software Engineer Intern",
+	"exp_otokoc_company": "Otokoç Otomotiv",
+	"exp_otokoc_d1": "Contributed to backend development of enterprise ERP systems using .NET and SQL Server, supporting finance and operational domains.",
+	"exp_otokoc_d2": "Developed and optimized T-SQL stored procedures for operational workflows, reporting pipelines, and data transformation processes.",
+	"exp_otokoc_d3": "Designed complex queries across highly relational schemas to support system operations and analytical reporting.",
+	"exp_otokoc_d4": "Built SSIS packages to automate recurring data integration and ETL processes.",
+	"exp_otokoc_d5": "Developed SSRS reports used by business teams for operational monitoring and decision-making.",
+	"exp_otokoc_d6": "Collaborated on 20+ deliverables using Agile methodologies and Azure DevOps with cross-functional teams.",
+	"exp_vakif_title": "Data Analytics Intern",
+	"exp_vakif_company": "Vakıf Katılım Bank",
+	"exp_vakif_d1": "Analyzed financial and operational datasets using SQL and Python to support senior management decision-making.",
+	"exp_vakif_d2": "Developed structured reports and dashboards using business intelligence tools for data visualization.",
+	"exp_vakif_d3": "Collaborated with finance and compliance teams to streamline data workflows and ensure regulatory alignment.",
+
+	"projects_heading": "Projects",
+	"status_ongoing": "Ongoing",
+	"status_completed": "Completed",
+	"view_github": "View on GitHub",
+	"private_repo": "Private Repository",
+
+	"project_klauthed_title": "Klauthed",
+	"project_klauthed_desc": "Enterprise-grade multi-tenant Identity Provider platform competing with Auth0, Clerk, and Azure AD. Designed for 10K to 1M+ monthly active users.",
+	"project_klauthed_h1": "15 Rust microservices with 7 shared libraries",
+	"project_klauthed_h2": "OAuth/OIDC, social login, MFA, custom domains",
+	"project_klauthed_h3": "SOC2, HIPAA, GDPR, ISO27001 compliance targets",
+	"project_klauthed_h4": "CockroachDB, Redis Cluster, NATS JetStream, ClickHouse",
+
+	"project_scivex_title": "Scivex",
+	"project_scivex_desc": "A comprehensive Rust library replacing the entire Python data science ecosystem with a single, from-scratch Cargo workspace. Pure Rust, zero external math dependencies.",
+	"project_scivex_h1": "13 sub-crates: tensors, DataFrames, ML, neural networks, visualization, and more",
+	"project_scivex_h2": "855 tests, cross-platform (Linux, macOS, Windows)",
+	"project_scivex_h3": "Implements BLAS, LAPACK, FFT from first principles",
+	"project_scivex_h4": "Replaces NumPy, Pandas, SciPy, scikit-learn, PyTorch, Matplotlib in one crate",
+
+	"project_pm_title": "Property Management Platform",
+	"project_pm_desc": "Multi-tenant SaaS property management platform with clean architecture. Manages 100+ property listings with automated rent tracking, expense analytics, and tenant management.",
+	"project_pm_h1": "5-layer clean architecture with CQRS and MediatR",
+	"project_pm_h2": "169 tests across application and API layers",
+	"project_pm_h3": "Multi-tenancy with row-level isolation, JWT auth, Redis caching",
+
+	"project_spacex_title": "SpaceX Falcon 9 Landing Prediction",
+	"project_spacex_desc": "Classification models predicting first-stage landing success from launch telemetry data, with end-to-end data pipeline and interactive geospatial visualizations.",
+	"project_spacex_h1": "85% accuracy with Logistic Regression, SVM, Decision Trees, KNN",
+	"project_spacex_h2": "Full pipeline: API collection, cleaning, feature engineering, cross-validation",
+	"project_spacex_h3": "Interactive maps and charts with Folium and Plotly",
+
+	"project_da_title": "Real-World Data Analysis Portfolio",
+	"project_da_desc": "Multi-dataset analysis covering housing price prediction, customer segmentation, and market trend classification with statistical methods.",
+	"project_da_h1": "Regression, K-Means clustering, and classification across real datasets",
+	"project_da_h2": "Statistical hypothesis testing and feature selection for model interpretability",
+
+	"skills_heading": "Skills",
+	"skills_languages": "Languages",
+	"skills_ds_ml": "Data Science & ML",
+	"skills_viz": "Visualization & BI",
+	"skills_db": "Databases",
+	"skills_eng": "Software Engineering",
+
+	"education_heading": "Education",
+	"edu_gsu_degree": "B.Sc. in Mathematics",
+	"edu_gsu_institution": "Galatasaray University",
+	"edu_gsu_h1": "Thesis: Reinforcement Learning — Grade: AA (4.0/4.0)",
+	"edu_gsu_h2": "Advisor: Assoc. Prof. Dr. Ayşegül Ulus",
+	"edu_gsu_h3": "Instruction language: French (full 4-year curriculum)",
+	"edu_gsu_h4": "Mathematics Club Board Member, Photography Club Board Member",
+	"cert_ibm_name": "IBM Data Science Professional Certificate",
+
+	"education_certificates_heading": "Certificates",
+
+	"contact_heading": "Contact",
+	"contact_cta": "Let's work together",
+	"contact_description": "I'm always open to new opportunities, collaborations, and interesting conversations. Feel free to reach out.",
+	"contact_email": "Send an email",
+
+	"footer_rights": "All rights reserved."
 }
