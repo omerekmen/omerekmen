@@ -1,8 +1,15 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { locales, localizeHref, getLocale } from '$lib/paraglide/runtime';
+	import { locales, getLocale, setLocale } from '$lib/paraglide/runtime';
+
+	interface Props {
+		direction?: 'down' | 'up';
+	}
+
+	let { direction = 'down' }: Props = $props();
 
 	let open = $state(false);
+	let buttonEl: HTMLButtonElement | undefined = $state();
+	let dropdownStyle = $state('');
 	const currentLocale = $derived(getLocale());
 
 	const localeLabels: Record<string, string> = {
@@ -13,8 +20,30 @@
 		es: 'ES'
 	};
 
+	function portal(node: HTMLElement) {
+		document.body.appendChild(node);
+		return {
+			destroy() {
+				node.remove();
+			}
+		};
+	}
+
 	function close() {
 		open = false;
+	}
+
+	function toggle(e: MouseEvent) {
+		e.stopPropagation();
+		if (!open && buttonEl) {
+			const rect = buttonEl.getBoundingClientRect();
+			if (direction === 'up') {
+				dropdownStyle = `position:fixed; bottom:${window.innerHeight - rect.top + 4}px; right:${window.innerWidth - rect.right}px;`;
+			} else {
+				dropdownStyle = `position:fixed; top:${rect.bottom + 4}px; right:${window.innerWidth - rect.right}px;`;
+			}
+		}
+		open = !open;
 	}
 </script>
 
@@ -22,11 +51,9 @@
 
 <div class="relative">
 	<button
-		onclick={(e: MouseEvent) => {
-			e.stopPropagation();
-			open = !open;
-		}}
-		class="flex h-10 items-center gap-1.5 rounded-full border border-border-subtle bg-transparent px-3 text-sm font-medium text-text-secondary transition-colors duration-200 hover:border-border hover:bg-bg-secondary"
+		bind:this={buttonEl}
+		onclick={toggle}
+		class="flex h-10 items-center gap-1.5 rounded-full bg-transparent px-3 text-sm font-medium text-text-secondary transition-colors duration-200 hover:border-border hover:bg-bg-secondary"
 		aria-label="Switch language"
 		aria-expanded={open}
 	>
@@ -51,22 +78,31 @@
 
 	{#if open}
 		<div
-			class="absolute top-12 right-0 z-50 min-w-[120px] overflow-hidden rounded-xl border border-border-subtle bg-bg-secondary shadow-lg"
+			use:portal
+			style={dropdownStyle}
+			class="z-[9999] min-w-[120px] overflow-hidden rounded-xl border border-border-subtle bg-bg-secondary shadow-lg"
 			role="menu"
+			tabindex="-1"
+			onclick={(e: MouseEvent) => e.stopPropagation()}
+			onkeydown={(e: KeyboardEvent) => {
+				if (e.key === 'Escape') close();
+			}}
 		>
 			{#each locales as locale (locale)}
-				<a
-					href={localizeHref(page.url.pathname, { locale })}
-					class="flex items-center gap-2 px-4 py-2.5 text-sm transition-colors duration-150
+				<button
+					class="flex w-full items-center gap-2 px-4 py-2.5 text-sm transition-colors duration-150
 						{locale === currentLocale
 						? 'bg-bg-tertiary font-medium text-text'
 						: 'text-text-secondary hover:bg-bg-tertiary hover:text-text'}"
 					role="menuitem"
-					onclick={close}
+					onclick={() => {
+						close();
+						if (locale !== currentLocale) setLocale(locale);
+					}}
 				>
 					<span class="font-mono text-xs text-text-muted">{locale.toUpperCase()}</span>
 					<span>{localeLabels[locale]}</span>
-				</a>
+				</button>
 			{/each}
 		</div>
 	{/if}

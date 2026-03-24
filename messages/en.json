@@ -1,6 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 
+	"nav_home": "Home",
 	"nav_about": "About",
 	"nav_experience": "Experience",
 	"nav_projects": "Projects",
@@ -8,7 +9,7 @@
 	"nav_education": "Education",
 	"nav_contact": "Contact",
 
-	"hero_title": "Data Science & Software Engineering",
+	"hero_title": "Turning data into systems that scale.",
 	"hero_subtitle": "Building data-driven systems and developer tools with Rust, Python, and SvelteKit.",
 	"hero_scroll": "Scroll to explore",
 
@@ -95,5 +96,19 @@
 	"contact_description": "I'm always open to new opportunities, collaborations, and interesting conversations. Feel free to reach out.",
 	"contact_email": "Send an email",
 
-	"footer_rights": "All rights reserved."
+	"hero_about": "Mathematics graduate from Galatasaray University. I build data-driven systems and backend solutions — from classification models and analytical dashboards to full-stack platforms managing real users and real revenue. End-to-end ownership, from data modeling to production deployment.",
+	"hero_current_focus": "Current Focus",
+	"hero_focus_items": "Backend Systems · Data Science · ML & Analytics · Cloud Platforms",
+	"hero_languages_spoken": "TR · EN · FR",
+	"stat_projects": "Projects",
+	"stat_experience": "Experience",
+	"stat_technologies": "Technologies",
+	"stat_languages_spoken": "Languages",
+	"marquee_building": "BUILDING THE FUTURE WITH DATA",
+	"marquee_separator": "·",
+	"featured_project": "Featured",
+
+	"footer_rights": "All rights reserved.",
+	"footer_cta": "LET'S TALK",
+	"footer_back_to_top": "Back to top"
 }

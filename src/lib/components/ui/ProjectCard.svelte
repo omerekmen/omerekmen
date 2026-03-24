@@ -9,6 +9,21 @@
 
 	let { project }: Props = $props();
 
+	let cardEl: HTMLElement | undefined = $state();
+
+	function handleMouseMove(e: MouseEvent) {
+		if (!cardEl) return;
+		const rect = cardEl.getBoundingClientRect();
+		const x = (e.clientX - rect.left) / rect.width - 0.5;
+		const y = (e.clientY - rect.top) / rect.height - 0.5;
+		cardEl.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-4px)`;
+	}
+
+	function handleMouseLeave() {
+		if (!cardEl) return;
+		cardEl.style.transform = '';
+	}
+
 	type MessageFn = () => string;
 	const messages = m as unknown as Record<string, MessageFn>;
 
@@ -20,7 +35,11 @@
 </script>
 
 <article
-	class="group relative flex flex-col overflow-hidden rounded-2xl border border-border-subtle bg-bg-secondary transition-all duration-300 hover:-translate-y-1 hover:border-border hover:shadow-lg hover:shadow-bg-tertiary/50"
+	bind:this={cardEl}
+	onmousemove={handleMouseMove}
+	onmouseleave={handleMouseLeave}
+	style="transition: transform 0.15s ease-out;"
+	class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border-subtle bg-bg-secondary transition-all duration-300 hover:border-border hover:shadow-lg hover:shadow-bg-tertiary/50"
 >
 	<!-- Status badge -->
 	<div class="absolute top-4 right-4 z-10">
@@ -29,7 +48,7 @@
 
 	<div class="flex flex-1 flex-col p-6 pt-12 sm:p-8 sm:pt-14">
 		<!-- Title -->
-		<h3 class="text-lg font-semibold tracking-tight text-text sm:text-xl">
+		<h3 class="text-xl font-bold tracking-tight text-text sm:text-2xl">
 			{t(project.titleKey)}
 		</h3>
 

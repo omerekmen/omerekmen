@@ -1,6 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 
+	"nav_home": "Accueil",
 	"nav_about": "À propos",
 	"nav_experience": "Expérience",
 	"nav_projects": "Projets",
@@ -8,7 +9,7 @@
 	"nav_education": "Formation",
 	"nav_contact": "Contact",
 
-	"hero_title": "Data Science & Ingénierie Logicielle",
+	"hero_title": "Transformer les données en systèmes qui passent à l'échelle.",
 	"hero_subtitle": "Conception de systèmes orientés données et d'outils pour développeurs avec Rust, Python et SvelteKit.",
 	"hero_scroll": "Défiler pour explorer",
 
@@ -95,5 +96,19 @@
 	"contact_description": "Je suis toujours ouvert aux nouvelles opportunités, collaborations et conversations intéressantes. N'hésitez pas à me contacter.",
 	"contact_email": "Envoyer un e-mail",
 
-	"footer_rights": "Tous droits réservés."
+	"hero_about": "Diplômé en Mathématiques de l'Université de Galatasaray. Je conçois des systèmes orientés données et des solutions backend — des modèles de classification aux tableaux de bord analytiques, jusqu'aux plateformes full-stack gérant de vrais utilisateurs et revenus. Maîtrise de bout en bout, de la modélisation des données au déploiement en production.",
+	"hero_current_focus": "Focus Actuel",
+	"hero_focus_items": "Systèmes Backend · Data Science · ML & Analytique · Plateformes Cloud",
+	"hero_languages_spoken": "TR · EN · FR",
+	"stat_projects": "Projets",
+	"stat_experience": "Expérience",
+	"stat_technologies": "Technologies",
+	"stat_languages_spoken": "Langues",
+	"marquee_building": "CONSTRUIRE L'AVENIR AVEC LES DONNÉES",
+	"marquee_separator": "·",
+	"featured_project": "En Vedette",
+
+	"footer_rights": "Tous droits réservés.",
+	"footer_cta": "PARLONS",
+	"footer_back_to_top": "Retour en haut"
 }

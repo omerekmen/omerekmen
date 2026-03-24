@@ -1,6 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 
+	"nav_home": "Ana Sayfa",
 	"nav_about": "Hakkımda",
 	"nav_experience": "Deneyim",
 	"nav_projects": "Projeler",
@@ -8,7 +9,7 @@
 	"nav_education": "Eğitim",
 	"nav_contact": "İletişim",
 
-	"hero_title": "Veri Bilimi & Yazılım Mühendisliği",
+	"hero_title": "Veriyi ölçeklenen sistemlere dönüştürüyorum.",
 	"hero_subtitle": "Rust, Python ve SvelteKit ile veri odaklı sistemler ve geliştirici araçları inşa ediyorum.",
 	"hero_scroll": "Keşfetmek için kaydırın",
 
@@ -95,5 +96,19 @@
 	"contact_description": "Yeni fırsatlara, işbirliklerine ve ilginç sohbetlere her zaman açığım. Benimle iletişime geçmekten çekinmeyin.",
 	"contact_email": "E-posta gönder",
 
-	"footer_rights": "Tüm hakları saklıdır."
+	"hero_about": "Galatasaray Üniversitesi Matematik mezunu. Sınıflandırma modellerinden analitik panolara, gerçek kullanıcı ve gelir yöneten tam kapsamlı platformlara kadar veri odaklı sistemler ve backend çözümleri geliştiriyorum. Veri modellemeden canlı ortama kadar uçtan uca sorumluluk.",
+	"hero_current_focus": "Güncel Odak",
+	"hero_focus_items": "Backend Sistemler · Veri Bilimi · ML & Analitik · Bulut Platformlar",
+	"hero_languages_spoken": "TR · EN · FR",
+	"stat_projects": "Proje",
+	"stat_experience": "Deneyim",
+	"stat_technologies": "Teknoloji",
+	"stat_languages_spoken": "Dil",
+	"marquee_building": "VERİ İLE GELECEĞİ İNŞA EDİYORUZ",
+	"marquee_separator": "·",
+	"featured_project": "Öne Çıkan",
+
+	"footer_rights": "Tüm hakları saklıdır.",
+	"footer_cta": "KONUŞALIM",
+	"footer_back_to_top": "Başa dön"
 }

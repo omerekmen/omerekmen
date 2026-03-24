@@ -1,3 +1,9 @@
-# allow crawling everything by default
+# https://www.omerekmen.com
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap
+Sitemap: https://www.omerekmen.com/sitemap.xml
+
+# AI Agents
+# See /llms.txt for structured information about this site and its owner

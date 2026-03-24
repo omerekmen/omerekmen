@@ -1,6 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 
+	"nav_home": "Inicio",
 	"nav_about": "Sobre mí",
 	"nav_experience": "Experiencia",
 	"nav_projects": "Proyectos",
@@ -8,7 +9,7 @@
 	"nav_education": "Formación",
 	"nav_contact": "Contacto",
 
-	"hero_title": "Data Science e Ingeniería de Software",
+	"hero_title": "Convirtiendo datos en sistemas que escalan.",
 	"hero_subtitle": "Desarrollo de sistemas basados en datos y herramientas para desarrolladores con Rust, Python y SvelteKit.",
 	"hero_scroll": "Desplázate para explorar",
 
@@ -95,5 +96,19 @@
 	"contact_description": "Siempre estoy abierto a nuevas oportunidades, colaboraciones y conversaciones interesantes. No dudes en contactarme.",
 	"contact_email": "Enviar un correo",
 
-	"footer_rights": "Todos los derechos reservados."
+	"hero_about": "Graduado en Matemáticas por la Universidad de Galatasaray. Desarrollo sistemas basados en datos y soluciones backend — desde modelos de clasificación y dashboards analíticos hasta plataformas full-stack que gestionan usuarios y ingresos reales. Responsabilidad de extremo a extremo, desde el modelado de datos hasta el despliegue en producción.",
+	"hero_current_focus": "Enfoque Actual",
+	"hero_focus_items": "Sistemas Backend · Ciencia de Datos · ML & Analítica · Plataformas Cloud",
+	"hero_languages_spoken": "TR · EN · FR",
+	"stat_projects": "Proyectos",
+	"stat_experience": "Experiencia",
+	"stat_technologies": "Tecnologías",
+	"stat_languages_spoken": "Idiomas",
+	"marquee_building": "CONSTRUYENDO EL FUTURO CON DATOS",
+	"marquee_separator": "·",
+	"featured_project": "Destacado",
+
+	"footer_rights": "Todos los derechos reservados.",
+	"footer_cta": "HABLEMOS",
+	"footer_back_to_top": "Volver arriba"
 }

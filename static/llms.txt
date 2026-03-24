@@ -1,0 +1,69 @@
+# Ömer Ekmen — Personal Portfolio & CV
+
+> This file provides structured information about the owner of omerekmen.com for AI agents, LLMs, and search crawlers.
+
+## About
+
+Name: Ömer Ekmen
+Title: Data Scientist & Software Engineer
+Location: Istanbul, Turkey
+Email: omerekmenn@gmail.com
+Website: https://www.omerekmen.com
+LinkedIn: https://linkedin.com/in/omerekmenn
+GitHub: https://github.com/omerekmen
+
+## Summary
+
+Mathematics graduate (B.Sc.) from Galatasaray University with a 4.0/4.0 reinforcement learning thesis. Builds data-driven systems and backend solutions — from classification models and analytical dashboards to full-stack platforms managing real users and real revenue. Focus on end-to-end ownership, from data modeling to production deployment.
+
+## Education
+
+- B.Sc. in Mathematics — Galatasaray University, Istanbul (2018–2026)
+  - Thesis: Reinforcement Learning (Apprentissage par Renforcement) — Grade: AA (4.0/4.0)
+  - Full 4-year curriculum delivered in French
+  - Relevant Coursework: Machine Learning, NLP, Probability Theory, Linear Algebra, Numerical Analysis, Applied Mathematics, Cryptography
+
+## Experience
+
+- Software Engineer Intern — Otokoç Otomotiv, Istanbul (Jun 2024 – Present)
+  - Enterprise ERP systems with .NET and SQL Server
+  - T-SQL stored procedures, SSIS ETL packages, SSRS reporting
+  - Agile/Azure DevOps, 20+ deliverables
+
+- Data Analytics Intern — Vakıf Katılım Bank, Istanbul (Sep 2023 – Oct 2023)
+  - Financial dataset analysis with SQL and Python
+  - BI dashboards and regulatory reporting
+
+## Technical Skills
+
+- Languages: Python, SQL (T-SQL, PostgreSQL), C#, JavaScript, Rust
+- Data Science & ML: Scikit-Learn, TensorFlow, PyTorch, Pandas, NumPy, Statistical Modeling, Feature Engineering, A/B Testing
+- Visualization & BI: Matplotlib, Seaborn, Plotly, Folium, Tableau, Power BI, SSRS
+- Databases: SQL Server, PostgreSQL, SSIS, Query Optimization, Data Modeling
+- Software Engineering: Django, .NET, SvelteKit, REST APIs, Git, Docker, Azure DevOps, Agile/Scrum
+
+## Languages Spoken
+
+- Turkish (Native)
+- English (B2+ Professional Working Proficiency)
+- French (B2+ Professional Working Proficiency)
+
+## Certifications
+
+- IBM Data Science Professional Certificate — Coursera, Aug 2023
+
+## Key Projects
+
+1. Klauthed — Enterprise-grade multi-tenant authentication platform (Rust, Actix-web, SvelteKit, CockroachDB)
+2. Scivex — Open-source scientific data processing library (Rust)
+3. Property Management Analytics Platform — Full-stack platform managing 100+ listings (Django, PostgreSQL)
+4. SpaceX Falcon 9 Landing Prediction — ML classification models achieving 85% accuracy (Python, Scikit-Learn)
+5. Real-World Data Analysis Portfolio — Multi-dataset analysis (Python, Pandas, Plotly)
+
+## Site Pages
+
+- / — Home page with portfolio overview
+- /projects/{id} — Individual project details
+- /cv — Interactive curriculum vitae
+- /s — Social links (linktree-style)
+- /cv.pdf — Downloadable CV (PDF)

@@ -1,0 +1,15 @@
+/* TEAM */
+Name: Ömer Ekmen
+Role: Developer & Designer
+Location: Istanbul, Turkey
+Contact: omerekmenn@gmail.com
+GitHub: github.com/omerekmen
+LinkedIn: linkedin.com/in/omerekmenn
+
+/* SITE */
+Standards: HTML5, CSS3, ES2024
+Components: SvelteKit, Svelte 5, TypeScript
+Styling: Tailwind CSS
+Animation: GSAP
+Deployment: Cloudflare Pages
+Language: Multi (EN, TR, FR, DE, ES)

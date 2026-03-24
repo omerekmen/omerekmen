@@ -1,0 +1,3 @@
+Contact: mailto:omerekmenn@gmail.com
+Preferred-Languages: en, tr, fr
+Canonical: https://www.omerekmen.com/.well-known/security.txt

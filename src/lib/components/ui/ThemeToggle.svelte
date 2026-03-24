@@ -7,7 +7,7 @@
 
 <button
 	onclick={toggleTheme}
-	class="group relative flex h-10 w-10 items-center justify-center rounded-full border border-border-subtle bg-transparent transition-colors duration-200 hover:border-border hover:bg-bg-secondary"
+	class="group relative flex h-10 w-10 items-center justify-center rounded-full bg-transparent transition-colors duration-200 hover:border-border hover:bg-bg-secondary"
 	aria-label="Toggle theme"
 >
 	<!-- Sun icon (light mode) -->

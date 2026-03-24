@@ -16,36 +16,53 @@
 	font-display: swap;
 }
 
+@font-face {
+	font-family: 'Bagel Fat One';
+	src: url('/fonts/BagelFatOne.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+}
+
 /* ── Theme Custom Properties ── */
 :root,
 [data-theme='light'] {
-	--color-bg: #fafaf9;
-	--color-bg-secondary: #f5f5f4;
-	--color-bg-tertiary: #e7e5e4;
-	--color-text: #1c1917;
-	--color-text-secondary: #44403c;
-	--color-text-muted: #78716c;
-	--color-border: #d6d3d1;
-	--color-border-subtle: #e7e5e4;
-	--color-accent: #a78bfa;
-	--color-accent-hover: #8b5cf6;
-	--color-ongoing: #f59e0b;
-	--color-completed: #22c55e;
+	--color-bg: #f5f5f0;
+	--color-bg-secondary: #eaeae5;
+	--color-bg-tertiary: #ddddd8;
+	--color-text: #0a0a0a;
+	--color-text-rgb: 10, 10, 10;
+	--color-text-secondary: #2a2a2a;
+	--color-text-muted: #6a6a6a;
+	--color-border: #c8c8c0;
+	--color-border-subtle: #d8d8d0;
+	--color-accent: #7cb67a;
+	--color-accent-hover: #5a9a58;
+	--color-accent-rgb: 124, 182, 122;
+	--color-ongoing: #e0a458;
+	--color-completed: #6db88a;
+	--color-bg-inverted: #050505;
+	--color-bg-inverted-rgb: 5, 5, 5;
+	--color-text-inverted: #f0f0f0;
 }
 
 [data-theme='dark'] {
-	--color-bg: #0a0a0a;
-	--color-bg-secondary: #141414;
-	--color-bg-tertiary: #1c1c1c;
-	--color-text: #f5f5f4;
-	--color-text-secondary: #d6d3d1;
-	--color-text-muted: #a8a29e;
-	--color-border: #292524;
-	--color-border-subtle: #1c1917;
-	--color-accent: #a78bfa;
-	--color-accent-hover: #c4b5fd;
-	--color-ongoing: #fbbf24;
-	--color-completed: #4ade80;
+	--color-bg: #050505;
+	--color-bg-secondary: #0a0a0a;
+	--color-bg-tertiary: #141414;
+	--color-text: #f0f0f0;
+	--color-text-rgb: 240, 240, 240;
+	--color-text-secondary: #c0c0c0;
+	--color-text-muted: #707070;
+	--color-border: #1a1a1a;
+	--color-border-subtle: #111111;
+	--color-accent: #b8d8b0;
+	--color-accent-hover: #9cc494;
+	--color-accent-rgb: 184, 216, 176;
+	--color-ongoing: #f0d08c;
+	--color-completed: #90d4a8;
+	--color-bg-inverted: #f5f5f0;
+	--color-bg-inverted-rgb: 245, 245, 240;
+	--color-text-inverted: #0a0a0a;
 }
 
 /* ── Tailwind Theme Integration ── */
@@ -64,13 +81,19 @@
 	--color-accent-hover: var(--color-accent-hover);
 	--color-ongoing: var(--color-ongoing);
 	--color-completed: var(--color-completed);
+	--color-bg-inverted: var(--color-bg-inverted);
+	--color-text-inverted: var(--color-text-inverted);
 }
 
 /* ── Base Styles ── */
 html {
-	scroll-behavior: smooth;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+	display: none;
 }
 
 body {
@@ -87,6 +110,49 @@ body {
 	color: var(--color-bg);
 }
 
+/* ── ScrollSmoother wrapper ── */
+#smooth-wrapper {
+	overflow: hidden;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+}
+
+/* ── Custom cursor — hide default on desktop ── */
+@media (hover: hover) and (pointer: fine) {
+	html.custom-cursor-active,
+	html.custom-cursor-active * {
+		cursor: none !important;
+	}
+}
+
+/* ── View Transitions ── */
+@keyframes fade-in {
+	from { opacity: 0; }
+}
+
+@keyframes fade-out {
+	to { opacity: 0; }
+}
+
+@keyframes slide-from-right {
+	from { transform: translateX(40px); opacity: 0; }
+}
+
+@keyframes slide-to-left {
+	to { transform: translateX(-40px); opacity: 0; }
+}
+
+::view-transition-old(root) {
+	animation: 300ms ease-out both slide-to-left;
+}
+
+::view-transition-new(root) {
+	animation: 300ms ease-out both slide-from-right;
+}
+
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
 	*,
@@ -96,5 +162,10 @@ body {
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
 		scroll-behavior: auto !important;
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none !important;
 	}
 }
