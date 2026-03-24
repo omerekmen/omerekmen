@@ -130,19 +130,29 @@ body {
 
 /* ── View Transitions ── */
 @keyframes fade-in {
-	from { opacity: 0; }
+	from {
+		opacity: 0;
+	}
 }
 
 @keyframes fade-out {
-	to { opacity: 0; }
+	to {
+		opacity: 0;
+	}
 }
 
 @keyframes slide-from-right {
-	from { transform: translateX(40px); opacity: 0; }
+	from {
+		transform: translateX(40px);
+		opacity: 0;
+	}
 }
 
 @keyframes slide-to-left {
-	to { transform: translateX(-40px); opacity: 0; }
+	to {
+		transform: translateX(-40px);
+		opacity: 0;
+	}
 }
 
 ::view-transition-old(root) {

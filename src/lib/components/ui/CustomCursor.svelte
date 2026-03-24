@@ -127,7 +127,12 @@
 </script>
 
 <!-- Dot -->
-<div bind:this={dotEl} class="cursor-dot" class:pointer={isPointer} class:inverted={isInverted}></div>
+<div
+	bind:this={dotEl}
+	class="cursor-dot"
+	class:pointer={isPointer}
+	class:inverted={isInverted}
+></div>
 
 <!-- Ring -->
 <div bind:this={ringEl} class="cursor-ring" class:pointer={isPointer} class:inverted={isInverted}>

@@ -106,11 +106,16 @@
 				bind:this={headerEl}
 				class="absolute top-0 right-0 left-0 z-40 flex items-center gap-4 px-6 pt-6 opacity-0"
 			>
-				<a href="/" class="header-name text-xl tracking-wide text-text transition-colors duration-200 hover:text-accent">
+				<a
+					href="/"
+					class="header-name text-xl tracking-wide text-text transition-colors duration-200 hover:text-accent"
+				>
 					{personal.name.toUpperCase()}
 				</a>
-				<span class="hidden text-[10px] font-extrabold tracking-[0.2em] text-text-muted/90 uppercase sm:block">
-					Data Scientist & <br/>Software Engineer
+				<span
+					class="hidden text-[10px] font-extrabold tracking-[0.2em] text-text-muted/90 uppercase sm:block"
+				>
+					Data Scientist & <br />Software Engineer
 				</span>
 			</header>
 
@@ -122,11 +127,15 @@
 </div>
 
 <!-- Fixed elements — outside smooth wrapper so they don't get smoothed -->
-<div class="fixed top-6 right-6 z-50 rounded-full border border-border-subtle/40 bg-bg/60 backdrop-blur-xl">
+<div
+	class="fixed top-6 right-6 z-50 rounded-full border border-border-subtle/40 bg-bg/60 backdrop-blur-xl"
+>
 	<ThemeToggle />
 </div>
 
-<div class="fixed right-6 bottom-6 z-50 rounded-full border border-border-subtle/40 bg-bg/60 backdrop-blur-xl">
+<div
+	class="fixed right-6 bottom-6 z-50 rounded-full border border-border-subtle/40 bg-bg/60 backdrop-blur-xl"
+>
 	<LanguageSwitcher direction="up" />
 </div>
 

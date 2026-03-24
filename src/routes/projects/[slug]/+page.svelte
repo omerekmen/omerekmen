@@ -84,8 +84,8 @@
 			const dt = delta / 1000; // delta is ms
 			const px = pxPerSecond * dt * currentTimeScale;
 
-			outlineX = ((outlineX - px) % outlineHalf + outlineHalf) % outlineHalf;
-			solidX = ((solidX + px) % solidHalf + solidHalf) % solidHalf;
+			outlineX = (((outlineX - px) % outlineHalf) + outlineHalf) % outlineHalf;
+			solidX = (((solidX + px) % solidHalf) + solidHalf) % solidHalf;
 
 			if (outlineTrackEl) gsap.set(outlineTrackEl, { x: -outlineX });
 			if (solidTrackEl) gsap.set(solidTrackEl, { x: -solidX });
@@ -252,304 +252,304 @@
 </svelte:head>
 
 {#key project.id}
-<div bind:this={pageEl} class="relative min-h-screen bg-bg">
-	<!-- Fixed back button -->
-	<button
-		bind:this={backBtnEl}
-		onclick={navigateBack}
-		class="fixed top-6 left-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-border-subtle bg-bg/80 backdrop-blur-md transition-all duration-200 hover:border-accent/40 hover:bg-bg-secondary"
-		aria-label="Go back"
-	>
-		<svg
-			class="h-4 w-4 text-text-muted transition-colors duration-200 hover:text-text"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
+	<div bind:this={pageEl} class="relative min-h-screen bg-bg">
+		<!-- Fixed back button -->
+		<button
+			bind:this={backBtnEl}
+			onclick={navigateBack}
+			class="fixed top-6 left-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-border-subtle bg-bg/80 backdrop-blur-md transition-all duration-200 hover:border-accent/40 hover:bg-bg-secondary"
+			aria-label="Go back"
 		>
-			<polyline points="15 18 9 12 15 6" />
-		</svg>
-	</button>
+			<svg
+				class="h-4 w-4 text-text-muted transition-colors duration-200 hover:text-text"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<polyline points="15 18 9 12 15 6" />
+			</svg>
+		</button>
 
-	<!-- ════════════════════════════════════════ -->
-	<!-- HERO SECTION                            -->
-	<!-- ════════════════════════════════════════ -->
-	<section
-		bind:this={heroEl}
-		class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden"
-	>
-		<!-- Large project number — background -->
-		<div
-			bind:this={numberEl}
-			class="pointer-events-none absolute top-8 left-8 font-mono leading-none font-black tracking-tighter select-none sm:top-12 sm:left-12 lg:left-20"
-			style="font-size: clamp(6rem, 20vw, 22rem); color: rgba(var(--color-accent-rgb), 0.05);"
-			aria-hidden="true"
+		<!-- ════════════════════════════════════════ -->
+		<!-- HERO SECTION                            -->
+		<!-- ════════════════════════════════════════ -->
+		<section
+			bind:this={heroEl}
+			class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden"
 		>
-			{projectNumber}
-		</div>
-
-		<!-- Sliding title rows — opposing angles, continuous marquee -->
-		<div
-			class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center select-none"
-			aria-hidden="true"
-		>
-			<!-- Row 1: OUTLINE — rotated 5deg, auto-slides left -->
-			<div class="title-row-wrapper" style="transform: rotate(5deg);">
-				<div bind:this={outlineTrackEl} class="title-track">
-					{#each [0, 1, 2, 3, 4, 5] as idx (idx)}
-						<span class="title-outline">{title}</span>
-					{/each}
-				</div>
+			<!-- Large project number — background -->
+			<div
+				bind:this={numberEl}
+				class="pointer-events-none absolute top-8 left-8 font-mono leading-none font-black tracking-tighter select-none sm:top-12 sm:left-12 lg:left-20"
+				style="font-size: clamp(6rem, 20vw, 22rem); color: rgba(var(--color-accent-rgb), 0.05);"
+				aria-hidden="true"
+			>
+				{projectNumber}
 			</div>
 
-			<!-- Row 2: SOLID — rotated -5deg, auto-slides right -->
-			<div class="title-row-wrapper" style="transform: rotate(-5deg);">
-				<div bind:this={solidTrackEl} class="title-track">
-					{#each [0, 1, 2, 3, 4, 5] as idx (idx)}
-						<span class="title-solid">{title}</span>
-					{/each}
-				</div>
-			</div>
-		</div>
-
-		<!-- Status badge — bottom left -->
-		<div bind:this={badgeEl} class="absolute bottom-24 left-8 z-10 sm:left-12 lg:left-20">
-			<StatusBadge status={project.status} />
-		</div>
-
-		<!-- Scroll indicator -->
-		<div
-			bind:this={scrollIndicatorEl}
-			class="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
-			aria-hidden="true"
-		>
-			<div class="flex flex-col items-center gap-2">
-				<span class="font-mono text-[10px] tracking-widest text-text-muted/60 uppercase"
-					>Scroll</span
-				>
-				<div class="scroll-line h-8 w-px"></div>
-			</div>
-		</div>
-	</section>
-
-	<!-- ════════════════════════════════════════ -->
-	<!-- INFO SECTION                            -->
-	<!-- ════════════════════════════════════════ -->
-	<section class="border-t border-border-subtle px-6 py-24 sm:px-12 lg:px-24">
-		<div class="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1fr_320px]">
-			<!-- Left: Description -->
-			<div bind:this={descriptionEl}>
-				<span class="font-mono text-xs tracking-widest text-accent uppercase">
-					{m.nav_about?.() ?? 'About'}
-				</span>
-				<p class="desc-text mt-6 text-lg leading-relaxed text-text-secondary sm:text-xl">
-					{msg(project.descriptionKey)}
-				</p>
-			</div>
-
-			<!-- Right: Metadata panel -->
-			<div bind:this={metaEl} class="flex flex-col gap-6">
-				<div class="rounded-xl border border-border-subtle bg-bg-secondary/50 p-5">
-					<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase">
-						Status
-					</span>
-					<div class="mt-2">
-						<StatusBadge status={project.status} />
+			<!-- Sliding title rows — opposing angles, continuous marquee -->
+			<div
+				class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center select-none"
+				aria-hidden="true"
+			>
+				<!-- Row 1: OUTLINE — rotated 5deg, auto-slides left -->
+				<div class="title-row-wrapper" style="transform: rotate(5deg);">
+					<div bind:this={outlineTrackEl} class="title-track">
+						{#each [0, 1, 2, 3, 4, 5] as idx (idx)}
+							<span class="title-outline">{title}</span>
+						{/each}
 					</div>
 				</div>
 
-				<div class="rounded-xl border border-border-subtle bg-bg-secondary/50 p-5">
-					<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase">
-						Technologies
+				<!-- Row 2: SOLID — rotated -5deg, auto-slides right -->
+				<div class="title-row-wrapper" style="transform: rotate(-5deg);">
+					<div bind:this={solidTrackEl} class="title-track">
+						{#each [0, 1, 2, 3, 4, 5] as idx (idx)}
+							<span class="title-solid">{title}</span>
+						{/each}
+					</div>
+				</div>
+			</div>
+
+			<!-- Status badge — bottom left -->
+			<div bind:this={badgeEl} class="absolute bottom-24 left-8 z-10 sm:left-12 lg:left-20">
+				<StatusBadge status={project.status} />
+			</div>
+
+			<!-- Scroll indicator -->
+			<div
+				bind:this={scrollIndicatorEl}
+				class="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
+				aria-hidden="true"
+			>
+				<div class="flex flex-col items-center gap-2">
+					<span class="font-mono text-[10px] tracking-widest text-text-muted/60 uppercase"
+						>Scroll</span
+					>
+					<div class="scroll-line h-8 w-px"></div>
+				</div>
+			</div>
+		</section>
+
+		<!-- ════════════════════════════════════════ -->
+		<!-- INFO SECTION                            -->
+		<!-- ════════════════════════════════════════ -->
+		<section class="border-t border-border-subtle px-6 py-24 sm:px-12 lg:px-24">
+			<div class="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1fr_320px]">
+				<!-- Left: Description -->
+				<div bind:this={descriptionEl}>
+					<span class="font-mono text-xs tracking-widest text-accent uppercase">
+						{m.nav_about?.() ?? 'About'}
 					</span>
-					<p class="mt-2 text-2xl font-black text-accent">
-						{project.stack.length}
+					<p class="desc-text mt-6 text-lg leading-relaxed text-text-secondary sm:text-xl">
+						{msg(project.descriptionKey)}
 					</p>
 				</div>
 
-				<div class="rounded-xl border border-border-subtle bg-bg-secondary/50 p-5">
-					<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase">
-						Source
-					</span>
-					<div class="mt-2">
-						{#if project.github}
-							<a
-								href={project.github}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="group inline-flex items-center gap-2 text-sm font-medium text-accent transition-colors duration-200 hover:text-accent-hover"
-							>
-								<svg
-									class="h-4 w-4"
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="currentColor"
+				<!-- Right: Metadata panel -->
+				<div bind:this={metaEl} class="flex flex-col gap-6">
+					<div class="rounded-xl border border-border-subtle bg-bg-secondary/50 p-5">
+						<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase">
+							Status
+						</span>
+						<div class="mt-2">
+							<StatusBadge status={project.status} />
+						</div>
+					</div>
+
+					<div class="rounded-xl border border-border-subtle bg-bg-secondary/50 p-5">
+						<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase">
+							Technologies
+						</span>
+						<p class="mt-2 text-2xl font-black text-accent">
+							{project.stack.length}
+						</p>
+					</div>
+
+					<div class="rounded-xl border border-border-subtle bg-bg-secondary/50 p-5">
+						<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase">
+							Source
+						</span>
+						<div class="mt-2">
+							{#if project.github}
+								<a
+									href={project.github}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="group inline-flex items-center gap-2 text-sm font-medium text-accent transition-colors duration-200 hover:text-accent-hover"
 								>
-									<path
-										d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-									/>
-								</svg>
-								<span class="transition-transform duration-200 group-hover:translate-x-0.5">
-									{m.view_github?.() ?? 'View on GitHub'}
+									<svg
+										class="h-4 w-4"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										fill="currentColor"
+									>
+										<path
+											d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+										/>
+									</svg>
+									<span class="transition-transform duration-200 group-hover:translate-x-0.5">
+										{m.view_github?.() ?? 'View on GitHub'}
+									</span>
+									<svg
+										class="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<polyline points="9 18 15 12 9 6" />
+									</svg>
+								</a>
+							{:else}
+								<span class="inline-flex items-center gap-2 text-sm text-text-muted">
+									<svg
+										class="h-4 w-4"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+										<path d="M7 11V7a5 5 0 0 1 10 0v4" />
+									</svg>
+									{m.private_repo?.() ?? 'Private'}
 								</span>
-								<svg
-									class="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<polyline points="9 18 15 12 9 6" />
-								</svg>
-							</a>
-						{:else}
-							<span class="inline-flex items-center gap-2 text-sm text-text-muted">
-								<svg
-									class="h-4 w-4"
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-									<path d="M7 11V7a5 5 0 0 1 10 0v4" />
-								</svg>
-								{m.private_repo?.() ?? 'Private'}
-							</span>
-						{/if}
+							{/if}
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<!-- ════════════════════════════════════════ -->
-	<!-- HIGHLIGHTS SECTION                      -->
-	<!-- ════════════════════════════════════════ -->
-	{#if project.highlights.length > 0}
+		<!-- ════════════════════════════════════════ -->
+		<!-- HIGHLIGHTS SECTION                      -->
+		<!-- ════════════════════════════════════════ -->
+		{#if project.highlights.length > 0}
+			<section
+				bind:this={highlightsSectionEl}
+				class="border-t border-border-subtle px-6 py-24 sm:px-12 lg:px-24"
+			>
+				<div class="mx-auto max-w-6xl">
+					<span class="font-mono text-xs tracking-widest text-accent uppercase"> Highlights </span>
+
+					<div class="mt-10 flex flex-col gap-6">
+						{#each project.highlights as highlight, i (highlight)}
+							<div
+								class="highlight-item group flex items-start gap-6 rounded-xl border-l-2 border-accent/20 py-4 pl-6 transition-colors duration-200 hover:border-accent/60 hover:bg-bg-secondary/30"
+							>
+								<span
+									class="shrink-0 font-mono text-2xl leading-none font-black text-accent/40 transition-colors duration-200 group-hover:text-accent"
+								>
+									{String(i + 1).padStart(2, '0')}
+								</span>
+								<p class="text-base leading-relaxed text-text-secondary sm:text-lg">
+									{msg(highlight)}
+								</p>
+							</div>
+						{/each}
+					</div>
+				</div>
+			</section>
+		{/if}
+
+		<!-- ════════════════════════════════════════ -->
+		<!-- TECH STACK SECTION                      -->
+		<!-- ════════════════════════════════════════ -->
 		<section
-			bind:this={highlightsSectionEl}
+			bind:this={stackSectionEl}
 			class="border-t border-border-subtle px-6 py-24 sm:px-12 lg:px-24"
 		>
 			<div class="mx-auto max-w-6xl">
-				<span class="font-mono text-xs tracking-widest text-accent uppercase"> Highlights </span>
+				<span class="font-mono text-xs tracking-widest text-accent uppercase"> Tech Stack </span>
 
-				<div class="mt-10 flex flex-col gap-6">
-					{#each project.highlights as highlight, i (highlight)}
-						<div
-							class="highlight-item group flex items-start gap-6 rounded-xl border-l-2 border-accent/20 py-4 pl-6 transition-colors duration-200 hover:border-accent/60 hover:bg-bg-secondary/30"
+				<div class="mt-10 flex flex-wrap gap-3">
+					{#each project.stack as tech (tech)}
+						<span
+							class="stack-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-4 py-2 font-mono text-sm font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent"
 						>
-							<span
-								class="shrink-0 font-mono text-2xl leading-none font-black text-accent/40 transition-colors duration-200 group-hover:text-accent"
-							>
-								{String(i + 1).padStart(2, '0')}
-							</span>
-							<p class="text-base leading-relaxed text-text-secondary sm:text-lg">
-								{msg(highlight)}
-							</p>
-						</div>
+							{tech}
+						</span>
 					{/each}
 				</div>
 			</div>
 		</section>
-	{/if}
 
-	<!-- ════════════════════════════════════════ -->
-	<!-- TECH STACK SECTION                      -->
-	<!-- ════════════════════════════════════════ -->
-	<section
-		bind:this={stackSectionEl}
-		class="border-t border-border-subtle px-6 py-24 sm:px-12 lg:px-24"
-	>
-		<div class="mx-auto max-w-6xl">
-			<span class="font-mono text-xs tracking-widest text-accent uppercase"> Tech Stack </span>
-
-			<div class="mt-10 flex flex-wrap gap-3">
-				{#each project.stack as tech (tech)}
-					<span
-						class="stack-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-4 py-2 font-mono text-sm font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent"
-					>
-						{tech}
+		<!-- ════════════════════════════════════════ -->
+		<!-- NAVIGATION FOOTER                       -->
+		<!-- ════════════════════════════════════════ -->
+		<section bind:this={navFooterEl} class="border-t border-border-subtle">
+			<a
+				href="/projects/{nextProject.id}"
+				data-cursor="Next"
+				class="group block px-6 py-24 transition-colors duration-300 hover:bg-bg-secondary/30 sm:px-12 lg:px-24"
+			>
+				<div class="mx-auto max-w-6xl">
+					<span class="font-mono text-xs tracking-widest text-text-muted uppercase">
+						Next Project
 					</span>
-				{/each}
-			</div>
-		</div>
-	</section>
 
-	<!-- ════════════════════════════════════════ -->
-	<!-- NAVIGATION FOOTER                       -->
-	<!-- ════════════════════════════════════════ -->
-	<section bind:this={navFooterEl} class="border-t border-border-subtle">
-		<a
-			href="/projects/{nextProject.id}"
-			data-cursor="Next"
-			class="group block px-6 py-24 transition-colors duration-300 hover:bg-bg-secondary/30 sm:px-12 lg:px-24"
-		>
-			<div class="mx-auto max-w-6xl">
-				<span class="font-mono text-xs tracking-widest text-text-muted uppercase">
-					Next Project
-				</span>
+					<div class="mt-6 flex items-center gap-6">
+						<h2
+							bind:this={nextTitleEl}
+							class="leading-tight font-black tracking-tight text-text transition-colors duration-200 group-hover:text-accent"
+							style="font-size: clamp(2rem, 6vw, 5rem);"
+						>
+							{msg(nextProject.titleKey)}
+						</h2>
 
-				<div class="mt-6 flex items-center gap-6">
-					<h2
-						bind:this={nextTitleEl}
-						class="leading-tight font-black tracking-tight text-text transition-colors duration-200 group-hover:text-accent"
-						style="font-size: clamp(2rem, 6vw, 5rem);"
+						<svg
+							class="h-8 w-8 shrink-0 text-text-muted transition-all duration-300 group-hover:translate-x-2 group-hover:text-accent sm:h-10 sm:w-10"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<line x1="5" y1="12" x2="19" y2="12" />
+							<polyline points="12 5 19 12 12 19" />
+						</svg>
+					</div>
+				</div>
+			</a>
+
+			<div class="border-t border-border-subtle px-6 py-8 sm:px-12 lg:px-24">
+				<div class="mx-auto flex max-w-6xl items-center justify-between">
+					<a
+						href="/"
+						class="group inline-flex items-center gap-2 font-mono text-xs tracking-widest text-text-muted uppercase transition-colors duration-200 hover:text-accent"
 					>
-						{msg(nextProject.titleKey)}
-					</h2>
+						<svg
+							class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<line x1="19" y1="12" x2="5" y2="12" />
+							<polyline points="12 19 5 12 12 5" />
+						</svg>
+						Home
+					</a>
 
-					<svg
-						class="h-8 w-8 shrink-0 text-text-muted transition-all duration-300 group-hover:translate-x-2 group-hover:text-accent sm:h-10 sm:w-10"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<line x1="5" y1="12" x2="19" y2="12" />
-						<polyline points="12 5 19 12 12 19" />
-					</svg>
+					<span class="font-mono text-[10px] tracking-widest text-text-muted/50 uppercase">
+						{projectNumber} / {String(projects.length).padStart(2, '0')}
+					</span>
 				</div>
 			</div>
-		</a>
-
-		<div class="border-t border-border-subtle px-6 py-8 sm:px-12 lg:px-24">
-			<div class="mx-auto flex max-w-6xl items-center justify-between">
-				<a
-					href="/"
-					class="group inline-flex items-center gap-2 font-mono text-xs tracking-widest text-text-muted uppercase transition-colors duration-200 hover:text-accent"
-				>
-					<svg
-						class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<line x1="19" y1="12" x2="5" y2="12" />
-						<polyline points="12 19 5 12 12 5" />
-					</svg>
-					Home
-				</a>
-
-				<span class="font-mono text-[10px] tracking-widest text-text-muted/50 uppercase">
-					{projectNumber} / {String(projects.length).padStart(2, '0')}
-				</span>
-			</div>
-		</div>
-	</section>
-</div>
+		</section>
+	</div>
 {/key}
 
 <style>
@@ -589,11 +589,7 @@
 
 	/* Scroll indicator pulse */
 	.scroll-line {
-		background: linear-gradient(
-			to bottom,
-			rgba(var(--color-text-rgb), 0.3),
-			transparent
-		);
+		background: linear-gradient(to bottom, rgba(var(--color-text-rgb), 0.3), transparent);
 		animation: scroll-pulse 2s ease-in-out infinite;
 	}
 

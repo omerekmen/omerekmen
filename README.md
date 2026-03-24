@@ -32,9 +32,9 @@ Infrastructure  Docker · Cloudflare · Azure DevOps · SSIS
 
 ### Languages
 
-| Turkish | English | French |
-|:---:|:---:|:---:|
-| Native | B2+ Professional | B2+ Professional |
+| Turkish |     English      |      French      |
+| :-----: | :--------------: | :--------------: |
+| Native  | B2+ Professional | B2+ Professional |
 
 ### Certifications
 
