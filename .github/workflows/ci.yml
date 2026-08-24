@@ -30,6 +30,8 @@ jobs:
       - run: bun run check
       - run: bun run build
 
+      - name: Assert no untranslated keys reached the HTML
+        run: bun run assert:messages
       # The mirror of the staging assertion. If production ever built as
       # staging, the live site would go noindex and quietly fall out of search.
       - name: Assert production is indexable

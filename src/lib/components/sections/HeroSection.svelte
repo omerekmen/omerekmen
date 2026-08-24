@@ -5,10 +5,22 @@
 	import { skillGroups } from '$lib/data/skills';
 	import NetworkBackground from '$lib/components/visualizations/NetworkBackground.svelte';
 
-	// Safe dynamic message lookup
-	function msg(key: string): string {
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn?.() ?? key;
+	// Static map, not a dynamic m[key] lookup. Indexing the messages namespace
+	// by a runtime string is invisible to the bundler, so the messages it needs
+	// can be tree-shaken away and the lookup then renders the raw key to the
+	// visitor. Referencing each message directly keeps them in the bundle and
+	// makes a missing key a build error instead of a silent one.
+	const categoryLabels: Record<string, () => string> = {
+		skills_languages: m.skills_languages,
+		skills_data: m.skills_data,
+		skills_dotnet: m.skills_dotnet,
+		skills_python: m.skills_python,
+		skills_platform: m.skills_platform,
+		skills_working: m.skills_working
+	};
+
+	function categoryLabel(key: string): string {
+		return categoryLabels[key]?.() ?? key;
 	}
 
 	// Refs
@@ -279,7 +291,7 @@
 				{#each marqueeItems as item, idx (set + '-' + idx)}
 					{#if item.isCategory}
 						<span class="text-xs font-bold tracking-widest text-accent-text uppercase">
-							{msg(item.text)}
+							{categoryLabel(item.text)}
 						</span>
 						<span class="text-accent-text/30">--</span>
 					{:else}

@@ -43,6 +43,8 @@ jobs:
         env:
           PUBLIC_SITE_ENV: staging
 
+      - name: Assert no untranslated keys reached the HTML
+        run: bun run assert:messages
       # A staging build that would be indexable is the one failure that quietly
       # costs real traffic, so assert it rather than trusting the config.
       - name: Assert staging is excluded from search
