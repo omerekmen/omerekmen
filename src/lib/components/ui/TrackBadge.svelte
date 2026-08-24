@@ -50,7 +50,7 @@
 
 	.lab {
 		background: rgba(var(--color-accent-rgb), 0.12);
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 	}
 
 	.archive {

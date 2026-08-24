@@ -104,10 +104,28 @@ selection rate or a certificate belongs in the body.
 Archived projects keep their URLs and stay in the sitemap at lower priority, but
 are excluded from the homepage carousel.
 
+## Colour
+
+`--color-accent` is decorative: fills, borders, oversized display type, the dot
+grid. On light surfaces it sits at roughly 1.8:1, so it must never carry text.
+
+`--color-accent-text` is the readable accent — 4.6:1 or better on every light
+surface, identical to `--color-accent` in dark. Use it for any accent-coloured
+text a person is meant to read. The Tailwind utility is `text-accent-text`.
+
 ## Branch and deploy
 
-Work on feature branches. `master` auto-deploys to Cloudflare Pages via `.github/workflows/cd.yml`.
-CI runs lint, typecheck and build on every PR.
+| Branch    | Deploys to            | Workflow                           |
+| --------- | --------------------- | ---------------------------------- |
+| `staging` | staging.omerekmen.com | `.github/workflows/cd-staging.yml` |
+| `master`  | omerekmen.com         | `.github/workflows/cd.yml`         |
+
+Work lands on `staging` first and is reviewed on the real domain before merging
+to `master`. CI runs lint, typecheck and build on every push to either.
+
+Staging builds are marked with `PUBLIC_SITE_ENV=staging`, which emits a
+`noindex` meta tag, serves a `Disallow: /` robots.txt and shows a corner flag —
+so the staging copy never competes with the live site for its own name.
 
 Commit messages are plain and descriptive, written in the author's own voice. No tooling
 attribution, no co-author trailers.

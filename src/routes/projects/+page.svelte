@@ -52,7 +52,7 @@
 <div class="min-h-screen px-6 pt-28 pb-24 sm:px-10 lg:px-16">
 	<div class="mx-auto max-w-5xl">
 		<header>
-			<p class="font-mono text-xs tracking-widest text-accent uppercase">Projects</p>
+			<p class="font-mono text-xs tracking-widest text-accent-text uppercase">Projects</p>
 			<h1 class="page-title mt-4 text-text">Selected work</h1>
 			<p class="mt-5 max-w-2xl leading-relaxed text-text-secondary">
 				{description}
@@ -114,7 +114,7 @@
 					<div class="flex flex-wrap items-start justify-between gap-3">
 						<div class="min-w-0">
 							<h2
-								class="text-lg font-bold tracking-tight text-text transition-colors duration-200 group-hover:text-accent sm:text-xl"
+								class="text-lg font-bold tracking-tight text-text transition-colors duration-200 group-hover:text-accent-text sm:text-xl"
 							>
 								{project.title}
 							</h2>
@@ -134,7 +134,7 @@
 									<dt class="font-mono text-[10px] tracking-widest text-text-muted uppercase">
 										{metric.label}
 									</dt>
-									<dd class="mt-0.5 font-mono text-lg font-bold text-accent tabular-nums">
+									<dd class="mt-0.5 font-mono text-lg font-bold text-accent-text tabular-nums">
 										{metric.value}
 									</dd>
 								</div>
@@ -198,7 +198,7 @@
 	.chip.active {
 		border-color: rgba(var(--color-accent-rgb), 0.5);
 		background: rgba(var(--color-accent-rgb), 0.1);
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 	}
 
 	.card {

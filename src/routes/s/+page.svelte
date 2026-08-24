@@ -163,7 +163,7 @@
 				>
 					<!-- Icon -->
 					<span
-						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bg-tertiary/50 text-text-muted transition-colors duration-200 group-hover:bg-accent/10 group-hover:text-accent"
+						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bg-tertiary/50 text-text-muted transition-colors duration-200 group-hover:bg-accent/10 group-hover:text-accent-text"
 					>
 						{#if link.icon === 'globe'}
 							<svg
@@ -230,7 +230,7 @@
 
 					<!-- Arrow -->
 					<svg
-						class="h-4 w-4 text-text-muted transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-accent"
+						class="h-4 w-4 text-text-muted transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-accent-text"
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="currentColor"
@@ -303,7 +303,7 @@
 	.avatar-initials {
 		font-family: 'Bagel Fat One', sans-serif;
 		font-size: 2rem;
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		letter-spacing: 0.05em;
 		line-height: 1;
 	}

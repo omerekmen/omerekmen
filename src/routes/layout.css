@@ -38,6 +38,9 @@
 	--color-accent: #7cb67a;
 	--color-accent-hover: #5a9a58;
 	--color-accent-rgb: 124, 182, 122;
+	/* Readable accent for text. The decorative accent above sits at 1.8:1 on
+	   light surfaces; this clears 4.5:1 on all three. */
+	--color-accent-text: #3d6b3f;
 	--color-ongoing: #e0a458;
 	--color-completed: #6db88a;
 	--color-bg-inverted: #050505;
@@ -58,6 +61,7 @@
 	--color-accent: #b8d8b0;
 	--color-accent-hover: #9cc494;
 	--color-accent-rgb: 184, 216, 176;
+	--color-accent-text: #b8d8b0;
 	--color-ongoing: #f0d08c;
 	--color-completed: #90d4a8;
 	--color-bg-inverted: #f5f5f0;
@@ -79,6 +83,7 @@
 	--color-border-subtle: var(--color-border-subtle);
 	--color-accent: var(--color-accent);
 	--color-accent-hover: var(--color-accent-hover);
+	--color-accent-text: var(--color-accent-text);
 	--color-ongoing: var(--color-ongoing);
 	--color-completed: var(--color-completed);
 	--color-bg-inverted: var(--color-bg-inverted);

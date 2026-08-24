@@ -155,7 +155,7 @@
 			<!-- Eyebrow -->
 			<p
 				bind:this={badgeEl}
-				class="flex items-center gap-2 font-mono text-[11px] tracking-widest text-accent uppercase"
+				class="flex items-center gap-2 font-mono text-[11px] tracking-widest text-accent-text uppercase"
 			>
 				<span class="relative flex h-1.5 w-1.5">
 					<span
@@ -192,7 +192,7 @@
 			<div bind:this={focusEl} class="mt-5 flex flex-wrap gap-2">
 				{#each (m.hero_focus_items?.() ?? 'Rust Systems · Data Pipelines · Cloud Platforms').split(' · ') as item (item)}
 					<span
-						class="rounded-full border border-accent/20 bg-accent/5 px-3 py-1 text-xs font-medium text-accent"
+						class="rounded-full border border-accent/20 bg-accent/5 px-3 py-1 text-xs font-medium text-accent-text"
 					>
 						{item}
 					</span>
@@ -278,18 +278,18 @@
 			{#each [0, 1] as set (set)}
 				{#each marqueeItems as item, idx (set + '-' + idx)}
 					{#if item.isCategory}
-						<span class="text-xs font-bold tracking-widest text-accent/70 uppercase">
+						<span class="text-xs font-bold tracking-widest text-accent-text uppercase">
 							{msg(item.text)}
 						</span>
-						<span class="text-accent/30">--</span>
+						<span class="text-accent-text/30">--</span>
 					{:else}
 						<span class="font-mono text-xs font-medium tracking-wider text-text-muted/60 uppercase">
 							{item.text}
 						</span>
-						<span class="text-accent/20">·</span>
+						<span class="text-accent-text/20">·</span>
 					{/if}
 				{/each}
-				<span class="text-accent/40">///</span>
+				<span class="text-accent-text/40">///</span>
 			{/each}
 		</div>
 	</div>

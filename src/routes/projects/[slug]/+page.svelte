@@ -81,7 +81,7 @@
 		<header class="border-b border-border-subtle px-6 pt-28 pb-14 sm:px-10 lg:px-16">
 			<div class="mx-auto max-w-4xl">
 				<div class="flex items-center gap-3 font-mono text-[11px] tracking-widest text-text-muted">
-					<a href="/projects" class="transition-colors hover:text-accent">Projects</a>
+					<a href="/projects" class="transition-colors hover:text-accent-text">Projects</a>
 					<span aria-hidden="true">/</span>
 					<span class="tabular-nums">{number} of {String(data.total).padStart(2, '0')}</span>
 				</div>
@@ -139,7 +139,7 @@
 									<dt class="font-mono text-[10px] tracking-widest text-text-muted uppercase">
 										{metric.label}
 									</dt>
-									<dd class="mt-1 font-mono text-2xl font-black text-accent tabular-nums">
+									<dd class="mt-1 font-mono text-2xl font-black text-accent-text tabular-nums">
 										{metric.value}
 									</dd>
 								</div>
@@ -182,12 +182,12 @@
 						</span>
 						<div class="mt-4 flex items-center gap-5">
 							<h2
-								class="next-title text-text transition-colors duration-200 group-hover:text-accent"
+								class="next-title text-text transition-colors duration-200 group-hover:text-accent-text"
 							>
 								{data.next.title}
 							</h2>
 							<svg
-								class="h-7 w-7 shrink-0 text-text-muted transition-all duration-300 group-hover:translate-x-2 group-hover:text-accent"
+								class="h-7 w-7 shrink-0 text-text-muted transition-all duration-300 group-hover:translate-x-2 group-hover:text-accent-text"
 								viewBox="0 0 24 24"
 								fill="none"
 								stroke="currentColor"
@@ -226,13 +226,13 @@
 		font-weight: 600;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 	}
 
 	.link {
 		font-size: 14px;
 		font-weight: 500;
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		transition: color 0.15s ease;
 	}
 
@@ -299,7 +299,7 @@
 	}
 
 	.prose-body :global(a) {
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		text-decoration: underline;
 		text-underline-offset: 3px;
 	}

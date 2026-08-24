@@ -8,7 +8,7 @@
 | 01 — Foundation           | Done                                      |
 | 02 — Content pipeline     | Done                                      |
 | 03 — Case studies         | Blocked on input (NDA scope, screenshots) |
-| 04 — Three directions     | Built — awaiting your pick                |
+| 04 — Three directions     | Direction A chosen                        |
 | 05 — Positioning & polish | Not started                               |
 | 06 — Lab projects         | Optional                                  |
 
@@ -133,7 +133,14 @@ Ordered by value per hour. Every phase ends deployable.
 Four production projects, two in-progress, with diagrams and screenshots. Slowest phase,
 and the one that wins interviews.
 
-### 04 — Three directions → pick one (built)
+### 04 — Three directions → pick one (decided: A)
+
+**Direction A won.** The hero stays as it is; the featured-projects section was
+rebuilt on A's card design with richer motion, and the dark-only palettes were
+replaced with the site's light/dark/system tokens.
+
+The three prototypes stay at `/lab` until the rebuild is merged, then get
+deleted.
 
 Live at `/lab` (all `noindex`, disallowed in robots.txt). Each renders the same
 real content — same hero copy, same three projects, same case study — from

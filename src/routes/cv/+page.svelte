@@ -103,7 +103,7 @@
 		<div class="mb-8 flex items-center justify-end gap-3 print:hidden">
 			<button
 				onclick={printCV}
-				class="flex items-center gap-2 rounded-lg border border-border-subtle bg-bg-secondary/50 px-4 py-2 font-mono text-xs tracking-wider text-text-muted uppercase transition-all duration-200 hover:border-accent/40 hover:text-accent"
+				class="flex items-center gap-2 rounded-lg border border-border-subtle bg-bg-secondary/50 px-4 py-2 font-mono text-xs tracking-wider text-text-muted uppercase transition-all duration-200 hover:border-accent/40 hover:text-accent-text"
 			>
 				<svg
 					class="h-4 w-4"
@@ -125,7 +125,7 @@
 				download="Omer_Ekmen_CV.pdf"
 				data-sveltekit-reload
 				rel="external"
-				class="flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/5 px-4 py-2 font-mono text-xs tracking-wider text-accent uppercase transition-all duration-200 hover:bg-accent/10"
+				class="flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/5 px-4 py-2 font-mono text-xs tracking-wider text-accent-text uppercase transition-all duration-200 hover:bg-accent/10"
 			>
 				<svg
 					class="h-4 w-4"
@@ -180,7 +180,7 @@
 				</span>
 				<a
 					href="mailto:{personal.email}"
-					class="flex items-center gap-1.5 transition-colors hover:text-accent"
+					class="flex items-center gap-1.5 transition-colors hover:text-accent-text"
 				>
 					<svg
 						class="h-3.5 w-3.5"
@@ -199,7 +199,7 @@
 				</a>
 				<a
 					href="tel:{personal.phone.replace(/\s/g, '')}"
-					class="flex items-center gap-1.5 transition-colors hover:text-accent"
+					class="flex items-center gap-1.5 transition-colors hover:text-accent-text"
 				>
 					<svg
 						class="h-3.5 w-3.5"
@@ -218,7 +218,7 @@
 				</a>
 				<a
 					href={personal.website}
-					class="flex items-center gap-1.5 transition-colors hover:text-accent"
+					class="flex items-center gap-1.5 transition-colors hover:text-accent-text"
 				>
 					<svg
 						class="h-3.5 w-3.5"
@@ -239,7 +239,7 @@
 					href={personal.linkedin}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="flex items-center gap-1.5 transition-colors hover:text-accent"
+					class="flex items-center gap-1.5 transition-colors hover:text-accent-text"
 				>
 					<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
 						<path
@@ -252,7 +252,7 @@
 					href={personal.github}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="flex items-center gap-1.5 transition-colors hover:text-accent"
+					class="flex items-center gap-1.5 transition-colors hover:text-accent-text"
 				>
 					<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
 						<path
@@ -284,13 +284,13 @@
 			<div class="mt-6 flex flex-col gap-5">
 				{#each skillGroups as group (group.categoryKey)}
 					<div class="skill-group">
-						<h3 class="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
+						<h3 class="font-mono text-xs font-semibold tracking-wider text-accent-text uppercase">
 							{group.label}
 						</h3>
 						<div class="mt-2.5 flex flex-wrap gap-2">
 							{#each group.skills as item (item)}
 								<span
-									class="skill-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-3 py-1.5 text-xs font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent"
+									class="skill-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-3 py-1.5 text-xs font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent-text"
 								>
 									{item}
 								</span>
@@ -300,13 +300,13 @@
 				{/each}
 
 				<div class="skill-group">
-					<h3 class="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
+					<h3 class="font-mono text-xs font-semibold tracking-wider text-accent-text uppercase">
 						Project Experience
 					</h3>
 					<div class="mt-2.5 flex flex-wrap gap-2">
 						{#each projectExperienceSkills as item (item)}
 							<span
-								class="skill-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-3 py-1.5 text-xs font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent"
+								class="skill-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-3 py-1.5 text-xs font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent-text"
 							>
 								{item}
 							</span>
@@ -328,7 +328,7 @@
 								{job.role}
 								{#if job.current}
 									<span
-										class="ml-2 rounded-full bg-accent/10 px-2 py-0.5 align-middle font-mono text-[10px] font-semibold tracking-wider text-accent uppercase"
+										class="ml-2 rounded-full bg-accent/10 px-2 py-0.5 align-middle font-mono text-[10px] font-semibold tracking-wider text-accent-text uppercase"
 									>
 										Current
 									</span>
@@ -372,7 +372,7 @@
 									href={project.github}
 									target="_blank"
 									rel="noopener noreferrer"
-									class="flex items-center gap-1.5 font-mono text-xs text-accent transition-colors hover:text-accent-hover"
+									class="hover:text-accent-text-text-HOVER flex items-center gap-1.5 font-mono text-xs text-accent-text transition-colors"
 								>
 									<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
 										<path
@@ -449,7 +449,7 @@
 									href={cert.credentialUrl}
 									target="_blank"
 									rel="noopener noreferrer"
-									class="shrink-0 font-mono text-xs text-accent transition-colors hover:text-accent-hover"
+									class="hover:text-accent-text-text-HOVER shrink-0 font-mono text-xs text-accent-text transition-colors"
 								>
 									Credential: {cert.credentialId}
 								</a>
@@ -498,7 +498,7 @@
 		font-weight: 600;
 		letter-spacing: 0.15em;
 		text-transform: uppercase;
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		padding-bottom: 0.5rem;
 		border-bottom: 1px solid var(--color-border-subtle);
 	}

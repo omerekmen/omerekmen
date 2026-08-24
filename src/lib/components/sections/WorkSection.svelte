@@ -2,22 +2,23 @@
 	import { gsap } from '$lib/utils/gsap';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
 	import { featuredProjects } from '$lib/content/projects';
+	import { parseMetric, formatMetric } from '$lib/utils/metric';
 
 	const projects = featuredProjects();
 	const projectCount = projects.length;
-	const sectionHeight = `${200 + projectCount * 200}vh`;
+	const sectionHeight = `${180 + projectCount * 190}vh`;
 
-	// Scattered positions for each card (percentage offsets from center)
-	// These create a floating, scattered feel like wodniack.dev
+	// Scatter keeps the stack from reading as a slideshow.
 	const cardPositions = [
-		{ x: 8, y: -5, rotate: -2 },
-		{ x: -12, y: 3, rotate: 1.5 },
-		{ x: 5, y: -8, rotate: -1 },
-		{ x: -8, y: 6, rotate: 2 },
-		{ x: 10, y: -3, rotate: -1.5 }
+		{ x: 7, y: -4, rotate: -1.8 },
+		{ x: -10, y: 3, rotate: 1.4 },
+		{ x: 4, y: -7, rotate: -1 },
+		{ x: -7, y: 5, rotate: 1.8 },
+		{ x: 9, y: -2, rotate: -1.4 }
 	];
 
 	let reducedMotion = $state(false);
+	let activeIndex = $state(0);
 	let sectionEl: HTMLElement | undefined = $state();
 	let pinEl: HTMLDivElement | undefined = $state();
 	let pillEl: HTMLDivElement | undefined = $state();
@@ -27,17 +28,19 @@
 	$effect(() => {
 		if (!sectionEl || !pinEl || !pillEl || !lettersEl || !carouselEl) return;
 
-		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		const rows = lettersEl.querySelectorAll('.letter-row');
-		const slides = carouselEl.querySelectorAll('.project-slide');
+		const slides = Array.from(carouselEl.querySelectorAll<HTMLElement>('.project-slide'));
 		const isMobile = window.innerWidth < 640;
 
-		if (prefersReducedMotion) {
-			// Cards are absolutely positioned for the scroll choreography. Without
-			// the timeline to separate them they would all land on the same spot,
-			// so hand layout back to CSS and clear GSAP's inline transforms.
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			// Cards are absolutely positioned for the choreography; without the
+			// timeline they would all land on the same spot. Hand layout to CSS.
 			reducedMotion = true;
 			gsap.set(slides, { opacity: 1, clearProps: 'transform' });
+			for (const el of carouselEl.querySelectorAll<HTMLElement>('[data-count]')) {
+				el.textContent = el.dataset.final ?? el.textContent;
+			}
+			gsap.set(carouselEl.querySelectorAll('.chip'), { opacity: 1, y: 0 });
 			return;
 		}
 
@@ -49,94 +52,67 @@
 				start: 'top top',
 				end: 'bottom bottom',
 				pin: pinEl,
-				scrub: 1.5
+				scrub: 1.2,
+				onUpdate: (self) => {
+					const span = 1 - 0.18;
+					const raw = (self.progress - 0.18) / span;
+					activeIndex = Math.max(0, Math.min(projectCount - 1, Math.floor(raw * projectCount)));
+				}
 			}
 		});
 
 		const pillDur = 0.12;
 		const projectStart = 0.18;
-		const projectSlice = (1 - projectStart) / projectCount;
-		// Overlap: each card's exit overlaps with the next card's entrance
-		const overlapFactor = 0.3;
+		const slice = (1 - projectStart) / projectCount;
+		const overlap = 0.3;
 
-		// ── Phase 1: Pill zooms in (portal) ──
+		// ── Pill opens like a portal ──
 		tl.to(pillEl, { scale: 25, opacity: 0, duration: pillDur, ease: 'power2.in' }, 0);
 
-		// ── Phase 2: Letter rows fade in with 3D depth ──
-		const rowDepths = [-30, -60, -40, -20]; // translateZ values for depth
-		const rowRotations = [2, -1.5, 1, -2.5]; // rotateX for 3D feel
-
+		// ── Letter rows fade in with depth, then drift ──
+		const depths = [-30, -60, -40, -20];
+		const tilts = [2, -1.5, 1, -2.5];
 		rows.forEach((row, i) => {
 			tl.fromTo(
 				row,
-				{ opacity: 0, z: rowDepths[i] - 50, rotateX: rowRotations[i] + 3 },
-				{
-					opacity: 0.45,
-					z: rowDepths[i],
-					rotateX: rowRotations[i],
-					duration: 0.08,
-					ease: 'power2.out'
-				},
+				{ opacity: 0, z: depths[i] - 50, rotateX: tilts[i] + 3 },
+				{ opacity: 0.4, z: depths[i], rotateX: tilts[i], duration: 0.08, ease: 'power2.out' },
 				0.08 + i * 0.015
+			);
+			tl.fromTo(
+				row,
+				{ xPercent: i % 2 === 0 ? 0 : -50 },
+				{ xPercent: i % 2 === 0 ? -50 : 0, duration: 0.85, ease: 'none' },
+				0.12
 			);
 		});
 
-		// ── Phase 2b: Letter rows slide (seamless marquee) ──
-		rows.forEach((row, i) => {
-			const startX = i % 2 === 0 ? 0 : -50;
-			const endX = i % 2 === 0 ? -50 : 0;
-			tl.fromTo(row, { xPercent: startX }, { xPercent: endX, duration: 0.85, ease: 'none' }, 0.12);
-		});
-
-		// ── Phase 3: Projects — floating cards with overlap ──
+		// ── Cards ──
 		slides.forEach((slide, i) => {
 			const pos = cardPositions[i % cardPositions.length];
-			const start = projectStart + i * projectSlice * (1 - overlapFactor);
-			const enterEnd = start + projectSlice * 0.15;
-			const holdEnd = start + projectSlice * 0.85;
-			const exitEnd = holdEnd + projectSlice * 0.25;
+			const start = projectStart + i * slice * (1 - overlap);
+			const enterEnd = start + slice * 0.16;
+			const holdEnd = start + slice * 0.85;
+			const exitEnd = holdEnd + slice * 0.25;
+			const enterDur = enterEnd - start;
 
 			if (isMobile) {
-				// Mobile: centered cards, no scatter, clean vertical entrance
 				tl.fromTo(
 					slide,
-					{ yPercent: 40, opacity: 0, scale: 0.9 },
-					{
-						yPercent: 0,
-						opacity: 1,
-						scale: 1,
-						duration: enterEnd - start,
-						ease: 'power3.out'
-					},
+					{ yPercent: 36, opacity: 0, scale: 0.92 },
+					{ yPercent: 0, opacity: 1, scale: 1, duration: enterDur, ease: 'power3.out' },
 					start
 				);
-
-				// Exit (except last card stays)
-				if (i < projectCount - 1) {
-					tl.to(
-						slide,
-						{
-							yPercent: -30,
-							opacity: 0,
-							scale: 0.95,
-							duration: exitEnd - holdEnd,
-							ease: 'power2.in'
-						},
-						holdEnd
-					);
-				}
 			} else {
-				// Desktop: scattered floating positions
-				// Float in with scattered position
 				tl.fromTo(
 					slide,
 					{
-						xPercent: 120,
-						yPercent: 20,
+						xPercent: 118,
+						yPercent: 18,
 						opacity: 0,
-						rotateY: -8,
-						rotateZ: pos.rotate * 1.5,
-						scale: 0.85
+						rotateY: -9,
+						rotateZ: pos.rotate * 1.6,
+						scale: 0.86
 					},
 					{
 						xPercent: pos.x,
@@ -145,45 +121,87 @@
 						rotateY: 0,
 						rotateZ: pos.rotate,
 						scale: 1,
-						duration: enterEnd - start,
+						duration: enterDur,
 						ease: 'power3.out'
 					},
 					start
 				);
-
-				// Subtle float while holding (parallax-like drift)
+				// Slow drift while the card holds, so it never feels parked.
 				tl.to(
 					slide,
-					{
-						xPercent: pos.x - 3,
-						yPercent: pos.y - 2,
-						duration: holdEnd - enterEnd,
-						ease: 'none'
-					},
+					{ xPercent: pos.x - 3, yPercent: pos.y - 2, duration: holdEnd - enterEnd, ease: 'none' },
 					enterEnd
 				);
+			}
 
-				// Exit (except last card stays)
-				if (i < projectCount - 1) {
-					tl.to(
-						slide,
-						{
+			// Accent rail sweeps across the card as it lands.
+			const rail = slide.querySelector('.rail-fill');
+			if (rail) {
+				tl.fromTo(
+					rail,
+					{ scaleX: 0 },
+					{ scaleX: 1, duration: enterDur * 1.3, ease: 'power2.out', transformOrigin: 'left' },
+					start + enterDur * 0.3
+				);
+			}
+
+			// Metrics count up as the card scrolls in — the numbers are the point.
+			slide.querySelectorAll<HTMLElement>('[data-count]').forEach((el, mi) => {
+				const target = Number(el.dataset.count);
+				const decimals = Number(el.dataset.decimals ?? 0);
+				const prefix = el.dataset.prefix ?? '';
+				const suffix = el.dataset.suffix ?? '';
+				const counter = { v: 0 };
+				tl.to(
+					counter,
+					{
+						v: target,
+						duration: enterDur * 1.6,
+						ease: 'power2.out',
+						onUpdate: () => {
+							el.textContent = `${prefix}${counter.v.toFixed(decimals)}${suffix}`;
+						}
+					},
+					start + enterDur * 0.35 + mi * 0.006
+				);
+			});
+
+			// Stack chips cascade in behind the metrics.
+			const chips = slide.querySelectorAll('.chip');
+			if (chips.length) {
+				tl.fromTo(
+					chips,
+					{ opacity: 0, y: 10 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: enterDur * 0.9,
+						stagger: enterDur * 0.08,
+						ease: 'power2.out'
+					},
+					start + enterDur * 0.5
+				);
+			}
+
+			if (i < projectCount - 1) {
+				const exit = isMobile
+					? { yPercent: -28, opacity: 0, scale: 0.95 }
+					: {
 							xPercent: -100,
 							yPercent: -15,
 							opacity: 0,
-							rotateY: 5,
+							rotateY: 6,
 							rotateZ: -pos.rotate,
-							scale: 0.9,
-							duration: exitEnd - holdEnd,
-							ease: 'power2.in'
-						},
-						holdEnd
-					);
-				}
+							scale: 0.9
+						};
+				tl.to(slide, { ...exit, duration: exitEnd - holdEnd, ease: 'power2.in' }, holdEnd);
 			}
 		});
 
-		return () => tl.kill();
+		return () => {
+			tl.scrollTrigger?.kill();
+			tl.kill();
+		};
 	});
 </script>
 
@@ -195,8 +213,8 @@
 	style={reducedMotion ? '' : `height: ${sectionHeight};`}
 >
 	<h2 class="work-heading">Work</h2>
+
 	<div bind:this={pinEl} class="pin-container relative h-screen w-full overflow-hidden bg-bg">
-		<!-- ═══ DOT GRID BACKGROUND ═══ -->
 		<div class="dot-grid"></div>
 
 		<!-- ═══ PILL ═══ -->
@@ -205,14 +223,13 @@
 			class="pill-layer pointer-events-none absolute inset-0 z-30 flex items-center justify-center"
 		>
 			<div class="work-pill">
-				<span class="pill-letter">W</span>
-				<span class="pill-letter">O</span>
-				<span class="pill-letter">R</span>
-				<span class="pill-letter">K</span>
+				{#each ['W', 'O', 'R', 'K'] as letter (letter)}
+					<span class="pill-letter">{letter}</span>
+				{/each}
 			</div>
 		</div>
 
-		<!-- ═══ LETTER ROWS (seamless marquee — 2 identical sets per row) ═══ -->
+		<!-- ═══ LETTER ROWS ═══ -->
 		<div
 			bind:this={lettersEl}
 			class="letters-layer pointer-events-none absolute inset-0 z-0 flex flex-col justify-center overflow-hidden select-none"
@@ -221,11 +238,9 @@
 		>
 			{#each ['W', 'O', 'R', 'K'] as letter (letter)}
 				<div class="letter-row" style="opacity: 0; transform-style: preserve-3d;">
-					<!-- Set 1 -->
 					{#each { length: 15 } as _unused, j (j)}
 						<span class="letter-char">{letter}</span>
 					{/each}
-					<!-- Set 2 (identical — for seamless loop) -->
 					{#each { length: 15 } as _unused, j (`dup-${j}`)}
 						<span class="letter-char">{letter}</span>
 					{/each}
@@ -233,80 +248,81 @@
 			{/each}
 		</div>
 
-		<!-- ═══ PROJECTS CAROUSEL ═══ -->
+		<!-- ═══ PROGRESS RAIL ═══ -->
+		{#if !reducedMotion}
+			<div class="progress-rail" aria-hidden="true">
+				{#each projects as project, i (project.slug)}
+					<span class="tick" class:on={i === activeIndex}>
+						{String(i + 1).padStart(2, '0')}
+					</span>
+				{/each}
+			</div>
+		{/if}
+
+		<!-- ═══ CARDS ═══ -->
 		<div
 			class="absolute inset-0 z-20 flex items-center justify-center"
 			style="perspective: 1000px; transform-style: preserve-3d;"
 		>
 			<div bind:this={carouselEl} class="carousel relative h-full w-full">
 				{#each projects as project, i (project.slug)}
-					<a
-						href="/projects/{project.slug}"
-						class="project-slide group"
-						data-cursor="View"
-						style="opacity: 0;"
-					>
+					<a href="/projects/{project.slug}" class="project-slide group" data-cursor="View">
 						<!-- Browser chrome -->
-						<div
-							class="flex items-center gap-1.5 border-b border-border-subtle/50 px-3 py-2 sm:gap-2 sm:px-5 sm:py-3"
-						>
-							<span class="h-2 w-2 rounded-full bg-[#ff5f57] sm:h-3 sm:w-3"></span>
-							<span class="h-2 w-2 rounded-full bg-[#febc2e] sm:h-3 sm:w-3"></span>
-							<span class="h-2 w-2 rounded-full bg-[#28c840] sm:h-3 sm:w-3"></span>
-							<div
-								class="ml-2 flex-1 rounded-md bg-bg-tertiary/30 px-2 py-0.5 sm:ml-4 sm:px-3 sm:py-1"
-							>
-								<span class="font-mono text-[9px] text-text-muted/60 sm:text-[11px]">
-									omerekmen.com/projects/{project.slug}
-								</span>
+						<div class="chrome">
+							<span class="dot red"></span>
+							<span class="dot amber"></span>
+							<span class="dot green"></span>
+							<div class="url">
+								<span>omerekmen.com/projects/{project.slug}</span>
 							</div>
 						</div>
 
-						<!-- Content -->
-						<div class="p-4 sm:p-6 md:p-8">
-							<div class="flex items-center justify-between">
-								<span class="font-mono text-[10px] tracking-widest text-text-muted/50 sm:text-xs">
+						<div class="rail"><span class="rail-fill"></span></div>
+
+						<div class="body">
+							<div class="head">
+								<span class="counter">
 									{String(i + 1).padStart(2, '0')} / {String(projectCount).padStart(2, '0')}
 								</span>
 								<TrackBadge track={project.track} progress={project.progress} />
 							</div>
 
-							<h3
-								class="mt-3 text-lg font-bold tracking-tight text-text sm:mt-4 sm:text-2xl md:text-3xl"
-								style="font-family: 'Bagel Fat One', sans-serif;"
-							>
-								{project.title}
-							</h3>
+							<h3 class="title">{project.title}</h3>
+							<p class="role">{project.role}</p>
+							<p class="summary">{project.summary}</p>
 
-							<p
-								class="mt-2 line-clamp-2 text-xs leading-relaxed text-text-muted sm:mt-3 sm:line-clamp-3 sm:text-sm md:text-base"
-							>
-								{project.summary}
-							</p>
+							{#if project.metrics.length}
+								<dl class="metrics">
+									{#each project.metrics.slice(0, 3) as metric (metric.label)}
+										{@const parsed = parseMetric(metric.value)}
+										<div>
+											<dd
+												data-count={parsed.literal ? undefined : parsed.value}
+												data-decimals={parsed.decimals}
+												data-prefix={parsed.prefix}
+												data-suffix={parsed.suffix}
+												data-final={metric.value}
+											>
+												{parsed.literal ? metric.value : formatMetric(parsed, 0)}
+											</dd>
+											<dt>{metric.label}</dt>
+										</div>
+									{/each}
+								</dl>
+							{/if}
 
-							<div class="mt-3 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">
+							<div class="chips">
 								{#each project.stack.slice(0, 5) as tech (tech)}
-									<span
-										class="rounded-full border border-border-subtle bg-bg-tertiary/50 px-2 py-0.5 font-mono text-[9px] font-medium text-text-muted sm:px-3 sm:py-1 sm:text-[11px]"
-									>
-										{tech}
-									</span>
+									<span class="chip">{tech}</span>
 								{/each}
 								{#if project.stack.length > 5}
-									<span
-										class="rounded-full border border-border-subtle bg-bg-tertiary/50 px-2 py-0.5 font-mono text-[9px] font-medium text-text-muted sm:px-3 sm:py-1 sm:text-[11px]"
-									>
-										+{project.stack.length - 5}
-									</span>
+									<span class="chip">+{project.stack.length - 5}</span>
 								{/if}
 							</div>
 
-							<div
-								class="mt-3 flex items-center gap-2 text-xs font-medium text-accent transition-all duration-200 group-hover:gap-3 sm:mt-6 sm:text-sm"
-							>
-								<span>View Project</span>
+							<span class="cta">
+								View project
 								<svg
-									class="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1 sm:h-4 sm:w-4"
 									viewBox="0 0 24 24"
 									fill="none"
 									stroke="currentColor"
@@ -317,7 +333,7 @@
 									<line x1="5" y1="12" x2="19" y2="12" />
 									<polyline points="12 5 19 12 12 19" />
 								</svg>
-							</div>
+							</span>
 						</div>
 					</a>
 				{/each}
@@ -327,7 +343,7 @@
 </section>
 
 <style>
-	/* ── Accessible section heading (the giant WORK letters are decoration) ── */
+	/* ── Accessible heading (the giant WORK letters are decoration) ── */
 	.work-heading {
 		position: absolute;
 		width: 1px;
@@ -338,6 +354,333 @@
 		clip-path: inset(50%);
 		white-space: nowrap;
 		border: 0;
+	}
+
+	.dot-grid {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+		background-image: radial-gradient(
+			circle,
+			rgba(var(--color-accent-rgb), 0.1) 1px,
+			transparent 1px
+		);
+		background-size: 28px 28px;
+		mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+		-webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+	}
+
+	/* ── Pill ── */
+	.work-pill {
+		display: flex;
+		width: 200px;
+		height: 520px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.1em;
+		border: 1.5px solid var(--color-border-subtle);
+		border-radius: 110px;
+		background: var(--color-bg-secondary);
+		will-change: transform;
+	}
+
+	.pill-letter {
+		display: block;
+		font-family: 'Bagel Fat One', sans-serif;
+		font-size: 4.5rem;
+		line-height: 1;
+		color: var(--color-accent);
+	}
+
+	/* ── Letter rows ── */
+	.letter-row {
+		display: flex;
+		width: max-content;
+		align-items: center;
+		white-space: nowrap;
+		transform-style: preserve-3d;
+		will-change: transform;
+	}
+
+	.letter-char {
+		display: inline-block;
+		flex-shrink: 0;
+		padding: 0 0.08em;
+		font-family: 'Bagel Fat One', sans-serif;
+		font-size: clamp(5rem, 14vw, 12rem);
+		line-height: 1.05;
+		color: var(--color-accent);
+		text-shadow: 0 4px 20px rgba(var(--color-accent-rgb), 0.15);
+	}
+
+	/* ── Progress rail ── */
+	.progress-rail {
+		position: absolute;
+		top: 50%;
+		right: 1.5rem;
+		z-index: 25;
+		display: none;
+		flex-direction: column;
+		gap: 0.7rem;
+		transform: translateY(-50%);
+	}
+
+	@media (min-width: 900px) {
+		.progress-rail {
+			display: flex;
+		}
+	}
+
+	.tick {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 10px;
+		letter-spacing: 0.1em;
+		color: var(--color-text-muted);
+		opacity: 0.4;
+		transition:
+			opacity 0.3s ease,
+			color 0.3s ease,
+			transform 0.3s ease;
+	}
+
+	.tick.on {
+		color: var(--color-accent-text);
+		opacity: 1;
+		transform: translateX(-4px) scale(1.15);
+	}
+
+	/* ── Cards ── */
+	.project-slide {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		display: block;
+		width: min(78vw, 320px);
+		overflow: hidden;
+		border: 1px solid var(--color-border-subtle);
+		border-radius: 14px;
+		background: var(--color-bg-secondary);
+		text-decoration: none;
+		transform: translate(-50%, -50%);
+		box-shadow:
+			0 25px 80px rgba(0, 0, 0, 0.3),
+			0 0 0 0.5px rgba(var(--color-accent-rgb), 0.05);
+		transition: box-shadow 0.3s ease;
+		will-change: transform, opacity;
+	}
+
+	@media (min-width: 640px) {
+		.project-slide {
+			width: min(70vw, 540px);
+			border-radius: 18px;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.project-slide {
+			width: min(58vw, 620px);
+		}
+	}
+
+	.project-slide:hover {
+		box-shadow:
+			0 30px 100px rgba(0, 0, 0, 0.42),
+			0 0 0 1px rgba(var(--color-accent-rgb), 0.25);
+	}
+
+	.chrome {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		border-bottom: 1px solid var(--color-border-subtle);
+		padding: 0.6rem 0.9rem;
+	}
+
+	@media (min-width: 640px) {
+		.chrome {
+			gap: 0.5rem;
+			padding: 0.75rem 1.2rem;
+		}
+	}
+
+	.chrome .dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+	}
+
+	.chrome .red {
+		background: #ff5f57;
+	}
+	.chrome .amber {
+		background: #febc2e;
+	}
+	.chrome .green {
+		background: #28c840;
+	}
+
+	.url {
+		margin-left: 0.6rem;
+		flex: 1;
+		overflow: hidden;
+		border-radius: 6px;
+		background: rgba(var(--color-text-rgb), 0.04);
+		padding: 0.15rem 0.6rem;
+	}
+
+	.url span {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 10px;
+		color: var(--color-text-muted);
+		opacity: 0.75;
+	}
+
+	/* Accent sweep as the card lands */
+	.rail {
+		height: 2px;
+		width: 100%;
+		background: rgba(var(--color-accent-rgb), 0.1);
+	}
+
+	.rail-fill {
+		display: block;
+		height: 100%;
+		width: 100%;
+		background: linear-gradient(90deg, var(--color-accent), transparent);
+	}
+
+	.body {
+		padding: 1.1rem 1.1rem 1.3rem;
+	}
+
+	@media (min-width: 640px) {
+		.body {
+			padding: 1.6rem 1.7rem 1.8rem;
+		}
+	}
+
+	.head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+	}
+
+	.counter {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 10px;
+		letter-spacing: 0.12em;
+		color: var(--color-text-muted);
+	}
+
+	.title {
+		margin: 0.85rem 0 0.25rem;
+		font-family: 'Bagel Fat One', sans-serif;
+		font-size: 1.25rem;
+		line-height: 1.15;
+		color: var(--color-text);
+	}
+
+	@media (min-width: 640px) {
+		.title {
+			font-size: 1.75rem;
+		}
+	}
+
+	.role {
+		margin: 0;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 10.5px;
+		line-height: 1.5;
+		color: var(--color-text-muted);
+	}
+
+	.summary {
+		margin: 0.8rem 0 0;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
+		overflow: hidden;
+		font-size: 0.85rem;
+		line-height: 1.65;
+		color: var(--color-text-secondary);
+	}
+
+	@media (min-width: 640px) {
+		.summary {
+			font-size: 0.93rem;
+		}
+	}
+
+	.metrics {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		margin: 1.15rem 0 0;
+	}
+
+	.metrics div {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.metrics dd {
+		margin: 0;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 1.3rem;
+		font-weight: 700;
+		line-height: 1.1;
+		color: var(--color-accent-text);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.metrics dt {
+		margin-top: 0.2rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 8.5px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-text-muted);
+	}
+
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		margin-top: 1.2rem;
+	}
+
+	.chip {
+		border: 1px solid var(--color-border-subtle);
+		border-radius: 999px;
+		background: var(--color-bg-tertiary);
+		padding: 0.2rem 0.6rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 9.5px;
+		color: var(--color-text-muted);
+	}
+
+	.cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 1.3rem;
+		font-size: 0.82rem;
+		font-weight: 500;
+		color: var(--color-accent-text);
+		transition: gap 0.2s ease;
+	}
+
+	.project-slide:hover .cta {
+		gap: 0.8rem;
+	}
+
+	.cta svg {
+		width: 14px;
+		height: 14px;
 	}
 
 	/* ── Reduced motion: a plain, readable vertical list ── */
@@ -377,104 +720,5 @@
 		font-size: clamp(2.5rem, 8vw, 5rem);
 		color: var(--color-accent);
 		text-align: center;
-	}
-
-	/* ── Dot grid background ── */
-	.dot-grid {
-		position: absolute;
-		inset: 0;
-		z-index: 1;
-		pointer-events: none;
-		background-image: radial-gradient(
-			circle,
-			rgba(var(--color-accent-rgb), 0.1) 1px,
-			transparent 1px
-		);
-		background-size: 28px 28px;
-		mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
-		-webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
-	}
-
-	/* ── Pill ── */
-	.work-pill {
-		width: 200px;
-		height: 520px;
-		border-radius: 110px;
-		background: var(--color-bg-secondary);
-		border: 1.5px solid var(--color-border-subtle);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.1em;
-		will-change: transform;
-	}
-
-	.pill-letter {
-		font-family: 'Bagel Fat One', sans-serif;
-		font-size: 4.5rem;
-		line-height: 1;
-		color: var(--color-accent);
-		display: block;
-	}
-
-	/* ── Letter rows — seamless marquee strips with 3D ── */
-	.letter-row {
-		display: flex;
-		align-items: center;
-		white-space: nowrap;
-		will-change: transform;
-		width: max-content;
-		transform-style: preserve-3d;
-	}
-
-	.letter-char {
-		font-family: 'Bagel Fat One', sans-serif;
-		font-size: clamp(5rem, 14vw, 12rem);
-		line-height: 1.05;
-		color: var(--color-accent);
-		display: inline-block;
-		flex-shrink: 0;
-		padding: 0 0.08em;
-		text-shadow: 0 4px 20px rgba(var(--color-accent-rgb), 0.15);
-	}
-
-	/* ── Project slides ── */
-	.project-slide {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: min(78vw, 300px);
-		background: var(--color-bg-secondary);
-		border: 1px solid var(--color-border-subtle);
-		border-radius: 12px;
-		overflow: hidden;
-		will-change: transform, opacity;
-		display: block;
-		text-decoration: none;
-		box-shadow:
-			0 25px 80px rgba(0, 0, 0, 0.35),
-			0 0 0 0.5px rgba(var(--color-accent-rgb), 0.05);
-		transition: box-shadow 0.3s ease;
-	}
-
-	@media (min-width: 640px) {
-		.project-slide {
-			width: min(70vw, 520px);
-			border-radius: 16px;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.project-slide {
-			width: min(60vw, 600px);
-		}
-	}
-
-	.project-slide:hover {
-		box-shadow:
-			0 30px 100px rgba(0, 0, 0, 0.5),
-			0 0 0 1px rgba(var(--color-accent-rgb), 0.2);
 	}
 </style>

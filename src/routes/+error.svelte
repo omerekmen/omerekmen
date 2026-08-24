@@ -4,7 +4,7 @@
 
 <section class="flex min-h-[60vh] flex-col items-center justify-center px-6 text-center">
 	<p
-		class="font-mono text-[8rem] leading-none font-bold tracking-tighter text-accent sm:text-[10rem]"
+		class="font-mono text-[8rem] leading-none font-bold tracking-tighter text-accent-text sm:text-[10rem]"
 	>
 		{page.status}
 	</p>
@@ -15,7 +15,7 @@
 
 	<a
 		href="/"
-		class="mt-10 inline-block rounded-full border border-border px-6 py-3 text-sm font-medium text-text-muted transition-colors duration-200 hover:border-accent hover:text-accent"
+		class="mt-10 inline-block rounded-full border border-border px-6 py-3 text-sm font-medium text-text-muted transition-colors duration-200 hover:border-accent hover:text-accent-text"
 	>
 		Go back home
 	</a>

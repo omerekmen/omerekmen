@@ -4,6 +4,7 @@
 	import { locales, localizeHref, deLocalizeUrl } from '$lib/paraglide/runtime';
 	import * as m from '$lib/paraglide/messages.js';
 	import { initTheme } from '$lib/utils/theme.svelte';
+	import { isStaging } from '$lib/utils/site-env';
 	import { personal } from '$lib/data/personal';
 	import { gsap, ScrollSmoother, ScrollTrigger } from '$lib/utils/gsap';
 	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
@@ -107,6 +108,9 @@
 	<meta name="theme-color" content="#f5f5f0" media="(prefers-color-scheme: light)" />
 	<link rel="canonical" href="{personal.website}{page.url.pathname}" />
 	<link rel="sitemap" href="/sitemap.xml" />
+	{#if isStaging}
+		<meta name="robots" content="noindex, nofollow" />
+	{/if}
 	{#each locales as locale (locale)}
 		<link
 			rel="alternate"
@@ -116,6 +120,10 @@
 	{/each}
 	<link rel="alternate" hreflang="x-default" href="{personal.website}{deLocalizedPath}" />
 </svelte:head>
+
+{#if isStaging}
+	<div class="staging-flag" role="status">Staging</div>
+{/if}
 
 <!-- ScrollSmoother wrapper structure -->
 <div bind:this={wrapperEl} id="smooth-wrapper">
@@ -128,7 +136,7 @@
 				>
 					<a
 						href={localizeHref('/')}
-						class="header-name text-xl tracking-wide text-text transition-colors duration-200 hover:text-accent"
+						class="header-name text-xl tracking-wide text-text transition-colors duration-200 hover:text-accent-text"
 					>
 						{personal.name.toUpperCase()}
 					</a>
@@ -179,6 +187,23 @@
 </div>
 
 <style>
+	.staging-flag {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		border-bottom-right-radius: 6px;
+		background: var(--color-ongoing);
+		padding: 3px 10px 4px;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 9px;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-bg);
+		pointer-events: none;
+	}
+
 	.nav-link {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 11px;
@@ -191,7 +216,7 @@
 
 	.nav-link:hover,
 	.nav-link:focus-visible {
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 	}
 
 	.header-name {

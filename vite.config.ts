@@ -4,6 +4,11 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+	define: {
+		// Inlined at build time so prerendered pages and client bundles agree.
+		// The staging workflow sets PUBLIC_SITE_ENV=staging.
+		__SITE_ENV__: JSON.stringify(process.env.PUBLIC_SITE_ENV ?? 'production')
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
