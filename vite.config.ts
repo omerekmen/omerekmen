@@ -5,6 +5,11 @@ import { defineConfig } from 'vite';
 
 const PRODUCTION_BRANCH = 'master';
 
+/** Short commit of the build, for identifying a deployment from its HTML. */
+function resolveCommit() {
+	return (process.env.CF_PAGES_COMMIT_SHA ?? process.env.GITHUB_SHA ?? 'local').slice(0, 7);
+}
+
 function resolveSiteEnv() {
 	if (process.env.PUBLIC_SITE_ENV === 'staging') return 'staging';
 	if (process.env.PUBLIC_SITE_ENV === 'production') return 'production';
@@ -24,7 +29,8 @@ export default defineConfig({
 		// but does set CF_PAGES_BRANCH. Treat any Cloudflare build off a branch
 		// other than the production one as staging, so a preview deploy can never
 		// silently ship as indexable production.
-		__SITE_ENV__: JSON.stringify(resolveSiteEnv())
+		__SITE_ENV__: JSON.stringify(resolveSiteEnv()),
+		__BUILD_COMMIT__: JSON.stringify(resolveCommit())
 	},
 	plugins: [
 		tailwindcss(),

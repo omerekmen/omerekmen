@@ -3,6 +3,7 @@
 
 /** Replaced at build time by Vite. See vite.config.ts. */
 declare const __SITE_ENV__: string;
+declare const __BUILD_COMMIT__: string;
 
 declare global {
 	namespace App {

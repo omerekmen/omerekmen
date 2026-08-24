@@ -196,13 +196,13 @@
 			<div bind:this={aboutEl} class="mt-6">
 				<div class="mb-4 h-px w-12 bg-accent/40"></div>
 				<p class="text-sm leading-relaxed text-text-muted">
-					{m.hero_about?.() ?? m.hero_subtitle()}
+					{m.hero_about()}
 				</p>
 			</div>
 
 			<!-- Focus pills -->
 			<div bind:this={focusEl} class="mt-5 flex flex-wrap gap-2">
-				{#each (m.hero_focus_items?.() ?? 'Rust Systems · Data Pipelines · Cloud Platforms').split(' · ') as item (item)}
+				{#each m.hero_focus_items().split(' · ') as item (item)}
 					<span
 						class="rounded-full border border-accent/20 bg-accent/5 px-3 py-1 text-xs font-medium text-accent-text"
 					>

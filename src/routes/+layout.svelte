@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { onNavigate, afterNavigate } from '$app/navigation';
-	import { locales, localizeHref, deLocalizeUrl } from '$lib/paraglide/runtime';
+	import { locales, localizeHref, deLocalizeUrl, getLocale } from '$lib/paraglide/runtime';
 	import * as m from '$lib/paraglide/messages.js';
 	import { initTheme } from '$lib/utils/theme.svelte';
-	import { isStaging } from '$lib/utils/site-env';
+	import { isStaging, siteEnv, buildCommit } from '$lib/utils/site-env';
 	import { personal } from '$lib/data/personal';
 	import { gsap, ScrollSmoother, ScrollTrigger } from '$lib/utils/gsap';
 	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
@@ -108,6 +108,9 @@
 	<meta name="theme-color" content="#f5f5f0" media="(prefers-color-scheme: light)" />
 	<link rel="canonical" href="{personal.website}{page.url.pathname}" />
 	<link rel="sitemap" href="/sitemap.xml" />
+	<!-- Identifies which build and locale produced this page, so a deployed
+	     problem can be traced to a commit without guesswork. -->
+	<meta name="x-build" content="{siteEnv}/{buildCommit}/{getLocale()}" />
 	{#if isStaging}
 		<meta name="robots" content="noindex, nofollow" />
 	{/if}

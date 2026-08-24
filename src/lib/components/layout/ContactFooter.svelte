@@ -124,7 +124,7 @@
 				onclick={backToTop}
 				class="flex items-center gap-2 text-sm font-medium text-bg/80 transition-colors duration-150 hover:text-bg"
 			>
-				{m.footer_back_to_top?.() ?? 'Back to top'}
+				{m.footer_back_to_top()}
 				<svg
 					class="h-4 w-4"
 					xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +150,7 @@
 				bind:this={ctaTextEl}
 				class="cta-text block leading-[0.85] font-black tracking-tight text-bg uppercase"
 			>
-				{m.footer_cta?.() ?? "LET'S TALK"}
+				{m.footer_cta()}
 			</a>
 		</div>
 
