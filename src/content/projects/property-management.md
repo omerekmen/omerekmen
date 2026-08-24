@@ -53,9 +53,19 @@ The reporting dashboard was the slowest surface in the system, because it
 aggregated across the full history on every load. Query restructuring and a
 considered indexing strategy cut its load time by 60%.
 
+## Where it is going
+
+The platform runs on Django in production. I am currently rebuilding the backend
+on .NET, mainly for the reporting path — the aggregations are the part that
+strains first, and a typed, compiled query layer gives more room to optimise
+them than the ORM does at this shape.
+
+That rewrite is in progress; the Django version is the one serving real users.
+
 ## What I'd change
 
 The reporting layer reads straight from the transactional schema. That is the
 right starting point at this size, but the aggregations are the part that will
 strain first — a materialised reporting view, refreshed on write, would take the
-pressure off before it becomes a problem.
+pressure off before it becomes a problem. It is the main thing driving the .NET
+rebuild above.

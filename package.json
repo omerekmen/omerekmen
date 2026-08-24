@@ -16,7 +16,8 @@
 		"paraglide": "paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide && node scripts/assert-messages-compiled.mjs",
 		"assert:messages": "node scripts/assert-no-raw-keys.mjs",
 		"check:budget": "node scripts/check-budget.mjs",
-		"check:contrast": "node scripts/check-contrast.mjs"
+		"check:contrast": "node scripts/check-contrast.mjs",
+		"og": "python3 scripts/generate-og-images.py"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",

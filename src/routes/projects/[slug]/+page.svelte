@@ -23,6 +23,8 @@
 		keywords: [...meta.stack, ...meta.domains].join(', '),
 		...(meta.links.github ? { codeRepository: meta.links.github } : {})
 	});
+	const ogImage = $derived(`${personal.website}/og/${meta.slug}.jpg`);
+
 	const jsonLdTag = $derived(
 		`<script type="application/ld+json">${JSON.stringify(jsonLd)}${'<'}/script>`
 	);
@@ -114,11 +116,11 @@
 	<meta property="og:url" content="{personal.website}/projects/{meta.slug}" />
 	<meta property="og:title" content="{meta.title} — {personal.name}" />
 	<meta property="og:description" content={meta.summary} />
-	<meta property="og:image" content="{personal.website}/og-image.jpg" />
+	<meta property="og:image" content={ogImage} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="{meta.title} — {personal.name}" />
 	<meta name="twitter:description" content={meta.summary} />
-	<meta name="twitter:image" content="{personal.website}/og-image.jpg" />
+	<meta name="twitter:image" content={ogImage} />
 
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html jsonLdTag}
