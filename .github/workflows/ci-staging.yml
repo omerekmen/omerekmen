@@ -1,0 +1,55 @@
+name: Verify Staging
+
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-${{ github.ref }}
+  cancel-in-progress: true
+
+# Cloudflare Pages deploys this branch itself via its Git integration
+# (staging is configured as the preview branch on the omerekmen project).
+# This workflow only gates quality — Cloudflare runs the build, not lint or
+# typecheck, so without this a broken branch would still deploy.
+#
+# To deploy from here instead, disable the Git integration in Cloudflare and
+# add back a deploy step:
+#   - uses: cloudflare/wrangler-action@v3
+#     with:
+#       apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+#       accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+#       command: pages deploy .svelte-kit/cloudflare --project-name=omerekmen --branch=staging
+
+jobs:
+  verify:
+    name: Lint, Type Check & Staging Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run check
+
+      - name: Build as staging
+        run: bun run build
+        env:
+          PUBLIC_SITE_ENV: staging
+
+      # A staging build that would be indexable is the one failure that quietly
+      # costs real traffic, so assert it rather than trusting the config.
+      - name: Assert staging is excluded from search
+        run: |
+          set -e
+          grep -q 'Disallow: /' .svelte-kit/cloudflare/robots.txt \
+            || { echo "robots.txt does not disallow crawling"; cat .svelte-kit/cloudflare/robots.txt; exit 1; }
+          grep -q 'name="robots" content="noindex' .svelte-kit/cloudflare/index.html \
+            || { echo "homepage is missing the noindex tag"; exit 1; }
+          echo "staging build is correctly excluded from search"

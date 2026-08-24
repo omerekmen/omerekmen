@@ -115,17 +115,31 @@ text a person is meant to read. The Tailwind utility is `text-accent-text`.
 
 ## Branch and deploy
 
-| Branch    | Deploys to            | Workflow                           |
-| --------- | --------------------- | ---------------------------------- |
-| `staging` | staging.omerekmen.com | `.github/workflows/cd-staging.yml` |
-| `master`  | omerekmen.com         | `.github/workflows/cd.yml`         |
+| Branch    | Serves          | Deployed by                      |
+| --------- | --------------- | -------------------------------- |
+| `staging` | the preview URL | Cloudflare Pages Git integration |
+| `master`  | omerekmen.com   | `.github/workflows/cd.yml`       |
 
-Work lands on `staging` first and is reviewed on the real domain before merging
-to `master`. CI runs lint, typecheck and build on every push to either.
+Work lands on `staging` first and is reviewed there before merging to `master`.
+`staging` is configured as the preview branch on the `omerekmen` Pages project,
+so Cloudflare builds and deploys it directly.
 
-Staging builds are marked with `PUBLIC_SITE_ENV=staging`, which emits a
-`noindex` meta tag, serves a `Disallow: /` robots.txt and shows a corner flag —
-so the staging copy never competes with the live site for its own name.
+Cloudflare runs the build but not lint or typecheck, so
+`.github/workflows/ci-staging.yml` gates quality separately and asserts that a
+staging build is genuinely excluded from search.
+
+### Marking a build as staging
+
+A staging copy that gets indexed competes with the live site for its own name,
+so this is enforced from two directions in `vite.config.ts`:
+
+- `PUBLIC_SITE_ENV=staging` — set explicitly by a workflow
+- `CF_PAGES_BRANCH` other than `master` — set by Cloudflare's own builds
+
+Either marks the build as staging, which emits a `noindex` meta tag, serves a
+`Disallow: /` robots.txt and shows a corner flag. Any Cloudflare build off a
+non-production branch falls back to staging, so a preview can never ship as
+indexable production by omission.
 
 Commit messages are plain and descriptive, written in the author's own voice. No tooling
 attribution, no co-author trailers.
