@@ -6,6 +6,7 @@
 	import { cvProjects } from '$lib/data/cv-projects';
 	import { spokenLanguages } from '$lib/data/languages';
 	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import { gsap, SplitText } from '$lib/utils/gsap';
 
 	const degree = education[0];
@@ -118,7 +119,7 @@
 					<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
 					<rect x="6" y="14" width="12" height="8" />
 				</svg>
-				Print
+				{m.cv_print()}
 			</button>
 			<a
 				href="/cv.pdf"
@@ -140,7 +141,7 @@
 					<polyline points="7 10 12 15 17 10" />
 					<line x1="12" y1="15" x2="12" y2="3" />
 				</svg>
-				Download PDF
+				{m.cv_download()}
 			</a>
 		</div>
 
@@ -154,7 +155,7 @@
 				{personal.name.toUpperCase()}
 			</h1>
 
-			<p class="mt-3 text-lg text-text-secondary">{personal.title}</p>
+			<p class="mt-3 text-lg text-text-secondary">{m.professional_title()}</p>
 
 			<!-- Contact row -->
 			<div
@@ -176,7 +177,7 @@
 							r="3"
 						/>
 					</svg>
-					{personal.location}
+					{m.location()}
 				</span>
 				<a
 					href="mailto:{personal.email}"
@@ -272,7 +273,10 @@
 
 		<!-- ═══ PROFILE ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Profile</h2>
+			<h2 class="section-title">{m.cv_profile()}</h2>
+			{#if getLocale() !== 'en'}
+				<p class="english-note print:hidden">{m.cv_english_only()}</p>
+			{/if}
 			<p class="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
 				{personal.summary}
 			</p>
@@ -280,7 +284,7 @@
 
 		<!-- ═══ TECHNICAL SKILLS ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Technical Skills</h2>
+			<h2 class="section-title">{m.cv_skills()}</h2>
 			<div class="mt-6 flex flex-col gap-5">
 				{#each skillGroups as group (group.categoryKey)}
 					<div class="skill-group">
@@ -301,7 +305,7 @@
 
 				<div class="skill-group">
 					<h3 class="font-mono text-xs font-semibold tracking-wider text-accent-text uppercase">
-						Project Experience
+						{m.cv_project_experience()}
 					</h3>
 					<div class="mt-2.5 flex flex-wrap gap-2">
 						{#each projectExperienceSkills as item (item)}
@@ -318,7 +322,7 @@
 
 		<!-- ═══ EXPERIENCE ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Experience</h2>
+			<h2 class="section-title">{m.cv_experience()}</h2>
 			<div class="mt-6 flex flex-col gap-10">
 				{#each experiences as job (job.id)}
 					<div class="relative border-l-2 border-accent/20 pl-6">
@@ -330,7 +334,7 @@
 									<span
 										class="ml-2 rounded-full bg-accent/10 px-2 py-0.5 align-middle font-mono text-[10px] font-semibold tracking-wider text-accent-text uppercase"
 									>
-										Current
+										{m.cv_current()}
 									</span>
 								{/if}
 							</h3>
@@ -359,7 +363,7 @@
 
 		<!-- ═══ PROJECTS ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Projects</h2>
+			<h2 class="section-title">{m.cv_projects()}</h2>
 			<div class="mt-6 flex flex-col gap-6">
 				{#each cvProjects as project (project.name)}
 					<div
@@ -410,7 +414,7 @@
 
 		<!-- ═══ EDUCATION ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Education</h2>
+			<h2 class="section-title">{m.cv_education()}</h2>
 			<div class="mt-6 border-l-2 border-accent/20 pl-6">
 				<div class="relative">
 					<div class="timeline-dot"></div>
@@ -435,7 +439,7 @@
 
 		<!-- ═══ TRAINING & CERTIFICATIONS ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Training &amp; Certifications</h2>
+			<h2 class="section-title">{m.cv_certifications()}</h2>
 			<div class="mt-5 flex flex-col gap-5">
 				{#each certificates as cert (cert.id)}
 					<div>
@@ -465,7 +469,7 @@
 
 		<!-- ═══ LANGUAGES ═══ -->
 		<section class="cv-section mt-12 mb-16">
-			<h2 class="section-title">Languages</h2>
+			<h2 class="section-title">{m.cv_languages()}</h2>
 			<div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
 				{#each spokenLanguages as lang (lang.name)}
 					<div class="rounded-xl border border-border-subtle bg-bg-secondary/30 p-4">
@@ -489,6 +493,18 @@
 	/* ── Name ── */
 	.cv-name {
 		font-family: 'Bagel Fat One', sans-serif;
+	}
+
+	.english-note {
+		margin-top: 0.9rem;
+		display: inline-block;
+		border: 1px solid var(--color-border-subtle);
+		border-radius: 999px;
+		background: var(--color-bg-secondary);
+		padding: 0.3rem 0.8rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 11px;
+		color: var(--color-text-muted);
 	}
 
 	/* ── Section titles ── */

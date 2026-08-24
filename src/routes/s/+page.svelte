@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { personal } from '$lib/data/personal';
+	import * as m from '$lib/paraglide/messages.js';
+	import { localizeHref } from '$lib/paraglide/runtime';
 	import { gsap, SplitText } from '$lib/utils/gsap';
 
 	interface LinkItem {
@@ -10,11 +12,11 @@
 	}
 
 	const links: LinkItem[] = [
-		{ label: 'Portfolio', href: '/', icon: 'globe', external: false },
+		{ label: 'Portfolio', href: localizeHref('/'), icon: 'globe', external: false },
 		{ label: 'GitHub', href: personal.github, icon: 'github', external: true },
 		{ label: 'LinkedIn', href: personal.linkedin, icon: 'linkedin', external: true },
 		{ label: 'Email', href: `mailto:${personal.email}`, icon: 'mail', external: true },
-		{ label: 'CV', href: '/cv', icon: 'document', external: false }
+		{ label: 'CV', href: localizeHref('/cv'), icon: 'document', external: false }
 	];
 
 	let pageEl: HTMLElement | undefined = $state();
@@ -124,7 +126,7 @@
 			class="-mt-3 text-center text-sm text-text-muted sm:text-base"
 			style="opacity: 0;"
 		>
-			{personal.title}
+			{m.professional_title()}
 		</p>
 
 		<!-- Location -->
@@ -146,7 +148,7 @@
 				<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
 				<circle cx="12" cy="10" r="3" />
 			</svg>
-			<span>{personal.location}</span>
+			<span>{m.location()}</span>
 		</div>
 
 		<!-- Links -->

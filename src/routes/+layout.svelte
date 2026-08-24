@@ -146,7 +146,7 @@
 					<span
 						class="hidden text-[11px] font-extrabold tracking-[0.18em] text-text-muted uppercase sm:block"
 					>
-						Software Engineering & <br />Data Engineering
+						{m.professional_title()}
 					</span>
 
 					<nav class="ml-auto flex items-center gap-5 pr-14" aria-label="Primary">
