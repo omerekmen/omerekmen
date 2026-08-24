@@ -321,7 +321,7 @@
 						</span>
 						<span class="text-accent-text/30">--</span>
 					{:else}
-						<span class="font-mono text-xs font-medium tracking-wider text-text-muted/60 uppercase">
+						<span class="font-mono text-xs font-medium tracking-wider text-text-muted uppercase">
 							{item.text}
 						</span>
 						<span class="text-accent-text/20">·</span>
@@ -339,7 +339,7 @@
 		aria-hidden="true"
 	>
 		<div class="flex flex-col items-center gap-2">
-			<span class="font-mono text-[10px] tracking-widest text-text-muted/60 uppercase">Scroll</span>
+			<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase">Scroll</span>
 			<div class="scroll-line h-8 w-px"></div>
 		</div>
 	</div>

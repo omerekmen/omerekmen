@@ -144,7 +144,7 @@
 						{personal.name.toUpperCase()}
 					</a>
 					<span
-						class="hidden text-[11px] font-extrabold tracking-[0.18em] text-text-muted/90 uppercase sm:block"
+						class="hidden text-[11px] font-extrabold tracking-[0.18em] text-text-muted uppercase sm:block"
 					>
 						Software Engineering & <br />Data Engineering
 					</span>

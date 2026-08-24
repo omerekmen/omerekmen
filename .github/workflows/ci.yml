@@ -28,6 +28,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run lint
       - run: bun run check
+      - run: bun run check:contrast
       - run: bun run build
 
       - name: Assert no untranslated keys reached the HTML

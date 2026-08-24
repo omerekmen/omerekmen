@@ -40,12 +40,12 @@
 
 	.production {
 		background: rgba(109, 184, 138, 0.12);
-		color: var(--color-completed);
+		color: var(--color-completed-text);
 	}
 
 	.in-progress {
 		background: rgba(224, 164, 88, 0.12);
-		color: var(--color-ongoing);
+		color: var(--color-ongoing-text);
 	}
 
 	.lab {

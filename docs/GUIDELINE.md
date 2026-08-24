@@ -123,6 +123,19 @@ grid. On light surfaces it sits at roughly 1.8:1, so it must never carry text.
 surface, identical to `--color-accent` in dark. Use it for any accent-coloured
 text a person is meant to read. The Tailwind utility is `text-accent-text`.
 
+The same split applies to the status hues: `--color-completed` and
+`--color-ongoing` fill the badges, `--color-completed-text` and
+`--color-ongoing-text` carry their labels. The fill colours measure 1.6:1 to
+2.0:1 against their own tinted pill, so they can never be the text.
+
+`bun run check:contrast` asserts every text/surface pair in both themes,
+including badge text over its composited pill, and runs in both workflows. It
+reads the tokens directly rather than needing a browser, so a regression is
+caught in a second.
+
+Avoid opacity modifiers on text tokens (`text-text-muted/60`). They move a
+colour the check has verified to one it has not.
+
 ## Branch and deploy
 
 | Branch    | Serves          | Verified by                        |

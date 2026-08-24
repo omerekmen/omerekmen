@@ -248,7 +248,7 @@
 		<!-- Footer -->
 		<p
 			bind:this={footerEl}
-			class="mt-4 text-center text-[11px] text-text-muted/60"
+			class="mt-4 text-center text-[11px] text-text-muted"
 			style="opacity: 0;"
 		>
 			&copy; 2026 {personal.name}

@@ -15,7 +15,8 @@
 		"gen": "wrangler types",
 		"paraglide": "paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide",
 		"assert:messages": "node scripts/assert-no-raw-keys.mjs",
-		"check:budget": "node scripts/check-budget.mjs"
+		"check:budget": "node scripts/check-budget.mjs",
+		"check:contrast": "node scripts/check-contrast.mjs"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",

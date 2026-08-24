@@ -32,7 +32,7 @@
 	--color-text: #0a0a0a;
 	--color-text-rgb: 10, 10, 10;
 	--color-text-secondary: #2a2a2a;
-	--color-text-muted: #6a6a6a;
+	--color-text-muted: #606060;
 	--color-border: #c8c8c0;
 	--color-border-subtle: #d8d8d0;
 	--color-accent: #7cb67a;
@@ -41,8 +41,12 @@
 	/* Readable accent for text. The decorative accent above sits at 1.8:1 on
 	   light surfaces; this clears 4.5:1 on all three. */
 	--color-accent-text: #3d6b3f;
+	/* Badge fills stay these hues; the text sits on top of a 12% tint of them,
+	   where the fill colours themselves measure only 1.6:1 to 2.0:1. */
 	--color-ongoing: #e0a458;
 	--color-completed: #6db88a;
+	--color-ongoing-text: #7c521d;
+	--color-completed-text: #186737;
 	--color-bg-inverted: #050505;
 	--color-bg-inverted-rgb: 5, 5, 5;
 	--color-text-inverted: #f0f0f0;
@@ -55,7 +59,7 @@
 	--color-text: #f0f0f0;
 	--color-text-rgb: 240, 240, 240;
 	--color-text-secondary: #c0c0c0;
-	--color-text-muted: #707070;
+	--color-text-muted: #7f7f7f;
 	--color-border: #1a1a1a;
 	--color-border-subtle: #111111;
 	--color-accent: #b8d8b0;
@@ -64,6 +68,9 @@
 	--color-accent-text: #b8d8b0;
 	--color-ongoing: #f0d08c;
 	--color-completed: #90d4a8;
+	/* Already 9:1+ on dark surfaces — text and fill can share a value. */
+	--color-ongoing-text: #f0d08c;
+	--color-completed-text: #90d4a8;
 	--color-bg-inverted: #f5f5f0;
 	--color-bg-inverted-rgb: 245, 245, 240;
 	--color-text-inverted: #0a0a0a;
@@ -86,6 +93,8 @@
 	--color-accent-text: var(--color-accent-text);
 	--color-ongoing: var(--color-ongoing);
 	--color-completed: var(--color-completed);
+	--color-ongoing-text: var(--color-ongoing-text);
+	--color-completed-text: var(--color-completed-text);
 	--color-bg-inverted: var(--color-bg-inverted);
 	--color-text-inverted: var(--color-text-inverted);
 }
