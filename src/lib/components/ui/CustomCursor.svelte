@@ -13,7 +13,11 @@
 	$effect(() => {
 		if (!dotEl || !ringEl) return;
 
-		document.documentElement.classList.add('custom-cursor-active');
+		// A pointer-less page is worse than a default pointer, so bail out where a
+		// custom cursor makes no sense and only hide the native one once ours has
+		// actually been positioned (see onMouseMove).
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
 		// Center both elements on their own center using percentage-based offset
 		// This stays correct even when width/height change dynamically
@@ -31,6 +35,7 @@
 				isVisible = true;
 				gsap.set(dotEl!, { opacity: 1 });
 				gsap.set(ringEl!, { opacity: 1 });
+				document.documentElement.classList.add('custom-cursor-active');
 			}
 
 			dotX(e.clientX);

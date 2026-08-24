@@ -3,7 +3,7 @@
 	import { gsap, SplitText } from '$lib/utils/gsap';
 	import { personal } from '$lib/data/personal';
 	import { skillGroups } from '$lib/data/skills';
-	import NeuralNetwork3D from '$lib/components/visualizations/NeuralNetwork3D.svelte';
+	import NetworkBackground from '$lib/components/visualizations/NetworkBackground.svelte';
 
 	// Safe dynamic message lookup
 	function msg(key: string): string {
@@ -123,7 +123,7 @@
 </script>
 
 <section bind:this={sectionEl} id="top" class="relative flex min-h-screen flex-col overflow-hidden">
-	<NeuralNetwork3D />
+	<NetworkBackground />
 
 	<!-- Background watermark text — opposing scroll directions -->
 	<div

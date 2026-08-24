@@ -90,7 +90,7 @@
 		property="og:description"
 		content="All links for {personal.name} — Portfolio, GitHub, LinkedIn, Email, and CV."
 	/>
-	<meta property="og:image" content="https://www.omerekmen.com/og-image.png" />
+	<meta property="og:image" content="https://www.omerekmen.com/og-image.jpg" />
 	<meta name="twitter:card" content="summary" />
 </svelte:head>
 

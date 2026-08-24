@@ -53,7 +53,7 @@
 	<meta property="og:url" content="{personal.website}/" />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />
-	<meta property="og:image" content="{personal.website}/og-image.png" />
+	<meta property="og:image" content="{personal.website}/og-image.jpg" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
 	<meta property="og:site_name" content={personal.name} />
@@ -63,7 +63,7 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<meta name="twitter:image" content="{personal.website}/og-image.png" />
+	<meta name="twitter:image" content="{personal.website}/og-image.jpg" />
 
 	<!-- Structured Data (JSON-LD) -->
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->

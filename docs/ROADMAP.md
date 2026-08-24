@@ -1,5 +1,20 @@
 # omerekmen.com — Rebuild Roadmap
 
+## Status
+
+| Phase                     | State                                     |
+| ------------------------- | ----------------------------------------- |
+| 00 — Truth pass           | Done                                      |
+| 01 — Foundation           | Done                                      |
+| 02 — Content pipeline     | Not started                               |
+| 03 — Case studies         | Blocked on input (NDA scope, screenshots) |
+| 04 — Three directions     | Not started                               |
+| 05 — Positioning & polish | Not started                               |
+| 06 — Lab projects         | Optional                                  |
+
+Payload after phase 01: client JS 1.02 MB → 328 KB raw, fonts 742 KB → 115 KB,
+OG image 1.8 MB → 106 KB. Roughly 3.1 MB removed from a cold visit.
+
 ## Decisions locked
 
 | Area     | Decision                                                                 |
@@ -87,7 +102,7 @@ in structured data.
 
 Ordered by value per hour. Every phase ends deployable.
 
-### 00 — Truth pass (do first)
+### 00 — Truth pass (done)
 
 - Remove the GPA everywhere it renders
 - Headline → "Software Engineering & Data Engineering", site-wide including `/s` and `/cv`
@@ -96,7 +111,7 @@ Ordered by value per hour. Every phase ends deployable.
 - Rewrite skills taxonomy around Fabric, ADF, Azure SQL, Kafka, Spring, .NET 8
 - Single source of truth for email and phone; fix `llms.txt`, JSON-LD and README
 
-### 01 — Foundation
+### 01 — Foundation (done)
 
 - Delete 1,487 lines of dead code
 - Vendor inlang plugins; remove the build-time CDN dependency

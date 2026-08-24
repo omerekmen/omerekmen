@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { onNavigate, afterNavigate } from '$app/navigation';
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages.js';
 	import { initTheme } from '$lib/utils/theme.svelte';
 	import { personal } from '$lib/data/personal';
 	import { gsap, ScrollSmoother, ScrollTrigger } from '$lib/utils/gsap';
@@ -13,6 +14,12 @@
 	import './layout.css';
 
 	let { children } = $props();
+
+	// The links page is a standalone card and the CV is a document — neither
+	// wants a full-viewport contact footer appended to it.
+	const routeId = $derived(page.route.id ?? '');
+	const showHeader = $derived(routeId !== '/s');
+	const showFooter = $derived(routeId !== '/s' && routeId !== '/cv');
 	let headerEl: HTMLElement | undefined = $state();
 	let wrapperEl: HTMLDivElement | undefined = $state();
 	let contentEl: HTMLDivElement | undefined = $state();
@@ -68,7 +75,7 @@
 	});
 
 	$effect(() => {
-		if (!headerEl) return;
+		if (!showHeader || !headerEl) return;
 
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -102,27 +109,37 @@
 <div bind:this={wrapperEl} id="smooth-wrapper">
 	<div bind:this={contentEl} id="smooth-content">
 		<main>
-			<header
-				bind:this={headerEl}
-				class="absolute top-0 right-0 left-0 z-40 flex items-center gap-4 px-6 pt-6 opacity-0"
-			>
-				<a
-					href="/"
-					class="header-name text-xl tracking-wide text-text transition-colors duration-200 hover:text-accent"
+			{#if showHeader}
+				<header
+					bind:this={headerEl}
+					class="absolute top-0 right-0 left-0 z-40 flex items-start gap-4 px-6 pt-6 opacity-0"
 				>
-					{personal.name.toUpperCase()}
-				</a>
-				<span
-					class="hidden text-[11px] font-extrabold tracking-[0.18em] text-text-muted/90 uppercase sm:block"
-				>
-					Software Engineering & <br />Data Engineering
-				</span>
-			</header>
+					<a
+						href={localizeHref('/')}
+						class="header-name text-xl tracking-wide text-text transition-colors duration-200 hover:text-accent"
+					>
+						{personal.name.toUpperCase()}
+					</a>
+					<span
+						class="hidden text-[11px] font-extrabold tracking-[0.18em] text-text-muted/90 uppercase sm:block"
+					>
+						Software Engineering & <br />Data Engineering
+					</span>
+
+					<nav class="ml-auto flex items-center gap-5 pr-14" aria-label="Primary">
+						<a href={localizeHref('/#work')} class="nav-link">{m.nav_work()}</a>
+						<a href={localizeHref('/cv')} class="nav-link">{m.nav_cv()}</a>
+						<a href={localizeHref('/s')} class="nav-link">{m.nav_links()}</a>
+					</nav>
+				</header>
+			{/if}
 
 			{@render children()}
 		</main>
 
-		<ContactFooter />
+		{#if showFooter}
+			<ContactFooter />
+		{/if}
 	</div>
 </div>
 
@@ -148,6 +165,21 @@
 </div>
 
 <style>
+	.nav-link {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-text-muted);
+		transition: color 0.2s ease;
+	}
+
+	.nav-link:hover,
+	.nav-link:focus-visible {
+		color: var(--color-accent);
+	}
+
 	.header-name {
 		font-family: 'Bagel Fat One', sans-serif;
 	}

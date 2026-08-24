@@ -257,7 +257,7 @@
 		<button
 			bind:this={backBtnEl}
 			onclick={navigateBack}
-			class="fixed top-6 left-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-border-subtle bg-bg/80 backdrop-blur-md transition-all duration-200 hover:border-accent/40 hover:bg-bg-secondary"
+			class="fixed top-24 left-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-border-subtle bg-bg/80 backdrop-blur-md transition-all duration-200 hover:border-accent/40 hover:bg-bg-secondary"
 			aria-label="Go back"
 		>
 			<svg

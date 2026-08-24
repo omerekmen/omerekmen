@@ -192,6 +192,7 @@
 </script>
 
 <section
+	id="work"
 	bind:this={sectionEl}
 	class="relative"
 	class:reduced-motion={reducedMotion}

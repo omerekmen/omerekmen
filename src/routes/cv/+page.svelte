@@ -93,7 +93,7 @@
 		property="og:description"
 		content="{personal.title} — production data pipelines and enterprise backend systems."
 	/>
-	<meta property="og:image" content="{personal.website}/og-image.png" />
+	<meta property="og:image" content="{personal.website}/og-image.jpg" />
 	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
