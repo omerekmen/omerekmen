@@ -9,7 +9,7 @@
 | 02 — Content pipeline     | Done                                      |
 | 03 — Case studies         | Blocked on input (NDA scope, screenshots) |
 | 04 — Three directions     | Direction A chosen                        |
-| 05 — Positioning & polish | Not started                               |
+| 05 — Positioning & polish | Geo notice + CV done; perf/a11y pending   |
 | 06 — Lab projects         | Optional                                  |
 
 Payload after phase 01: client JS 1.02 MB → 328 KB raw, fonts 742 KB → 115 KB,

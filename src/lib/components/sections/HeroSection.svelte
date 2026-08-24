@@ -3,6 +3,8 @@
 	import { gsap, SplitText } from '$lib/utils/gsap';
 	import { personal } from '$lib/data/personal';
 	import { skillGroups } from '$lib/data/skills';
+	import { showRelocationNotice, resolveCountry } from '$lib/utils/geo.svelte';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import NetworkBackground from '$lib/components/visualizations/NetworkBackground.svelte';
 
 	// Static map, not a dynamic m[key] lookup. Indexing the messages namespace
@@ -35,6 +37,14 @@
 	let watermarkDataEl: HTMLDivElement | undefined = $state();
 	let watermarkCodeEl: HTMLDivElement | undefined = $state();
 	let scrollIndicatorEl: HTMLDivElement | undefined = $state();
+
+	// The notice is hidden by default and revealed only for visitors outside
+	// Turkey, and never on the Turkish locale. See docs/ROADMAP.md.
+	$effect(() => {
+		resolveCountry();
+	});
+
+	const showRelocation = $derived(getLocale() !== 'tr' && showRelocationNotice());
 
 	// Hero animation
 	$effect(() => {
@@ -178,6 +188,22 @@
 				{m.hero_open_to()}
 			</p>
 
+			{#if showRelocation}
+				<p class="relocation">
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.8"
+						aria-hidden="true"
+					>
+						<circle cx="12" cy="12" r="9" />
+						<path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z" />
+					</svg>
+					{m.work_auth_short()}
+				</p>
+			{/if}
+
 			<!-- Name -->
 			<h1
 				bind:this={nameEl}
@@ -320,6 +346,42 @@
 </section>
 
 <style>
+	.relocation {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.6rem;
+		border: 1px solid rgba(var(--color-accent-rgb), 0.35);
+		border-radius: 999px;
+		background: rgba(var(--color-accent-rgb), 0.08);
+		padding: 0.25rem 0.7rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 10px;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-accent-text);
+		animation: notice-in 0.45s ease-out both;
+	}
+
+	.relocation svg {
+		width: 11px;
+		height: 11px;
+	}
+
+	@keyframes notice-in {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.relocation {
+			animation: none;
+		}
+	}
+
 	.marquee-track {
 		animation: marquee 40s linear infinite;
 		width: max-content;

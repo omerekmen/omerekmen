@@ -147,6 +147,19 @@ indexable production by omission.
 Commit messages are plain and descriptive, written in the author's own voice. No tooling
 attribution, no co-author trailers.
 
+## The one dynamic route
+
+Everything is prerendered except `/api/geo`, which runs on the edge to report
+the visitor's country. The relocation notice in the hero uses it to stay hidden
+inside Turkey.
+
+The notice is hidden by default and revealed only once a country comes back, so
+it cannot flash before the check completes, and a failed lookup leaves it
+hidden. It is also hidden on the `tr` locale regardless of country.
+
+Geo-gating is a soft signal, not a privacy control — a VPN, a cached copy or a
+link preview generated elsewhere all route around it. See docs/ROADMAP.md.
+
 ## Commands
 
 ```
