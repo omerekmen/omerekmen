@@ -6,9 +6,9 @@
 | ------------------------- | ----------------------------------------- |
 | 00 — Truth pass           | Done                                      |
 | 01 — Foundation           | Done                                      |
-| 02 — Content pipeline     | Not started                               |
+| 02 — Content pipeline     | Done                                      |
 | 03 — Case studies         | Blocked on input (NDA scope, screenshots) |
-| 04 — Three directions     | Not started                               |
+| 04 — Three directions     | Built — awaiting your pick                |
 | 05 — Positioning & polish | Not started                               |
 | 06 — Lab projects         | Optional                                  |
 
@@ -133,10 +133,15 @@ Ordered by value per hour. Every phase ends deployable.
 Four production projects, two in-progress, with diagrams and screenshots. Slowest phase,
 and the one that wins interviews.
 
-### 04 — Three directions → pick one
+### 04 — Three directions → pick one (built)
 
-Built as real routes `/lab/a`, `/lab/b`, `/lab/c` (all `noindex`), rendering the same real
-content and case studies from phase 03 so the comparison is honest.
+Live at `/lab` (all `noindex`, disallowed in robots.txt). Each renders the same
+real content — same hero copy, same three projects, same case study — from
+`src/routes/lab/sample.ts`, so the comparison is of design and nothing else.
+
+A and B commit to a single dark treatment; C carries both light and dark. C is
+the only one that pulls a webfont (Newsreader, via Google Fonts) — if it wins,
+that gets self-hosted and subset like the others.
 
 - **A — Refined Kinetic.** Current identity executed properly. Display font and scroll
   choreography stay; real imagery, fixed contrast, working reduced-motion path, Canvas 2D.

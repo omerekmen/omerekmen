@@ -19,8 +19,11 @@
 	// wants a full-viewport contact footer appended to it.
 	const routeId = $derived(page.route.id ?? '');
 	const deLocalizedPath = $derived(deLocalizeUrl(page.url).pathname);
-	const showHeader = $derived(routeId !== '/s');
-	const showFooter = $derived(routeId !== '/s' && routeId !== '/cv');
+
+	// Design explorations own their entire visual language, chrome included.
+	const isLab = $derived(routeId.startsWith('/lab'));
+	const showHeader = $derived(!isLab && routeId !== '/s');
+	const showFooter = $derived(!isLab && routeId !== '/s' && routeId !== '/cv');
 	let headerEl: HTMLElement | undefined = $state();
 	let wrapperEl: HTMLDivElement | undefined = $state();
 	let contentEl: HTMLDivElement | undefined = $state();
@@ -152,20 +155,22 @@
 	</div>
 </div>
 
-<!-- Fixed elements — outside smooth wrapper so they don't get smoothed -->
-<div
-	class="fixed top-6 right-6 z-50 rounded-full border border-border-subtle/40 bg-bg/60 backdrop-blur-xl"
->
-	<ThemeToggle />
-</div>
+{#if !isLab}
+	<!-- Fixed elements — outside smooth wrapper so they don't get smoothed -->
+	<div
+		class="fixed top-6 right-6 z-50 rounded-full border border-border-subtle/40 bg-bg/60 backdrop-blur-xl"
+	>
+		<ThemeToggle />
+	</div>
 
-<div
-	class="fixed right-6 bottom-6 z-50 rounded-full border border-border-subtle/40 bg-bg/60 backdrop-blur-xl"
->
-	<LanguageSwitcher direction="up" />
-</div>
+	<div
+		class="fixed right-6 bottom-6 z-50 rounded-full border border-border-subtle/40 bg-bg/60 backdrop-blur-xl"
+	>
+		<LanguageSwitcher direction="up" />
+	</div>
 
-<CustomCursor />
+	<CustomCursor />
+{/if}
 
 <div style="display:none">
 	{#each locales as locale (locale)}
