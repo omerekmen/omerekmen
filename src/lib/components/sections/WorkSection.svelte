@@ -2,9 +2,10 @@
 	import { gsap } from '$lib/utils/gsap';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
 	import { featuredProjects } from '$lib/content/projects';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import { parseMetric, formatMetric } from '$lib/utils/metric';
 
-	const projects = featuredProjects();
+	const projects = featuredProjects(getLocale());
 	const projectCount = projects.length;
 	const sectionHeight = `${180 + projectCount * 190}vh`;
 

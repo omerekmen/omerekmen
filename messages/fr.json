@@ -40,6 +40,7 @@
 	"project_spacex_h2": "Pipeline complet : collecte API, nettoyage, ingénierie des caractéristiques, validation croisée",
 	"project_spacex_h3": "Cartes et graphiques interactifs avec Folium et Plotly",
 	"project_spacex_title": "Prédiction d'atterrissage SpaceX Falcon 9",
+	"project_untranslated": "Cette étude de cas n'a pas encore été traduite et s'affiche en anglais.",
 	"projects_heading": "Projets",
 	"skills_data": "Données et analytique",
 	"skills_dotnet": ".NET",

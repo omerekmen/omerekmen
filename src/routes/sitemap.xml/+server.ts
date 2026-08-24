@@ -18,7 +18,7 @@ export function GET() {
 		{ path: '/projects', priority: '0.9', changefreq: 'weekly' },
 		{ path: '/cv', priority: '0.9', changefreq: 'monthly' },
 		{ path: '/s', priority: '0.6', changefreq: 'monthly' },
-		...projectMeta.map((p) => ({
+		...projectMeta('en').map((p) => ({
 			path: `/projects/${p.slug}`,
 			priority: p.track === 'archive' ? '0.5' : '0.8',
 			changefreq: 'monthly'

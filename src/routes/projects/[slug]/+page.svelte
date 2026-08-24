@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { personal } from '$lib/data/personal';
+	import * as m from '$lib/paraglide/messages.js';
 	import { getProject } from '$lib/content/projects';
 	import { gsap } from '$lib/utils/gsap';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
@@ -7,7 +8,7 @@
 	let { data } = $props();
 
 	const meta = $derived(data.meta);
-	const entry = $derived(getProject(meta.slug));
+	const entry = $derived(getProject(meta.slug, data.locale));
 	const Body = $derived(entry?.body ?? null);
 	const number = $derived(String(data.index).padStart(2, '0'));
 
@@ -199,9 +200,12 @@
 
 		<!-- ═══ SUMMARY ═══ -->
 		<section class="reveal border-b border-border-subtle px-6 py-14 sm:px-10 lg:px-16">
-			<p class="mx-auto max-w-4xl text-lg leading-relaxed text-text-secondary">
-				{meta.summary}
-			</p>
+			<div class="mx-auto max-w-4xl">
+				{#if data.untranslated}
+					<p class="untranslated">{m.project_untranslated()}</p>
+				{/if}
+				<p class="text-lg leading-relaxed text-text-secondary">{meta.summary}</p>
+			</div>
 		</section>
 
 		<!-- ═══ AT A GLANCE ═══ -->
@@ -312,6 +316,18 @@
 {/key}
 
 <style>
+	.untranslated {
+		display: inline-block;
+		margin-bottom: 1.25rem;
+		border: 1px solid var(--color-border-subtle);
+		border-radius: 999px;
+		background: var(--color-bg-secondary);
+		padding: 0.3rem 0.8rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 11px;
+		color: var(--color-text-muted);
+	}
+
 	/* ── Hero marquee ── */
 	.title-row-wrapper {
 		display: flex;

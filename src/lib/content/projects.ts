@@ -23,6 +23,25 @@ const TRACK_WEIGHT: Record<ProjectTrack, number> = {
 
 const modules = import.meta.glob<MarkdownModule>('/src/content/projects/*.md', { eager: true });
 
+const LOCALES = ['en', 'tr', 'fr', 'de', 'es'] as const;
+type Locale = (typeof LOCALES)[number];
+
+/**
+ * Splits "telco-crm-platform.tr" into its slug and locale.
+ *
+ * A file with no locale suffix is the English original and the fallback for
+ * every other language, so a project is never missing — it is either
+ * translated or shown in English.
+ */
+function parseFilename(file: string): { slug: string; locale: Locale } {
+	const base = file.split('/').pop()!.replace(/\.md$/, '');
+	const match = /^(.+)\.([a-z]{2})$/.exec(base);
+	if (match && (LOCALES as readonly string[]).includes(match[2])) {
+		return { slug: match[1], locale: match[2] as Locale };
+	}
+	return { slug: base, locale: 'en' };
+}
+
 function fail(file: string, message: string): never {
 	throw new Error(`Invalid project frontmatter in ${file}: ${message}`);
 }
@@ -71,7 +90,7 @@ function parse(file: string, module: MarkdownModule): ProjectEntry {
 		fail(file, `"track" must be one of ${TRACKS.join(', ')} (got "${track}")`);
 	}
 
-	const slugFromPath = file.split('/').pop()!.replace(/\.md$/, '');
+	const { slug: slugFromPath } = parseFilename(file);
 	const slug = typeof data.slug === 'string' && data.slug ? data.slug : slugFromPath;
 	if (slug !== slugFromPath) {
 		fail(file, `"slug" (${slug}) must match the filename (${slugFromPath})`);
@@ -109,45 +128,92 @@ function parse(file: string, module: MarkdownModule): ProjectEntry {
 	return { meta, body: module.default ?? null, hasBody: data.hasBody !== false };
 }
 
-const entries: ProjectEntry[] = Object.entries(modules)
-	.map(([file, module]) => parse(file, module))
-	.sort((a, b) => {
+/** Every parsed file, keyed by slug then locale. */
+const byLocale = new Map<string, Map<Locale, ProjectEntry>>();
+
+for (const [file, module] of Object.entries(modules)) {
+	const { slug, locale } = parseFilename(file);
+	const entry = parse(file, module);
+	if (!byLocale.has(slug)) byLocale.set(slug, new Map());
+	byLocale.get(slug)!.set(locale, entry);
+}
+
+for (const [slug, locales] of byLocale) {
+	if (!locales.has('en')) {
+		throw new Error(
+			`Project "${slug}" has translations but no English original. ` +
+				`Every project needs ${slug}.md as its fallback.`
+		);
+	}
+}
+
+function sortEntries(list: ProjectEntry[]): ProjectEntry[] {
+	return [...list].sort((a, b) => {
 		if (a.meta.featured !== b.meta.featured) return a.meta.featured ? -1 : 1;
 		const trackDiff = TRACK_WEIGHT[a.meta.track] - TRACK_WEIGHT[b.meta.track];
 		if (trackDiff !== 0) return trackDiff;
 		if (a.meta.order !== b.meta.order) return b.meta.order - a.meta.order;
 		return a.meta.title.localeCompare(b.meta.title);
 	});
+}
 
-const bySlug = new Map(entries.map((e) => [e.meta.slug, e]));
+function normalise(locale: string): Locale {
+	return (LOCALES as readonly string[]).includes(locale) ? (locale as Locale) : 'en';
+}
 
-export const allProjects: ProjectEntry[] = entries;
-export const projectMeta: ProjectFrontmatter[] = entries.map((e) => e.meta);
+/** The requested language, or the English original when it is not translated. */
+function resolve(slug: string, locale: string): ProjectEntry | undefined {
+	const locales = byLocale.get(slug);
+	if (!locales) return undefined;
+	return locales.get(normalise(locale)) ?? locales.get('en');
+}
 
-export function getProject(slug: string): ProjectEntry | undefined {
-	return bySlug.get(slug);
+const slugs = [...byLocale.keys()];
+
+export function allProjects(locale = 'en'): ProjectEntry[] {
+	return sortEntries(slugs.map((slug) => resolve(slug, locale)!).filter(Boolean));
+}
+
+export function projectMeta(locale = 'en'): ProjectFrontmatter[] {
+	return allProjects(locale).map((e) => e.meta);
+}
+
+export function getProject(slug: string, locale = 'en'): ProjectEntry | undefined {
+	return resolve(slug, locale);
+}
+
+/** True when this project is shown in English because it lacks a translation. */
+export function isUntranslated(slug: string, locale: string): boolean {
+	const locales = byLocale.get(slug);
+	if (!locales) return false;
+	const wanted = normalise(locale);
+	return wanted !== 'en' && !locales.has(wanted);
 }
 
 /** Everything except archived work — what the homepage carousel shows. */
-export function featuredProjects(): ProjectFrontmatter[] {
-	return projectMeta.filter((p) => p.track !== 'archive');
+export function featuredProjects(locale = 'en'): ProjectFrontmatter[] {
+	return projectMeta(locale).filter((p) => p.track !== 'archive');
 }
 
-export function adjacentProjects(slug: string) {
-	const index = entries.findIndex((e) => e.meta.slug === slug);
+export function adjacentProjects(slug: string, locale = 'en') {
+	const list = allProjects(locale);
+	const index = list.findIndex((e) => e.meta.slug === slug);
 	if (index === -1) return { next: null, previous: null, index: 0 };
-	const count = entries.length;
+	const count = list.length;
 	return {
-		next: entries[(index + 1) % count].meta,
-		previous: entries[(index - 1 + count) % count].meta,
+		next: list[(index + 1) % count].meta,
+		previous: list[(index - 1 + count) % count].meta,
 		index: index + 1
 	};
 }
 
-export function allDomains(): string[] {
-	return [...new Set(projectMeta.flatMap((p) => p.domains))].sort();
+export function allDomains(locale = 'en'): string[] {
+	return [...new Set(projectMeta(locale).flatMap((p) => p.domains))].sort();
 }
 
-export function allTracks(): ProjectTrack[] {
-	return TRACKS.filter((t) => projectMeta.some((p) => p.track === t));
+export function allTracks(locale = 'en'): ProjectTrack[] {
+	return TRACKS.filter((t) => projectMeta(locale).some((p) => p.track === t));
 }
+
+/** Slugs for prerendering; identical across locales. */
+export const projectSlugs: string[] = slugs;

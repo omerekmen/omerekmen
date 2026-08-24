@@ -13,7 +13,7 @@
 		"lint": "bun run paraglide && prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"gen": "wrangler types",
-		"paraglide": "paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide",
+		"paraglide": "paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide && node scripts/assert-messages-compiled.mjs",
 		"assert:messages": "node scripts/assert-no-raw-keys.mjs",
 		"check:budget": "node scripts/check-budget.mjs",
 		"check:contrast": "node scripts/check-contrast.mjs"

@@ -99,6 +99,16 @@ progress: 15 of 22 services # in-progress only; replaces the track label
 
 No translation keys, no TypeScript edits, no route wiring.
 
+### Translating a project
+
+Add `<slug>.<locale>.md` beside the original — `telco-crm-platform.tr.md`. It
+carries the same frontmatter shape and its own body; both are used in full.
+
+A project without a translation for the active locale falls back to the English
+original and shows a localised notice saying so, rather than disappearing from
+the list. `<slug>.md` with no locale suffix is the English original and is
+required — a translation without one fails the build.
+
 ### Tracks
 
 | Track         | Meaning                                                 |
