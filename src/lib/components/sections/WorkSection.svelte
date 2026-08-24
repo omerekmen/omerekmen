@@ -592,7 +592,7 @@
 	.role {
 		margin: 0;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 10.5px;
+		font-size: 12px;
 		line-height: 1.5;
 		color: var(--color-text-muted);
 	}
@@ -640,7 +640,7 @@
 	.metrics dt {
 		margin-top: 0.2rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 8.5px;
+		font-size: 10px;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
@@ -659,7 +659,7 @@
 		background: var(--color-bg-tertiary);
 		padding: 0.2rem 0.6rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 9.5px;
+		font-size: 11px;
 		color: var(--color-text-muted);
 	}
 

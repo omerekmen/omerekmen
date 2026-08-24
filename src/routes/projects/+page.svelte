@@ -230,7 +230,7 @@
 		background: var(--color-bg-tertiary);
 		padding: 0.2rem 0.6rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
+		font-size: 11px;
 		color: var(--color-text-muted);
 	}
 </style>

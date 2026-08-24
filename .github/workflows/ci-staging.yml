@@ -45,6 +45,9 @@ jobs:
 
       - name: Assert no untranslated keys reached the HTML
         run: bun run assert:messages
+
+      - name: Check payload budget
+        run: bun run check:budget
       # A staging build that would be indexable is the one failure that quietly
       # costs real traffic, so assert it rather than trusting the config.
       - name: Assert staging is excluded from search

@@ -26,12 +26,18 @@ produced the drift documented in `AUDIT.md`.
 
 ## Performance budget
 
-Enforced in CI — regressions surface in the PR, not six months later.
+Enforced by `bun run check:budget` in both workflows, so a regression surfaces
+in the PR rather than six months later.
 
-- Homepage client JS under 150 KB gzipped
-- No single dependency over 50 KB gzipped without a written reason
-- Images under 200 KB
-- Fonts subset to the characters actually used
+| Limit                         | Budget | Currently                             |
+| ----------------------------- | ------ | ------------------------------------- |
+| Homepage JS, gzipped          | 150 KB | ~113 KB                               |
+| Largest single chunk, gzipped | 60 KB  | ~51 KB (GSAP)                         |
+| Any one image or font         | 200 KB | largest is the social card at ~104 KB |
+
+Fonts are subset to the characters the copy actually uses; see the Latin ranges
+in the subsetting note. Raising a budget is a decision to record in the commit
+message, not a reflex when the check goes red.
 
 ## Motion is progressive enhancement
 
@@ -45,7 +51,11 @@ an element at `opacity: 0` in markup unless a non-JS fallback restores it.
 ## Accessibility floor
 
 - Text contrast meets WCAG AA; no decorative text below 4.5:1 that carries meaning
-- No body or label text below 12px
+- Type size floors, by role rather than a single number that nothing keeps:
+  - Sentence-case reading text: **12px** minimum
+  - Uppercase mono micro-labels carrying at least `0.1em` tracking: **10px**
+    minimum — tracked caps stay legible where sentence case would not
+  - Nothing renders below 10px
 - Visible keyboard focus on every interactive element
 - The real cursor is never suppressed without a working replacement
 

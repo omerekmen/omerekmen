@@ -14,7 +14,8 @@
 		"format": "prettier --write .",
 		"gen": "wrangler types",
 		"paraglide": "paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide",
-		"assert:messages": "node scripts/assert-no-raw-keys.mjs"
+		"assert:messages": "node scripts/assert-no-raw-keys.mjs",
+		"check:budget": "node scripts/check-budget.mjs"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",
