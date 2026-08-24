@@ -115,18 +115,21 @@ text a person is meant to read. The Tailwind utility is `text-accent-text`.
 
 ## Branch and deploy
 
-| Branch    | Serves          | Deployed by                      |
-| --------- | --------------- | -------------------------------- |
-| `staging` | the preview URL | Cloudflare Pages Git integration |
-| `master`  | omerekmen.com   | `.github/workflows/cd.yml`       |
+| Branch    | Serves          | Verified by                        |
+| --------- | --------------- | ---------------------------------- |
+| `staging` | the preview URL | `.github/workflows/ci-staging.yml` |
+| `master`  | omerekmen.com   | `.github/workflows/ci.yml`         |
+
+Cloudflare Pages is connected to this repository and deploys both branches
+itself: `master` as production, `staging` as the preview branch. Nothing in
+GitHub Actions deploys — the workflows only gate quality, because Cloudflare
+runs the build but not lint or typecheck.
 
 Work lands on `staging` first and is reviewed there before merging to `master`.
-`staging` is configured as the preview branch on the `omerekmen` Pages project,
-so Cloudflare builds and deploys it directly.
 
-Cloudflare runs the build but not lint or typecheck, so
-`.github/workflows/ci-staging.yml` gates quality separately and asserts that a
-staging build is genuinely excluded from search.
+Each workflow also asserts the search posture of its build: staging must carry
+`noindex` and disallow crawling, production must do neither. Both directions
+fail quietly and cost real traffic, so neither is left to configuration alone.
 
 ### Marking a build as staging
 

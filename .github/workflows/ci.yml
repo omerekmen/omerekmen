@@ -1,4 +1,4 @@
-name: CI
+name: Verify Production
 
 on:
   push:
@@ -10,32 +10,34 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: production-${{ github.ref }}
+  cancel-in-progress: true
+
+# Cloudflare Pages deploys master through its Git integration. It runs the
+# build but not lint or typecheck, so this workflow gates quality — without it
+# a branch that fails either would still go live.
+
 jobs:
-  lint:
-    name: Lint & Format
+  verify:
+    name: Lint, Type Check & Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: bunx svelte-kit sync
       - run: bun run lint
-
-  check:
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
       - run: bun run check
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    needs: [lint, check]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
       - run: bun run build
+
+      # The mirror of the staging assertion. If production ever built as
+      # staging, the live site would go noindex and quietly fall out of search.
+      - name: Assert production is indexable
+        run: |
+          set -e
+          grep -q 'Allow: /' .svelte-kit/cloudflare/robots.txt \
+            || { echo "robots.txt is not allowing crawling"; cat .svelte-kit/cloudflare/robots.txt; exit 1; }
+          if grep -q 'name="robots" content="noindex' .svelte-kit/cloudflare/index.html; then
+            echo "production build carries a noindex tag"; exit 1
+          fi
+          echo "production build is correctly indexable"
