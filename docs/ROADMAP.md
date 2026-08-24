@@ -2,15 +2,15 @@
 
 ## Status
 
-| Phase                     | State                                     |
-| ------------------------- | ----------------------------------------- |
-| 00 — Truth pass           | Done                                      |
-| 01 — Foundation           | Done                                      |
-| 02 — Content pipeline     | Done                                      |
-| 03 — Case studies         | Blocked on input (NDA scope, screenshots) |
-| 04 — Three directions     | Direction A chosen                        |
-| 05 — Positioning & polish | Geo notice + CV done; perf/a11y pending   |
-| 06 — Lab projects         | Optional                                  |
+| Phase                     | State                                        |
+| ------------------------- | -------------------------------------------- |
+| 00 — Truth pass           | Done                                         |
+| 01 — Foundation           | Done                                         |
+| 02 — Content pipeline     | Done                                         |
+| 03 — Case studies         | Done — screenshots and diagrams still to add |
+| 04 — Three directions     | Direction A chosen                           |
+| 05 — Positioning & polish | Geo notice + CV done; perf/a11y pending      |
+| 06 — Lab projects         | Optional                                     |
 
 Payload after phase 01: client JS 1.02 MB → 328 KB raw, fonts 742 KB → 115 KB,
 OG image 1.8 MB → 106 KB. Roughly 3.1 MB removed from a cold visit.
@@ -128,10 +128,15 @@ Ordered by value per hour. Every phase ends deployable.
 - Rebuild the detail template: problem → architecture → build → outcome → retrospective
 - Per-project OG images, JSON-LD, hreflang across all locales
 
-### 03 — Write the case studies (needs input)
+### 03 — Write the case studies
 
-Four production projects, two in-progress, with diagrams and screenshots. Slowest phase,
-and the one that wins interviews.
+Ten case studies, English and Turkish, each following problem → what I built →
+how it works → what I'd change. Six production, two in-progress, two archived.
+
+The NDA question is answered: the Koç Group work is describable at the level of
+systems, stacks and process outcomes, so `erp-modernisation` (Otokoç) and
+`travel-data-platform` (SeturTech) are written and carry `confidential: false`.
+What is still missing is visual — diagrams and screenshots — not prose.
 
 ### 04 — Three directions → pick one (decided: A)
 
@@ -139,16 +144,17 @@ and the one that wins interviews.
 rebuilt on A's card design with richer motion, and the dark-only palettes were
 replaced with the site's light/dark/system tokens.
 
-The three prototypes stay at `/lab` until the rebuild is merged, then get
-deleted.
+The three prototypes stay at `/lab`. They are not deleted: A is the direction
+being built, and B and C are kept as working prototypes to harvest interactions
+from. Each carries `noindex` and is excluded from the sitemap.
 
 Live at `/lab` (all `noindex`, disallowed in robots.txt). Each renders the same
 real content — same hero copy, same three projects, same case study — from
 `src/routes/lab/sample.ts`, so the comparison is of design and nothing else.
 
-A and B commit to a single dark treatment; C carries both light and dark. C is
-the only one that pulls a webfont (Newsreader, via Google Fonts) — if it wins,
-that gets self-hosted and subset like the others.
+A and B commit to a single dark treatment; C carries both light and dark.
+Newsreader, C's face, is self-hosted and subset like the other three — the
+site makes no third-party request, and `check:budget` now asserts it.
 
 - **A — Refined Kinetic.** Current identity executed properly. Display font and scroll
   choreography stay; real imagery, fixed contrast, working reduced-motion path, Canvas 2D.
@@ -174,9 +180,8 @@ Airflow/dbt pipeline and a Kafka streaming demo.
 
 ## Blocked on input
 
-- **NDA boundaries** for Otokoç ERP and SeturTech Fabric work. The strongest CV material is
-  also the most likely to be restricted. The `confidential` frontmatter flag exists for this.
 - **Screenshots and diagrams** — dashboards, architecture sketches, whiteboard photos.
+  The only thing still missing from the case studies.
 - **Klauthed and Scivex status** — real completion state, and whether either repo can go public.
 - **Disclosable metrics** beyond the 70% and 60% figures already on the CV.
 - **TELCO CRM repo visibility** — if public it becomes the anchor case study.

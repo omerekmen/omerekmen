@@ -81,6 +81,55 @@ for (const a of heavy) {
 	failures.push(`${a.p.replace(OUT + '/', '')} is ${a.size} KB, over ${BUDGET.assetKb} KB`);
 }
 
+// ── Third-party requests ──
+// Every font on this site is self-hosted and there is no analytics or CDN
+// script, so any absolute URL the browser actually fetches is a request the
+// visitor did not sign up for — and a render-blocking one when it is a font.
+// A lab page reaching for Google Fonts is exactly how this creeps back in.
+//
+// Only subresources count. hreflang and canonical links, og:url and JSON-LD
+// all name the live site on purpose and are never fetched.
+const FETCHING_REL = new Set([
+	'stylesheet',
+	'preload',
+	'prefetch',
+	'preconnect',
+	'dns-prefetch',
+	'modulepreload',
+	'icon',
+	'apple-touch-icon',
+	'manifest'
+]);
+
+const thirdParty = new Map();
+const flag = (url, file) => {
+	if (!/^https?:\/\//i.test(url)) return;
+	if (!thirdParty.has(url)) thirdParty.set(url, file.replace(OUT + '/', ''));
+};
+
+for (const file of walk(OUT, (p) => p.endsWith('.html'))) {
+	const text = readFileSync(file, 'utf8');
+	for (const [tag] of text.matchAll(/<link\b[^>]*>/gi)) {
+		const rel = /\brel=["']?([^"'\s>]+)/i.exec(tag)?.[1]?.toLowerCase();
+		if (!rel || !FETCHING_REL.has(rel)) continue;
+		const href = /\bhref=["']([^"']+)/i.exec(tag)?.[1];
+		if (href) flag(href, file);
+	}
+	for (const [, src] of text.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)/gi)) flag(src, file);
+	for (const [, url] of text.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)/gi)) flag(url, file);
+}
+
+for (const file of walk(OUT, (p) => p.endsWith('.css'))) {
+	const text = readFileSync(file, 'utf8');
+	for (const [, url] of text.matchAll(/url\(\s*["']?([^)"']+)/gi)) flag(url, file);
+	for (const [, url] of text.matchAll(/@import\s+["']([^"']+)/gi)) flag(url, file);
+}
+
+report.push(['third-party requests', `${thirdParty.size}`, `0`]);
+for (const [url, where] of thirdParty) {
+	failures.push(`${where} fetches ${url}`);
+}
+
 const width = Math.max(...report.map(([label]) => label.length));
 for (const [label, actual, limit] of report) {
 	console.log(`  ${label.padEnd(width)}  ${actual.padStart(9)}   budget ${limit}`);

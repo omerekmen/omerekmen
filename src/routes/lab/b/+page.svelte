@@ -1,22 +1,118 @@
 <script lang="ts">
 	import { sample, pipelineStages, capabilities } from '../sample';
 	import { gsap } from '$lib/utils/gsap';
+	import { parseMetric } from '$lib/utils/metric';
+
+	type SortKey = 'index' | 'system' | 'signal';
 
 	let root: HTMLElement | undefined = $state();
+	let query = $state('');
+	let sortKey: SortKey = $state('index');
+	let sortDesc = $state(false);
+	let activeStage = $state(pipelineStages[0].id);
+	let expanded = $state<string | null>(null);
+	let clock = $state('');
+
+	const stageDetail = $derived(
+		pipelineStages.find((s) => s.id === activeStage) ?? pipelineStages[0]
+	);
+
+	/** Highest numeric metric on a project, used as the sortable "signal". */
+	function signalOf(project: (typeof sample.projects)[number]): number {
+		const values = project.metrics
+			.map((m) => parseMetric(m.value))
+			.filter((m) => !m.literal)
+			.map((m) => Math.abs(m.value));
+		return values.length ? Math.max(...values) : -1;
+	}
+
+	const rows = $derived.by(() => {
+		const q = query.trim().toLowerCase();
+		const matched = sample.projects
+			.map((project, index) => ({ project, index }))
+			.filter(({ project }) => {
+				if (!q) return true;
+				const haystack = [
+					project.title,
+					project.summary,
+					project.role,
+					...project.stack,
+					...project.domains
+				]
+					.join(' ')
+					.toLowerCase();
+				return haystack.includes(q);
+			});
+
+		const sorted = [...matched].sort((a, b) => {
+			if (sortKey === 'system') return a.project.title.localeCompare(b.project.title);
+			if (sortKey === 'signal') return signalOf(b.project) - signalOf(a.project);
+			return a.index - b.index;
+		});
+		return sortDesc ? sorted.reverse() : sorted;
+	});
+
+	function toggleSort(key: SortKey) {
+		if (sortKey === key) {
+			sortDesc = !sortDesc;
+		} else {
+			sortKey = key;
+			sortDesc = false;
+		}
+	}
+
+	function ariaSort(key: SortKey): 'ascending' | 'descending' | 'none' {
+		if (sortKey !== key) return 'none';
+		return sortDesc ? 'descending' : 'ascending';
+	}
+
+	function toggleRow(slug: string) {
+		expanded = expanded === slug ? null : slug;
+	}
 
 	$effect(() => {
 		if (!root) return;
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+
+		// A console shows the time. Local to the author, refreshed every second.
+		const tick = () => {
+			clock = new Intl.DateTimeFormat('en-GB', {
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit',
+				timeZone: 'Europe/Istanbul'
+			}).format(new Date());
+		};
+		tick();
+		const clockId = setInterval(tick, 1000);
+
+		const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (reduced) {
 			gsap.set(root.querySelectorAll('.fade'), { opacity: 1, y: 0 });
 			gsap.set(root.querySelectorAll('.flow'), { opacity: 1 });
-			return;
+			return () => clearInterval(clockId);
 		}
+
 		const ctx = gsap.context(() => {
 			const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
 			tl.from('.fade', { opacity: 0, y: 14, stagger: 0.05, duration: 0.5 });
 			// Trace the pipeline left to right — the diagram is the hero.
 			tl.from('.stage', { opacity: 0, x: -14, stagger: 0.09, duration: 0.45 }, '-=0.2');
 			tl.from('.flow', { scaleX: 0, transformOrigin: 'left', stagger: 0.09, duration: 0.35 }, '<');
+
+			// Packets crossing the connectors. Decorative, but it makes the
+			// diagram read as something running rather than something drawn.
+			gsap.set('.packet', { opacity: 0 });
+			gsap.to('.packet', {
+				keyframes: {
+					xPercent: [0, 600],
+					opacity: [0, 1, 1, 0],
+					easeEach: 'none'
+				},
+				duration: 1.5,
+				repeat: -1,
+				repeatDelay: 0.8,
+				stagger: 0.3
+			});
 
 			root!.querySelectorAll('.on-scroll').forEach((el) => {
 				gsap.from(el, {
@@ -27,7 +123,11 @@
 				});
 			});
 		}, root);
-		return () => ctx.revert();
+
+		return () => {
+			clearInterval(clockId);
+			ctx.revert();
+		};
 	});
 </script>
 
@@ -40,7 +140,10 @@
 	<header class="bar">
 		<span class="mono id">{sample.name}</span>
 		<span class="mono role">{sample.title}</span>
-		<span class="mono loc">{sample.location}</span>
+		<span class="mono loc">
+			{sample.location}
+			<span class="clock" aria-hidden="true">{clock}</span>
+		</span>
 	</header>
 
 	<!-- ═══ HERO: the pipeline is the visual ═══ -->
@@ -49,18 +152,31 @@
 			<h1 class="fade">{sample.title}</h1>
 			<p class="fade sub">{sample.summary}</p>
 
-			<div class="pipeline" role="img" aria-label="Data pipeline: source systems to reporting">
+			<div class="pipeline">
 				{#each pipelineStages as stage, i (stage.id)}
-					<div class="stage">
+					<button
+						class="stage"
+						class:on={activeStage === stage.id}
+						aria-pressed={activeStage === stage.id}
+						onclick={() => (activeStage = stage.id)}
+						onmouseenter={() => (activeStage = stage.id)}
+						onfocus={() => (activeStage = stage.id)}
+					>
 						<span class="stage-idx mono">{String(i + 1).padStart(2, '0')}</span>
 						<span class="stage-label">{stage.label}</span>
 						<span class="stage-detail mono">{stage.detail}</span>
-					</div>
+					</button>
 					{#if i < pipelineStages.length - 1}
-						<div class="flow" aria-hidden="true"></div>
+						<div class="flow" aria-hidden="true"><i class="packet"></i></div>
 					{/if}
 				{/each}
 			</div>
+
+			<!-- What the selected stage actually involves. -->
+			<p class="stage-note">
+				<span class="mono stage-note-key">{stageDetail.label}</span>
+				{stageDetail.note}
+			</p>
 
 			<dl class="capstrip fade">
 				{#each capabilities as group (group.label)}
@@ -76,24 +192,60 @@
 	<!-- ═══ WORK: records, not cards ═══ -->
 	<section class="work">
 		<div class="wrap">
-			<h2 class="mono heading">Systems built</h2>
+			<div class="work-bar">
+				<h2 class="mono heading">Systems built</h2>
+				<div class="query">
+					<label class="sr-only" for="filter">Filter systems</label>
+					<span class="mono prompt" aria-hidden="true">where</span>
+					<input
+						id="filter"
+						class="mono"
+						type="search"
+						placeholder="stack, domain or name"
+						bind:value={query}
+						autocomplete="off"
+					/>
+					<span class="mono count" aria-live="polite">
+						{rows.length}/{sample.projects.length}
+					</span>
+				</div>
+			</div>
 
 			<table class="records">
 				<thead>
 					<tr>
 						<th scope="col" class="mono">#</th>
-						<th scope="col" class="mono">System</th>
+						<th scope="col" class="mono" aria-sort={ariaSort('system')}>
+							<button class="mono sort" onclick={() => toggleSort('system')}>
+								System<span class="caret" aria-hidden="true"
+									>{sortKey === 'system' ? (sortDesc ? '▾' : '▴') : '·'}</span
+								>
+							</button>
+						</th>
 						<th scope="col" class="mono">Role</th>
 						<th scope="col" class="mono">Stack</th>
-						<th scope="col" class="mono num">Signal</th>
+						<th scope="col" class="mono num" aria-sort={ariaSort('signal')}>
+							<button class="mono sort" onclick={() => toggleSort('signal')}>
+								Signal<span class="caret" aria-hidden="true"
+									>{sortKey === 'signal' ? (sortDesc ? '▾' : '▴') : '·'}</span
+								>
+							</button>
+						</th>
 					</tr>
 				</thead>
 				<tbody>
-					{#each sample.projects as project, i (project.slug)}
-						<tr class="on-scroll">
-							<td class="mono dim">{String(i + 1).padStart(2, '0')}</td>
+					{#each rows as { project, index } (project.slug)}
+						<tr class="on-scroll record" class:open={expanded === project.slug}>
+							<td class="mono dim">{String(index + 1).padStart(2, '0')}</td>
 							<td>
-								<span class="sys-name">{project.title}</span>
+								<button
+									class="sys-toggle"
+									aria-expanded={expanded === project.slug}
+									onclick={() => toggleRow(project.slug)}
+								>
+									<span class="sys-name">{project.title}</span>
+									<span class="sys-caret mono" aria-hidden="true">›</span>
+								</button>
 								<span class="sys-sum">{project.summary}</span>
 								<span class="state mono state-{project.track}">
 									{project.progress ?? project.track.replace('-', ' ')}
@@ -112,11 +264,47 @@
 											<span class="mv mono">{metric.value}</span>
 											<span class="ml mono">{metric.label}</span>
 										</div>
+									{:else}
+										<span class="mono dim">—</span>
 									{/each}
 								{:else}
 									<span class="mono dim">—</span>
 								{/if}
 							</td>
+						</tr>
+						{#if expanded === project.slug}
+							<tr class="detail-row">
+								<td colspan="5">
+									<div class="detail">
+										<dl>
+											<div>
+												<dt class="mono">period</dt>
+												<dd class="mono">{project.period}</dd>
+											</div>
+											<div>
+												<dt class="mono">domains</dt>
+												<dd class="mono">{project.domains.join(', ') || '—'}</dd>
+											</div>
+											<div>
+												<dt class="mono">stack</dt>
+												<dd class="mono">{project.stack.join(', ')}</dd>
+											</div>
+											{#if project.links.github}
+												<div>
+													<dt class="mono">source</dt>
+													<dd class="mono">
+														<a href={project.links.github}>{project.links.github}</a>
+													</dd>
+												</div>
+											{/if}
+										</dl>
+									</div>
+								</td>
+							</tr>
+						{/if}
+					{:else}
+						<tr>
+							<td colspan="5" class="mono dim empty">no rows match “{query}”</td>
 						</tr>
 					{/each}
 				</tbody>
@@ -558,5 +746,230 @@
 
 	.foot-links a:hover {
 		color: var(--accent);
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	.clock {
+		margin-left: 0.75rem;
+		color: var(--accent);
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* ── Interactive pipeline ── */
+	.stage {
+		border: 0;
+		border-radius: 6px;
+		background: none;
+		font-family: inherit;
+		text-align: left;
+		cursor: pointer;
+		color: inherit;
+		transition:
+			background-color 0.2s ease,
+			opacity 0.2s ease;
+	}
+
+	.pipeline:hover .stage:not(.on),
+	.pipeline:focus-within .stage:not(.on) {
+		opacity: 0.55;
+	}
+
+	.stage.on {
+		background: rgba(169, 207, 159, 0.07);
+		opacity: 1;
+	}
+
+	.stage:focus-visible {
+		outline: 1px solid var(--accent);
+		outline-offset: 1px;
+	}
+
+	.packet {
+		position: absolute;
+		top: -1.5px;
+		left: 0;
+		display: block;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: var(--accent);
+		box-shadow: 0 0 6px rgba(169, 207, 159, 0.8);
+	}
+
+	.stage-note {
+		margin: 1.1rem 0 0;
+		max-width: 76ch;
+		font-size: 13px;
+		line-height: 1.7;
+		color: var(--ink-2);
+	}
+
+	.stage-note-key {
+		margin-right: 0.5rem;
+		font-size: 9.5px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+
+	/* ── Query bar ── */
+	.work-bar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.query {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		border: 1px solid var(--line);
+		border-radius: 6px;
+		background: var(--panel);
+		padding: 0.4rem 0.7rem;
+		margin-bottom: 2rem;
+	}
+
+	.query:focus-within {
+		border-color: rgba(169, 207, 159, 0.45);
+	}
+
+	.prompt {
+		font-size: 9.5px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+
+	.query input {
+		width: 20ch;
+		border: 0;
+		background: none;
+		font-size: 12px;
+		color: var(--ink);
+	}
+
+	.query input::placeholder {
+		color: var(--dim);
+	}
+
+	.query input:focus {
+		outline: none;
+	}
+
+	.count {
+		font-size: 10px;
+		color: var(--dim);
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* ── Sortable headers ── */
+	.sort {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		border: 0;
+		background: none;
+		padding: 0;
+		cursor: pointer;
+		font-size: inherit;
+		font-weight: inherit;
+		letter-spacing: inherit;
+		text-transform: inherit;
+		color: inherit;
+	}
+
+	.sort:hover,
+	.sort:focus-visible {
+		color: var(--accent);
+	}
+
+	.caret {
+		font-size: 9px;
+		opacity: 0.8;
+	}
+
+	/* ── Expandable records ── */
+	.sys-toggle {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		border: 0;
+		background: none;
+		padding: 0;
+		cursor: pointer;
+		text-align: left;
+		color: inherit;
+	}
+
+	.sys-caret {
+		font-size: 12px;
+		color: var(--dim);
+		transition: transform 0.25s ease;
+	}
+
+	.record.open .sys-caret {
+		transform: rotate(90deg);
+		color: var(--accent);
+	}
+
+	.sys-toggle:hover .sys-name,
+	.sys-toggle:focus-visible .sys-name {
+		color: var(--accent);
+	}
+
+	.detail-row td {
+		border-bottom: 1px solid var(--line);
+		padding: 0 0 1.4rem;
+	}
+
+	.detail dl {
+		display: grid;
+		gap: 0.55rem 2rem;
+		margin: 0;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		border-left: 1px solid rgba(169, 207, 159, 0.35);
+		padding: 0.35rem 0 0.35rem 1rem;
+	}
+
+	.detail dt {
+		font-size: 9px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+
+	.detail dd {
+		margin: 0.2rem 0 0;
+		font-size: 11px;
+		line-height: 1.6;
+		color: var(--ink-2);
+		overflow-wrap: anywhere;
+	}
+
+	.detail a {
+		color: var(--data-2);
+	}
+
+	.empty {
+		padding: 2rem 0;
+		font-size: 12px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.sys-caret,
+		.stage {
+			transition: none;
+		}
 	}
 </style>

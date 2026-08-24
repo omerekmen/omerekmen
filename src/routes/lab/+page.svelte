@@ -3,26 +3,49 @@
 		{
 			id: 'a',
 			name: 'Refined Kinetic',
+			status: 'Frontrunner',
 			thesis: 'The current identity, executed properly.',
 			detail:
-				'Bagel Fat One stays, the oversized type stays, the scroll choreography stays — but with real project metrics, fixed contrast, a working reduced-motion path and Canvas 2D instead of Three.js. Lowest risk; keeps what makes the site memorable.',
-			risk: 'Reads as a creative portfolio. An asset for design-adjacent roles, a mild liability for enterprise data engineering.'
+				'Bagel Fat One stays, the oversized type stays, the scroll choreography stays. On top of that: a name that lights up under the cursor, a work index that opens in place with its numbers counting up, a case study with a contents rail that tracks where you are reading, and a contact line whose letters lean toward the pointer.',
+			risk: 'Reads as a creative portfolio. An asset for design-adjacent roles, a mild liability for enterprise data engineering.',
+			moves: [
+				'Cursor-lit name — a second copy of the name masked to a light that follows the pointer, and drifts by itself on touch',
+				'Section rail on the right edge, tracking and jumping between sections',
+				'Work index rows that open in place, with a title marquee behind the live row',
+				'Metrics that count up the first time you reach them, not on page load',
+				'Case-study contents rail built from the article, with reading progress',
+				'Magnetic “LET’S TALK” letters'
+			]
 		},
 		{
 			id: 'b',
 			name: 'Systems',
+			status: 'Idea source',
 			thesis: 'The display font recedes and the work becomes the visual.',
 			detail:
-				'The hero is the actual Fabric pipeline you operate, drawn as a diagram. Projects are records in a table with monospace metadata and a signal column, not cards. Reads like an internal engineering console.',
-			risk: 'Less personality. If someone is hiring for taste as well as rigour, this says less about you.'
+				'The hero is the actual Fabric pipeline, drawn as a diagram with packets moving through it and a note on whichever stage you point at. Projects are records in a queryable table — filter by stack or domain, sort by signal, expand a row for its full metadata.',
+			risk: 'Less personality. If someone is hiring for taste as well as rigour, this says less about you.',
+			moves: [
+				'Pipeline stages that explain themselves on hover',
+				'A filter box over the project table, with a live row count',
+				'Sortable columns and expandable record detail',
+				'A running clock in the instrument bar'
+			]
 		},
 		{
 			id: 'c',
 			name: 'Editorial',
+			status: 'Idea source',
 			thesis: 'A publication, with the case study as the centrepiece.',
 			detail:
-				'New type system built on Newsreader, an asymmetric grid with a sticky metadata margin, and motion reduced to two deliberate moments. Optimised for people who actually read.',
-			risk: 'Demands real writing. With thin case studies it looks empty in a way the other two do not.'
+				'Newsreader for the type, an asymmetric grid with a sticky metadata margin, a contents page with dot leaders, a drop cap, a read-time counted from the article itself, and a running head in the margin telling you which part you are in.',
+			risk: 'Demands real writing. With thin case studies it looks empty in a way the other two do not.',
+			moves: [
+				'Reading progress hairline across the top',
+				'Contents page with dot leaders and a read-time counted from the prose',
+				'Running head in the margin, following the article',
+				'Drop cap and line-by-line standfirst reveal'
+			]
 		}
 	];
 </script>
@@ -36,24 +59,34 @@
 		<p class="tag">Phase 04 · not indexed</p>
 		<h1>Three directions</h1>
 		<p class="intro">
-			Each renders the <strong>same real content</strong> — the same hero copy, the same three projects,
-			the same case study. Comparing them tells you something only because the words are identical; otherwise
+			Each renders the <strong>same real content</strong> — the same hero copy, the same projects, the
+			same case study. Comparing them tells you something only because the words are identical; otherwise
 			you would be judging the writing, not the design.
 		</p>
 		<p class="intro">
-			Open each on your phone as well as a laptop. The switcher at the bottom moves between them.
+			<strong>A is the direction being built.</strong> B and C are not competing finished sites any more
+			— they are kept as working prototypes to take ideas from, and each one has interactions worth stealing.
+			Open each on your phone as well as a laptop; the switcher at the bottom moves between them.
 		</p>
 	</header>
 
 	<ul class="list">
 		{#each directions as d (d.id)}
 			<li>
-				<a href="/lab/{d.id}">
+				<a href="/lab/{d.id}" class:lead={d.id === 'a'}>
 					<span class="letter">{d.id.toUpperCase()}</span>
 					<div>
-						<h2>{d.name}</h2>
+						<div class="head-row">
+							<h2>{d.name}</h2>
+							<span class="status" class:on={d.id === 'a'}>{d.status}</span>
+						</div>
 						<p class="thesis">{d.thesis}</p>
 						<p class="detail">{d.detail}</p>
+						<ul class="moves">
+							{#each d.moves as move (move)}
+								<li>{move}</li>
+							{/each}
+						</ul>
 						<p class="risk"><span>Trade-off</span> {d.risk}</p>
 					</div>
 					<span class="arrow" aria-hidden="true">&rarr;</span>
@@ -64,8 +97,9 @@
 
 	<footer>
 		<p>
-			Nothing here is wired into the live site. Picking one means rebuilding the real pages in that
-			language; the other two get deleted.
+			Nothing here is wired into the live site. The lab stays put: it is where an interaction gets
+			tried before it earns a place on a real page, and where the ideas that did not make it into A
+			are kept rather than thrown away.
 		</p>
 	</footer>
 </div>
@@ -127,7 +161,7 @@
 		list-style: none;
 	}
 
-	.list li {
+	.list > li {
 		margin-bottom: 0.85rem;
 	}
 
@@ -212,5 +246,58 @@
 		font-size: 12.5px;
 		line-height: 1.7;
 		color: var(--dim);
+	}
+
+	.head-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.75rem;
+	}
+
+	.status {
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		padding: 0.15rem 0.5rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 9px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--dim);
+	}
+
+	.status.on {
+		border-color: rgba(169, 207, 159, 0.45);
+		background: rgba(169, 207, 159, 0.1);
+		color: var(--accent);
+	}
+
+	.list a.lead {
+		border-color: rgba(169, 207, 159, 0.3);
+	}
+
+	.moves {
+		margin: 1rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.moves li {
+		position: relative;
+		margin-bottom: 0.3rem;
+		padding-left: 1rem;
+		font-size: 12.5px;
+		line-height: 1.62;
+		color: var(--ink-2);
+	}
+
+	.moves li::before {
+		position: absolute;
+		top: 0.62em;
+		left: 0;
+		width: 6px;
+		height: 1px;
+		background: var(--accent);
+		content: '';
 	}
 </style>

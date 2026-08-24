@@ -1,16 +1,51 @@
 <script lang="ts">
-	import { sample } from '../sample';
-	import { gsap } from '$lib/utils/gsap';
+	import { sample, readingMinutes } from '../sample';
+	import { gsap, SplitText } from '$lib/utils/gsap';
 
 	let root: HTMLElement | undefined = $state();
+	let proseEl: HTMLDivElement | undefined = $state();
+	let standfirstEl: HTMLParagraphElement | undefined = $state();
+
+	let progress = $state(0);
+	let minutes = $state(0);
+	let currentChapter = $state('');
+
+	function scrollTo(id: string, event: MouseEvent) {
+		const target = document.getElementById(id);
+		if (!target) return;
+		event.preventDefault();
+		target.scrollIntoView({
+			behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+			block: 'start'
+		});
+	}
 
 	// Motion is deliberately sparse here: one entrance, one reveal per section.
 	$effect(() => {
 		if (!root) return;
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+
+		// Read time and contents come from the article itself, so they cannot
+		// drift out of date the way a hand-written figure would.
+		// Built into a local first: reading `chapters` back inside the effect that
+		// writes it would make the effect depend on its own output.
+		let chapterList: { id: string; label: string }[] = [];
+		if (proseEl) {
+			const words = (proseEl.textContent ?? '').trim().split(/\s+/).filter(Boolean).length;
+			minutes = readingMinutes(words);
+			chapterList = Array.from(proseEl.querySelectorAll<HTMLElement>('h2')).map((h, i) => {
+				const id = h.id || `section-${i + 1}`;
+				h.id = id;
+				return { id, label: h.textContent?.trim() ?? `Section ${i + 1}` };
+			});
+			if (chapterList.length) currentChapter = chapterList[0].label;
+		}
+
+		const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (reduced) {
 			gsap.set(root.querySelectorAll('.enter, .on-scroll'), { opacity: 1, y: 0 });
 			return;
 		}
+
 		const ctx = gsap.context(() => {
 			gsap.from('.enter', {
 				opacity: 0,
@@ -19,6 +54,21 @@
 				duration: 0.85,
 				ease: 'power2.out'
 			});
+
+			// The standfirst arrives a line at a time — the one flourish the
+			// page allows itself, and it reads as typesetting rather than motion.
+			if (standfirstEl) {
+				const split = new SplitText(standfirstEl, { type: 'lines' });
+				gsap.from(split.lines, {
+					opacity: 0,
+					yPercent: 40,
+					stagger: 0.07,
+					duration: 0.75,
+					delay: 0.25,
+					ease: 'power2.out'
+				});
+			}
+
 			root!.querySelectorAll('.on-scroll').forEach((el) => {
 				gsap.from(el, {
 					opacity: 0,
@@ -28,6 +78,34 @@
 					scrollTrigger: { trigger: el, start: 'top 88%', once: true }
 				});
 			});
+
+			// A hairline progress rule across the top, the way a long read
+			// usually signals how much is left.
+			gsap.timeline({
+				scrollTrigger: {
+					trigger: root!,
+					start: 'top top',
+					end: 'bottom bottom',
+					scrub: true,
+					onUpdate: (self) => (progress = self.progress)
+				}
+			});
+
+			// The margin keeps a running head of wherever you are in the article.
+			chapterList.forEach((chapter) => {
+				const el = document.getElementById(chapter.id);
+				if (!el) return;
+				const setCurrent = () => (currentChapter = chapter.label);
+				gsap.timeline({
+					scrollTrigger: {
+						trigger: el,
+						start: 'top 35%',
+						end: 'bottom 35%',
+						onEnter: setCurrent,
+						onEnterBack: setCurrent
+					}
+				});
+			});
 		}, root);
 		return () => ctx.revert();
 	});
@@ -35,15 +113,20 @@
 
 <svelte:head>
 	<title>Direction C — Editorial</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
-		rel="stylesheet"
-		href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&display=swap"
+		rel="preload"
+		href="/fonts/Newsreader-Variable.woff2"
+		as="font"
+		type="font/woff2"
+		crossorigin="anonymous"
 	/>
 </svelte:head>
 
 <div bind:this={root} class="dir-c">
+	<div class="progress-rule" aria-hidden="true">
+		<span style="transform: scaleX({progress})"></span>
+	</div>
+
 	<!-- ═══ MASTHEAD ═══ -->
 	<header class="masthead">
 		<div class="rule" aria-hidden="true"></div>
@@ -66,20 +149,44 @@
 		</div>
 		<div class="col-main">
 			<h1 class="enter">{sample.title}</h1>
-			<p class="enter standfirst">{sample.summary}</p>
+			<p bind:this={standfirstEl} class="standfirst">{sample.summary}</p>
 			<div class="enter byline">
 				<a href="mailto:{sample.email}">{sample.email}</a>
 				<a href={sample.github}>GitHub</a>
 				<a href={sample.linkedin}>LinkedIn</a>
 				<a href="/cv">Curriculum vitae</a>
 			</div>
+
+			<!-- Contents, the way a magazine opens. -->
+			<nav class="enter contents" aria-label="In this issue">
+				<p class="contents-label">In this issue</p>
+				<ol>
+					<li>
+						<a href="#work" onclick={(e) => scrollTo('work', e)}>
+							Selected work<span class="leader" aria-hidden="true"></span>
+							<span class="contents-note">{sample.projects.length} entries</span>
+						</a>
+					</li>
+					{#if sample.caseStudy}
+						<li>
+							<a href="#feature" onclick={(e) => scrollTo('feature', e)}>
+								{sample.caseStudy.meta.title}<span class="leader" aria-hidden="true"></span>
+								<span class="contents-note">{minutes || '—'} min read</span>
+							</a>
+						</li>
+					{/if}
+				</ol>
+			</nav>
 		</div>
 	</section>
 
 	<!-- ═══ INDEX OF WORK ═══ -->
-	<section class="work">
+	<section id="work" class="work">
 		<div class="col-side">
 			<p class="side-label">Selected work</p>
+			<p class="side-text side-dim">
+				{sample.projects.length} entries, most recent first.
+			</p>
 		</div>
 		<div class="col-main">
 			<ol class="index-list">
@@ -112,18 +219,28 @@
 	<!-- ═══ THE ARTICLE ═══ -->
 	{#if sample.caseStudy}
 		{@const Body = sample.caseStudy.body}
-		<article class="feature">
+		<article id="feature" class="feature">
 			<div class="col-side">
 				<p class="side-label">Case study</p>
 				<p class="side-text">
 					{sample.caseStudy.meta.role}<br />
 					<span class="side-dim">{sample.caseStudy.meta.period}</span>
 				</p>
+				{#if minutes}
+					<p class="side-text side-dim read-time">{minutes} min read</p>
+				{/if}
+				{#if currentChapter}
+					<!-- Running head: which part of the article you are in. -->
+					<p class="running-head">
+						<span class="running-mark" aria-hidden="true"></span>
+						{currentChapter}
+					</p>
+				{/if}
 			</div>
 			<div class="col-main">
 				<h2 class="feature-title on-scroll">{sample.caseStudy.meta.title}</h2>
 				<p class="feature-standfirst on-scroll">{sample.caseStudy.meta.summary}</p>
-				<div class="on-scroll prose"><Body /></div>
+				<div bind:this={proseEl} class="on-scroll prose"><Body /></div>
 			</div>
 		</article>
 	{/if}
@@ -139,6 +256,22 @@
 </div>
 
 <style>
+	@font-face {
+		font-family: 'Newsreader';
+		src: url('/fonts/Newsreader-Variable.woff2') format('woff2');
+		font-weight: 300 600;
+		font-style: normal;
+		font-display: swap;
+	}
+
+	@font-face {
+		font-family: 'Newsreader';
+		src: url('/fonts/Newsreader-VariableItalic.woff2') format('woff2');
+		font-weight: 300 600;
+		font-style: italic;
+		font-display: swap;
+	}
+
 	.dir-c {
 		--paper: #fbfcf9;
 		--paper-2: #f2f4ee;
@@ -483,5 +616,164 @@
 	.colo-row a {
 		color: var(--accent);
 		text-decoration: none;
+	}
+
+	/* ── Reading progress ── */
+	.progress-rule {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 50;
+		height: 2px;
+		width: 100%;
+		background: transparent;
+	}
+
+	.progress-rule span {
+		display: block;
+		height: 100%;
+		width: 100%;
+		transform: scaleX(0);
+		transform-origin: left;
+		background: var(--accent);
+	}
+
+	/* ── Contents ── */
+	.contents {
+		margin-top: 3rem;
+		border-top: 1px solid var(--rule);
+		padding-top: 1.4rem;
+		max-width: 42rem;
+	}
+
+	.contents-label {
+		margin: 0 0 0.75rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 9.5px;
+		font-weight: 600;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--ink-3);
+	}
+
+	.contents ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		counter-reset: toc;
+	}
+
+	.contents li {
+		counter-increment: toc;
+	}
+
+	.contents a {
+		display: flex;
+		align-items: baseline;
+		gap: 0.6rem;
+		padding: 0.45rem 0;
+		font-family: 'Newsreader', Georgia, serif;
+		font-size: 1.02rem;
+		color: var(--ink);
+		text-decoration: none;
+	}
+
+	.contents a::before {
+		content: counter(toc, decimal-leading-zero);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 10px;
+		color: var(--ink-3);
+	}
+
+	/* Dot leaders, the way a printed contents page sets them. */
+	.leader {
+		flex: 1;
+		height: 1px;
+		min-width: 2rem;
+		background-image: radial-gradient(circle, var(--rule) 1px, transparent 1px);
+		background-size: 5px 1px;
+		background-repeat: repeat-x;
+		transform: translateY(-3px);
+	}
+
+	.contents-note {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 10px;
+		white-space: nowrap;
+		color: var(--ink-3);
+	}
+
+	.contents a:hover,
+	.contents a:focus-visible {
+		color: var(--accent);
+	}
+
+	/* ── Running head ── */
+	.read-time {
+		margin-top: 0.9rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 10px;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.running-head {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		margin: 1.4rem 0 0;
+		border-top: 1px solid var(--rule);
+		padding-top: 0.9rem;
+		font-size: 12px;
+		line-height: 1.55;
+		color: var(--ink-2);
+	}
+
+	.running-mark {
+		width: 12px;
+		height: 1px;
+		flex-shrink: 0;
+		background: var(--accent);
+		transform: translateY(-4px);
+	}
+
+	/* ── Drop cap ── */
+	.prose :global(p:first-of-type)::first-letter {
+		float: left;
+		margin: 0.06em 0.08em 0 0;
+		font-family: 'Newsreader', Georgia, serif;
+		font-size: 3.4em;
+		font-weight: 400;
+		line-height: 0.82;
+		color: var(--accent);
+	}
+
+	.prose :global(h2) {
+		scroll-margin-top: 3rem;
+	}
+
+	/* ── Index entries respond to the pointer, quietly ── */
+	.index-list li {
+		transition: border-color 0.25s ease;
+	}
+
+	.index-list h2 {
+		background-image: linear-gradient(var(--accent), var(--accent));
+		background-position: 0 100%;
+		background-repeat: no-repeat;
+		background-size: 0% 1px;
+		transition: background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.index-list li:hover h2 {
+		background-size: 100% 1px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.index-list h2,
+		.index-list li,
+		.contents a {
+			transition: none;
+		}
 	}
 </style>

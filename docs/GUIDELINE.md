@@ -29,15 +29,29 @@ produced the drift documented in `AUDIT.md`.
 Enforced by `bun run check:budget` in both workflows, so a regression surfaces
 in the PR rather than six months later.
 
-| Limit                         | Budget | Currently                             |
-| ----------------------------- | ------ | ------------------------------------- |
-| Homepage JS, gzipped          | 150 KB | ~113 KB                               |
-| Largest single chunk, gzipped | 60 KB  | ~51 KB (GSAP)                         |
-| Any one image or font         | 200 KB | largest is the social card at ~104 KB |
+| Limit                         | Budget | Currently                            |
+| ----------------------------- | ------ | ------------------------------------ |
+| Homepage JS, gzipped          | 150 KB | ~127 KB                              |
+| Largest single chunk, gzipped | 60 KB  | ~51 KB (GSAP)                        |
+| Any one image or font         | 200 KB | largest is the social card at ~63 KB |
+| Third-party requests          | 0      | 0                                    |
 
 Fonts are subset to the characters the copy actually uses; see the Latin ranges
 in the subsetting note. Raising a budget is a decision to record in the commit
 message, not a reflex when the check goes red.
+
+**Third-party requests are zero, and that is a budget line rather than a
+coincidence.** Every font is self-hosted, there is no analytics and no CDN
+script, so the site fetches nothing a visitor did not ask for. The check reads
+the built HTML and CSS and fails on any absolute URL in a fetching `<link>`,
+a `<script src>`, an `<img src>` or a CSS `url()`. `hreflang`, canonical,
+`og:url` and JSON-LD name the live domain on purpose and are ignored.
+
+The way this regresses is a webfont: a `<link>` to Google Fonts is one line and
+costs a render-blocking round trip to a host with its own privacy story. Self-host
+it instead — download the woff2, subset it to the characters in use, and pin the
+optical-size axis of a variable font, which is usually the difference between
+130 KB and 50 KB.
 
 ## Motion is progressive enhancement
 
