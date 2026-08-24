@@ -1,13 +1,9 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages.js';
 	import { gsap } from '$lib/utils/gsap';
-	import { projects } from '$lib/data/projects';
+	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
+	import { featuredProjects } from '$lib/content/projects';
 
-	function msg(key: string): string {
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn?.() ?? key;
-	}
-
+	const projects = featuredProjects();
 	const projectCount = projects.length;
 	const sectionHeight = `${200 + projectCount * 200}vh`;
 
@@ -243,9 +239,9 @@
 			style="perspective: 1000px; transform-style: preserve-3d;"
 		>
 			<div bind:this={carouselEl} class="carousel relative h-full w-full">
-				{#each projects as project, i (project.id)}
+				{#each projects as project, i (project.slug)}
 					<a
-						href="/projects/{project.id}"
+						href="/projects/{project.slug}"
 						class="project-slide group"
 						data-cursor="View"
 						style="opacity: 0;"
@@ -261,7 +257,7 @@
 								class="ml-2 flex-1 rounded-md bg-bg-tertiary/30 px-2 py-0.5 sm:ml-4 sm:px-3 sm:py-1"
 							>
 								<span class="font-mono text-[9px] text-text-muted/60 sm:text-[11px]">
-									omerekmen.com/projects/{project.id}
+									omerekmen.com/projects/{project.slug}
 								</span>
 							</div>
 						</div>
@@ -272,25 +268,20 @@
 								<span class="font-mono text-[10px] tracking-widest text-text-muted/50 sm:text-xs">
 									{String(i + 1).padStart(2, '0')} / {String(projectCount).padStart(2, '0')}
 								</span>
-								<span
-									class="rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase sm:px-2.5 sm:text-[10px]
-									{project.status === 'ongoing' ? 'bg-accent/10 text-accent' : 'bg-emerald-500/10 text-emerald-400'}"
-								>
-									{project.status}
-								</span>
+								<TrackBadge track={project.track} progress={project.progress} />
 							</div>
 
 							<h3
 								class="mt-3 text-lg font-bold tracking-tight text-text sm:mt-4 sm:text-2xl md:text-3xl"
 								style="font-family: 'Bagel Fat One', sans-serif;"
 							>
-								{msg(project.titleKey)}
+								{project.title}
 							</h3>
 
 							<p
 								class="mt-2 line-clamp-2 text-xs leading-relaxed text-text-muted sm:mt-3 sm:line-clamp-3 sm:text-sm md:text-base"
 							>
-								{msg(project.descriptionKey)}
+								{project.summary}
 							</p>
 
 							<div class="mt-3 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">

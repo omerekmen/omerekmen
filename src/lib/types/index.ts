@@ -1,18 +1,6 @@
 export type Theme = 'light' | 'dark' | 'auto';
 export type ResolvedTheme = 'light' | 'dark';
 
-export type ProjectStatus = 'ongoing' | 'completed';
-
-export interface Project {
-	id: string;
-	status: ProjectStatus;
-	titleKey: string;
-	descriptionKey: string;
-	stack: string[];
-	github: string | null;
-	highlights: string[];
-}
-
 /**
  * CV content is stored as plain English text, not translation keys.
  *

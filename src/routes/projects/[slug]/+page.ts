@@ -1,23 +1,26 @@
-import { projects } from '$lib/data/projects';
 import { error } from '@sveltejs/kit';
+import { getProject, adjacentProjects, projectMeta } from '$lib/content/projects';
 import type { PageLoad } from './$types';
 
 export const prerender = true;
 
+/** Enumerates slugs so every project prerenders, including any not linked yet. */
+export function entries() {
+	return projectMeta.map((p) => ({ slug: p.slug }));
+}
+
 export const load: PageLoad = ({ params }) => {
-	const project = projects.find((p) => p.id === params.slug);
+	const entry = getProject(params.slug);
+	if (!entry) error(404, 'Project not found');
 
-	if (!project) {
-		error(404, 'Project not found');
-	}
-
-	const currentIndex = projects.indexOf(project);
-	const nextProject = projects[(currentIndex + 1) % projects.length];
-	const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length];
+	const { next, previous, index } = adjacentProjects(params.slug);
 
 	return {
-		project,
-		nextProject,
-		prevProject
+		meta: entry.meta,
+		hasBody: entry.hasBody,
+		next,
+		previous,
+		index,
+		total: projectMeta.length
 	};
 };

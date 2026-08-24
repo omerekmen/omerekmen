@@ -57,13 +57,52 @@ The sitemap covers every locale variant with real `lastmod` dates.
 
 ## Adding a project
 
-1. Create `src/content/projects/<slug>.md` with complete frontmatter
-2. Add media under `src/content/projects/media/`
-3. Set `track` honestly: `production`, `in-progress` or `lab`
-4. Set `confidential: true` if employer detail must be withheld
-5. Commit and push — CI validates the frontmatter schema and deploys on merge
+Projects are Markdown files in `src/content/projects/`. Frontmatter is data, the
+body is the case study. Both are validated at build time — a malformed file
+fails the build rather than rendering a broken page.
 
-No translation keys, no TypeScript array edits, no route wiring.
+1. Create `src/content/projects/<slug>.md`. The filename is the slug and the URL.
+2. Fill in the frontmatter:
+
+```yaml
+title: TELCO CRM Platform
+slug: telco-crm-platform # must match the filename
+track: production # production | in-progress | lab | archive
+role: Backend engineer -- capstone team
+period: Mar 2026 -- Jul 2026 # quote bare years, or YAML reads them as numbers
+summary: One or two sentences. Used on cards and as the meta description.
+stack: [Java 21, Spring Boot, Kafka]
+domains: [backend, distributed-systems]
+metrics:
+  - { label: Bounded contexts, value: '9' }
+links: { github: null, demo: null }
+featured: true # show on the homepage carousel
+confidential: false # true when employer detail must be withheld
+order: 100 # higher sorts first within a track
+progress: 15 of 22 services # in-progress only; replaces the track label
+```
+
+3. Write the body. The established shape is problem, architecture, what I built,
+   outcome, what I'd change. That last section is what separates a case study
+   from a CV bullet.
+4. Commit and push. CI validates and deploys on merge.
+
+No translation keys, no TypeScript edits, no route wiring.
+
+### Tracks
+
+| Track         | Meaning                                                 |
+| ------------- | ------------------------------------------------------- |
+| `production`  | Shipped, real users, CV-backed                          |
+| `in-progress` | Actively built, honestly labelled, not finished         |
+| `lab`         | Purpose-built to demonstrate a stack                    |
+| `archive`     | Earlier work kept for its URL and history, not featured |
+
+`metrics` describe outcomes of the system, not credentials about the author. A
+selection rate or a certificate belongs in the body.
+
+Archived projects keep their URLs and stay in the sitemap at lower priority, but
+are excluded from the homepage carousel.
 
 ## Branch and deploy
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { onNavigate, afterNavigate } from '$app/navigation';
-	import { locales, localizeHref } from '$lib/paraglide/runtime';
+	import { locales, localizeHref, deLocalizeUrl } from '$lib/paraglide/runtime';
 	import * as m from '$lib/paraglide/messages.js';
 	import { initTheme } from '$lib/utils/theme.svelte';
 	import { personal } from '$lib/data/personal';
@@ -18,6 +18,7 @@
 	// The links page is a standalone card and the CV is a document — neither
 	// wants a full-viewport contact footer appended to it.
 	const routeId = $derived(page.route.id ?? '');
+	const deLocalizedPath = $derived(deLocalizeUrl(page.url).pathname);
 	const showHeader = $derived(routeId !== '/s');
 	const showFooter = $derived(routeId !== '/s' && routeId !== '/cv');
 	let headerEl: HTMLElement | undefined = $state();
@@ -101,8 +102,16 @@
 	<meta name="author" content={personal.name} />
 	<meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)" />
 	<meta name="theme-color" content="#f5f5f0" media="(prefers-color-scheme: light)" />
-	<link rel="canonical" href="https://www.omerekmen.com{page.url.pathname}" />
+	<link rel="canonical" href="{personal.website}{page.url.pathname}" />
 	<link rel="sitemap" href="/sitemap.xml" />
+	{#each locales as locale (locale)}
+		<link
+			rel="alternate"
+			hreflang={locale}
+			href="{personal.website}{localizeHref(deLocalizedPath, { locale })}"
+		/>
+	{/each}
+	<link rel="alternate" hreflang="x-default" href="{personal.website}{deLocalizedPath}" />
 </svelte:head>
 
 <!-- ScrollSmoother wrapper structure -->
@@ -127,7 +136,7 @@
 					</span>
 
 					<nav class="ml-auto flex items-center gap-5 pr-14" aria-label="Primary">
-						<a href={localizeHref('/#work')} class="nav-link">{m.nav_work()}</a>
+						<a href={localizeHref('/projects')} class="nav-link">{m.nav_projects()}</a>
 						<a href={localizeHref('/cv')} class="nav-link">{m.nav_cv()}</a>
 						<a href={localizeHref('/s')} class="nav-link">{m.nav_links()}</a>
 					</nav>

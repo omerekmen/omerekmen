@@ -3,7 +3,7 @@
 	import { experiences } from '$lib/data/experience';
 	import { education, certificates } from '$lib/data/education';
 	import { skillGroups, projectExperienceSkills } from '$lib/data/skills';
-	import { cvProjects } from '$lib/data/projects';
+	import { cvProjects } from '$lib/data/cv-projects';
 	import { spokenLanguages } from '$lib/data/languages';
 	import * as m from '$lib/paraglide/messages.js';
 	import { gsap, SplitText } from '$lib/utils/gsap';

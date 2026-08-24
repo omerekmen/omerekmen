@@ -1,43 +1,60 @@
-import { projects } from '$lib/data/projects';
+import { projectMeta } from '$lib/content/projects';
+import { locales, localizeHref } from '$lib/paraglide/runtime';
+import { personal } from '$lib/data/personal';
 
 export const prerender = true;
 
+interface Entry {
+	path: string;
+	priority: string;
+	changefreq: string;
+}
+
 export function GET() {
-	const baseUrl = 'https://www.omerekmen.com';
 	const today = new Date().toISOString().split('T')[0];
 
-	const staticPages = [
+	const pages: Entry[] = [
 		{ path: '/', priority: '1.0', changefreq: 'weekly' },
+		{ path: '/projects', priority: '0.9', changefreq: 'weekly' },
 		{ path: '/cv', priority: '0.9', changefreq: 'monthly' },
-		{ path: '/s', priority: '0.7', changefreq: 'monthly' }
+		{ path: '/s', priority: '0.6', changefreq: 'monthly' },
+		...projectMeta.map((p) => ({
+			path: `/projects/${p.slug}`,
+			priority: p.track === 'archive' ? '0.5' : '0.8',
+			changefreq: 'monthly'
+		}))
 	];
 
-	const projectPages = projects.map((p) => ({
-		path: `/projects/${p.id}`,
-		priority: '0.8',
-		changefreq: 'monthly'
-	}));
+	const urls = pages.map((page) => {
+		// Every page exists in all five locales; declare them as alternates of each
+		// other so the set isn't read as duplicate content.
+		const alternates = locales
+			.map(
+				(locale) =>
+					`    <xhtml:link rel="alternate" hreflang="${locale}" href="${personal.website}${localizeHref(page.path, { locale })}" />`
+			)
+			.join('\n');
 
-	const allPages = [...staticPages, ...projectPages];
-
-	const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${allPages
-	.map(
-		(page) => `  <url>
-    <loc>${baseUrl}${page.path}</loc>
+		return locales
+			.map(
+				(locale) => `  <url>
+    <loc>${personal.website}${localizeHref(page.path, { locale })}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
+${alternates}
+    <xhtml:link rel="alternate" hreflang="x-default" href="${personal.website}${page.path}" />
   </url>`
-	)
-	.join('\n')}
+			)
+			.join('\n');
+	});
+
+	const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urls.join('\n')}
 </urlset>`;
 
 	return new Response(xml, {
-		headers: {
-			'Content-Type': 'application/xml',
-			'Cache-Control': 'max-age=3600'
-		}
+		headers: { 'Content-Type': 'application/xml', 'Cache-Control': 'max-age=3600' }
 	});
 }

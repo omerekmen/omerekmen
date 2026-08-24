@@ -120,7 +120,7 @@ Ordered by value per hour. Every phase ends deployable.
 - Fix reduced-motion stacking bug; scope the footer out of `/s` and `/cv`
 - Add real navigation; make the custom cursor fail safe
 
-### 02 — Content pipeline
+### 02 — Content pipeline (done)
 
 - Wire `mdsvex` + typed frontmatter validation
 - Migrate the existing five projects to Markdown as the proving run
