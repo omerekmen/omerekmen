@@ -124,7 +124,7 @@
 			class="-mt-3 text-center text-sm text-text-muted sm:text-base"
 			style="opacity: 0;"
 		>
-			Data Science & Software Engineering
+			{personal.title}
 		</p>
 
 		<!-- Location -->

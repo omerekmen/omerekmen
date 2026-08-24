@@ -21,6 +21,7 @@
 		{ x: 10, y: -3, rotate: -1.5 }
 	];
 
+	let reducedMotion = $state(false);
 	let sectionEl: HTMLElement | undefined = $state();
 	let pinEl: HTMLDivElement | undefined = $state();
 	let pillEl: HTMLDivElement | undefined = $state();
@@ -36,13 +37,15 @@
 		const isMobile = window.innerWidth < 640;
 
 		if (prefersReducedMotion) {
-			gsap.set(pillEl, { opacity: 0 });
-			gsap.set(rows, { opacity: 0.5 });
-			slides.forEach((slide, i) => {
-				gsap.set(slide, { opacity: 1, x: 0, y: 0 });
-			});
+			// Cards are absolutely positioned for the scroll choreography. Without
+			// the timeline to separate them they would all land on the same spot,
+			// so hand layout back to CSS and clear GSAP's inline transforms.
+			reducedMotion = true;
+			gsap.set(slides, { opacity: 1, clearProps: 'transform' });
 			return;
 		}
+
+		reducedMotion = false;
 
 		const tl = gsap.timeline({
 			scrollTrigger: {
@@ -86,18 +89,13 @@
 		rows.forEach((row, i) => {
 			const startX = i % 2 === 0 ? 0 : -50;
 			const endX = i % 2 === 0 ? -50 : 0;
-			tl.fromTo(
-				row,
-				{ xPercent: startX },
-				{ xPercent: endX, duration: 0.85, ease: 'none' },
-				0.12
-			);
+			tl.fromTo(row, { xPercent: startX }, { xPercent: endX, duration: 0.85, ease: 'none' }, 0.12);
 		});
 
 		// ── Phase 3: Projects — floating cards with overlap ──
 		slides.forEach((slide, i) => {
 			const pos = cardPositions[i % cardPositions.length];
-				const start = projectStart + i * projectSlice * (1 - overlapFactor);
+			const start = projectStart + i * projectSlice * (1 - overlapFactor);
 			const enterEnd = start + projectSlice * 0.15;
 			const holdEnd = start + projectSlice * 0.85;
 			const exitEnd = holdEnd + projectSlice * 0.25;
@@ -193,16 +191,22 @@
 	});
 </script>
 
-<section bind:this={sectionEl} class="relative" style="height: {sectionHeight};">
-	<div
-		bind:this={pinEl}
-		class="pin-container relative h-screen w-full overflow-hidden bg-bg"
-	>
+<section
+	bind:this={sectionEl}
+	class="relative"
+	class:reduced-motion={reducedMotion}
+	style={reducedMotion ? '' : `height: ${sectionHeight};`}
+>
+	<h2 class="work-heading">Work</h2>
+	<div bind:this={pinEl} class="pin-container relative h-screen w-full overflow-hidden bg-bg">
 		<!-- ═══ DOT GRID BACKGROUND ═══ -->
 		<div class="dot-grid"></div>
 
 		<!-- ═══ PILL ═══ -->
-		<div bind:this={pillEl} class="pointer-events-none absolute inset-0 z-30 flex items-center justify-center">
+		<div
+			bind:this={pillEl}
+			class="pill-layer pointer-events-none absolute inset-0 z-30 flex items-center justify-center"
+		>
 			<div class="work-pill">
 				<span class="pill-letter">W</span>
 				<span class="pill-letter">O</span>
@@ -214,18 +218,18 @@
 		<!-- ═══ LETTER ROWS (seamless marquee — 2 identical sets per row) ═══ -->
 		<div
 			bind:this={lettersEl}
-			class="pointer-events-none absolute inset-0 z-0 flex flex-col justify-center select-none overflow-hidden"
+			class="letters-layer pointer-events-none absolute inset-0 z-0 flex flex-col justify-center overflow-hidden select-none"
 			aria-hidden="true"
 			style="perspective: 600px; transform-style: preserve-3d;"
 		>
 			{#each ['W', 'O', 'R', 'K'] as letter (letter)}
 				<div class="letter-row" style="opacity: 0; transform-style: preserve-3d;">
 					<!-- Set 1 -->
-					{#each { length: 15 } as _, j (j)}
+					{#each { length: 15 } as _unused, j (j)}
 						<span class="letter-char">{letter}</span>
 					{/each}
 					<!-- Set 2 (identical — for seamless loop) -->
-					{#each { length: 15 } as _, j (`dup-${j}`)}
+					{#each { length: 15 } as _unused, j (`dup-${j}`)}
 						<span class="letter-char">{letter}</span>
 					{/each}
 				</div>
@@ -237,7 +241,7 @@
 			class="absolute inset-0 z-20 flex items-center justify-center"
 			style="perspective: 1000px; transform-style: preserve-3d;"
 		>
-			<div bind:this={carouselEl} class="relative h-full w-full">
+			<div bind:this={carouselEl} class="carousel relative h-full w-full">
 				{#each projects as project, i (project.id)}
 					<a
 						href="/projects/{project.id}"
@@ -246,11 +250,15 @@
 						style="opacity: 0;"
 					>
 						<!-- Browser chrome -->
-						<div class="flex items-center gap-1.5 border-b border-border-subtle/50 px-3 py-2 sm:gap-2 sm:px-5 sm:py-3">
+						<div
+							class="flex items-center gap-1.5 border-b border-border-subtle/50 px-3 py-2 sm:gap-2 sm:px-5 sm:py-3"
+						>
 							<span class="h-2 w-2 rounded-full bg-[#ff5f57] sm:h-3 sm:w-3"></span>
 							<span class="h-2 w-2 rounded-full bg-[#febc2e] sm:h-3 sm:w-3"></span>
 							<span class="h-2 w-2 rounded-full bg-[#28c840] sm:h-3 sm:w-3"></span>
-							<div class="ml-2 flex-1 rounded-md bg-bg-tertiary/30 px-2 py-0.5 sm:ml-4 sm:px-3 sm:py-1">
+							<div
+								class="ml-2 flex-1 rounded-md bg-bg-tertiary/30 px-2 py-0.5 sm:ml-4 sm:px-3 sm:py-1"
+							>
 								<span class="font-mono text-[9px] text-text-muted/60 sm:text-[11px]">
 									omerekmen.com/projects/{project.id}
 								</span>
@@ -265,9 +273,7 @@
 								</span>
 								<span
 									class="rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase sm:px-2.5 sm:text-[10px]
-									{project.status === 'ongoing'
-										? 'bg-accent/10 text-accent'
-										: 'bg-emerald-500/10 text-emerald-400'}"
+									{project.status === 'ongoing' ? 'bg-accent/10 text-accent' : 'bg-emerald-500/10 text-emerald-400'}"
 								>
 									{project.status}
 								</span>
@@ -280,7 +286,9 @@
 								{msg(project.titleKey)}
 							</h3>
 
-							<p class="mt-2 line-clamp-2 text-xs leading-relaxed text-text-muted sm:mt-3 sm:line-clamp-3 sm:text-sm md:text-base">
+							<p
+								class="mt-2 line-clamp-2 text-xs leading-relaxed text-text-muted sm:mt-3 sm:line-clamp-3 sm:text-sm md:text-base"
+							>
 								{msg(project.descriptionKey)}
 							</p>
 
@@ -293,7 +301,9 @@
 									</span>
 								{/each}
 								{#if project.stack.length > 5}
-									<span class="rounded-full border border-border-subtle bg-bg-tertiary/50 px-2 py-0.5 font-mono text-[9px] font-medium text-text-muted sm:px-3 sm:py-1 sm:text-[11px]">
+									<span
+										class="rounded-full border border-border-subtle bg-bg-tertiary/50 px-2 py-0.5 font-mono text-[9px] font-medium text-text-muted sm:px-3 sm:py-1 sm:text-[11px]"
+									>
 										+{project.stack.length - 5}
 									</span>
 								{/if}
@@ -325,6 +335,58 @@
 </section>
 
 <style>
+	/* ── Accessible section heading (the giant WORK letters are decoration) ── */
+	.work-heading {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	/* ── Reduced motion: a plain, readable vertical list ── */
+	.reduced-motion .pin-container {
+		height: auto;
+		overflow: visible;
+		padding: 5rem 1rem;
+	}
+
+	.reduced-motion .pill-layer,
+	.reduced-motion .letters-layer {
+		display: none;
+	}
+
+	.reduced-motion .carousel {
+		display: flex;
+		height: auto;
+		flex-direction: column;
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.reduced-motion .carousel > :global(.project-slide) {
+		position: relative;
+		top: auto;
+		left: auto;
+		transform: none;
+	}
+
+	.reduced-motion .work-heading {
+		position: static;
+		width: auto;
+		height: auto;
+		margin: 0 0 2.5rem;
+		clip-path: none;
+		font-family: 'Bagel Fat One', sans-serif;
+		font-size: clamp(2.5rem, 8vw, 5rem);
+		color: var(--color-accent);
+		text-align: center;
+	}
+
 	/* ── Dot grid background ── */
 	.dot-grid {
 		position: absolute;

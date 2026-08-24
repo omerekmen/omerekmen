@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=28&duration=3000&pause=1000&color=B8D8B0&center=true&vCenter=true&random=false&width=500&lines=%C3%96mer+Ekmen;Data+Scientist;Software+Engineer;Mathematics+Graduate" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=28&duration=3000&pause=1000&color=B8D8B0&center=true&vCenter=true&random=false&width=520&lines=%C3%96mer+Ekmen;Data+Engineer;Software+Engineer;Mathematics+Graduate" alt="Typing SVG" />
 </h1>
 
 <p align="center">
@@ -12,35 +12,50 @@
 
 ### About Me
 
-Mathematics graduate from **Galatasaray University** (B.Sc.) with a 4.0/4.0 Reinforcement Learning thesis. I build data-driven systems and backend solutions — from classification models and analytical dashboards to full-stack platforms managing real users and real revenue.
+Engineer with 2.5 years across enterprise backend and the Microsoft data platform. I build production data pipelines on **Microsoft Fabric** and **Azure Data Factory** at Koç Group, and previously owned ERP accounting and purchasing modules in .NET through a Framework to .NET 8 migration. B.Sc. Mathematics from **Galatasaray University**, taught in French, with a reinforcement learning thesis graded 4.0/4.0.
 
-- Currently interning at **Otokoç Otomotiv** as a Software Engineer, working on enterprise ERP systems
-- Building **[Klauthed](https://www.omerekmen.com/projects/klauthed)** — an enterprise-grade multi-tenant auth platform in Rust
-- Building **[Scivex](https://github.com/scivex/scivex)** — an open-source scientific data processing library in Rust
+- **Data Science Engineer** at SeturTech (Koç Group) — Fabric lakehouse/warehouse pipelines, Azure Data Factory, Power BI
+- Previously **Software Engineer** at Otokoç Otomotiv (Koç Group) — ERP backend, .NET 8 migration, SQL Server
+- Open to EU relocation — eligible for **EU Blue Card** and **Netherlands Highly Skilled Migrant** sponsorship
 
 ### Tech Stack
 
 ```
-Languages       Python · SQL · C# · JavaScript · Rust
-Data & ML       Scikit-Learn · TensorFlow · PyTorch · Pandas · NumPy
-Visualization   Plotly · Seaborn · Matplotlib · Tableau · Power BI
-Backend         Django · .NET · Actix-web · REST APIs
-Frontend        SvelteKit · Svelte 5 · Tailwind CSS · GSAP
-Databases       PostgreSQL · SQL Server · CockroachDB · Redis
-Infrastructure  Docker · Cloudflare · Azure DevOps · SSIS
+Languages       C# · Python · SQL (T-SQL) · Java · TypeScript
+Data            Microsoft Fabric · Azure Data Factory · Azure SQL · Azure Functions
+                Power BI · SSIS · SSRS · SQL Server · PostgreSQL
+.NET            ASP.NET Core Web API · .NET 8 · EF Core · LINQ · MediatR/CQRS
+Python          Django · FastAPI · SQLAlchemy · Pydantic · Pandas · NumPy
+Platform        Docker · Kubernetes · RabbitMQ · Redis · Kafka · Azure DevOps
+                GitHub Actions · AWS (EC2, S3) · CI/CD · Linux
+Working on      Spark/PySpark · Parquet · Delta · dbt · Airflow · BigQuery · Polars
 ```
 
 ### Languages
 
-| Turkish |     English      |      French      |
-| :-----: | :--------------: | :--------------: |
-| Native  | B2+ Professional | B2+ Professional |
+| Turkish |            French             |     English      |
+| :-----: | :---------------------------: | :--------------: |
+| Native  | B2+ (degree taught in French) | B2+ Professional |
 
-### Certifications
+### Training & Certifications
 
+- **Turkcell GYGY 5.0 — Java Development Track**, 2026 — selected among 35 of ~5,000 applicants
 - **IBM Data Science Professional Certificate** — Coursera, 2023
 
 ---
+
+### This repository
+
+The source of omerekmen.com — SvelteKit 2 (Svelte 5 runes), Tailwind 4, GSAP, Paraglide i18n,
+deployed to Cloudflare Pages. See [`docs/`](./docs) for the audit, roadmap and working guideline.
+
+```bash
+bun install
+bun run dev      # dev server
+bun run build    # production build
+bun run check    # type check
+bun run lint     # prettier + eslint
+```
 
 <p align="center">
   <a href="https://www.omerekmen.com/s">

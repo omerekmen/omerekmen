@@ -4,30 +4,30 @@ Performed against `master` @ `cdeca77`. All measurements taken from a local prod
 
 ## Measured
 
-| Metric | Value |
-| --- | --- |
-| three.js chunk | 725 KB raw / 181 KB gzip |
-| GSAP + plugins chunk | 139 KB raw / 54 KB gzip |
-| Total client JS | 1.02 MB raw |
-| `static/og-image.png` | 1.8 MB |
-| Fonts shipped | 738 KB (11 KB unreferenced) |
-| Dead code | 1,487 of 5,619 source lines (26%) |
-| Routes prerendered | 100% — the Worker never runs for a page request |
+| Metric                | Value                                           |
+| --------------------- | ----------------------------------------------- |
+| three.js chunk        | 725 KB raw / 181 KB gzip                        |
+| GSAP + plugins chunk  | 139 KB raw / 54 KB gzip                         |
+| Total client JS       | 1.02 MB raw                                     |
+| `static/og-image.png` | 1.8 MB                                          |
+| Fonts shipped         | 738 KB (11 KB unreferenced)                     |
+| Dead code             | 1,487 of 5,619 source lines (26%)               |
+| Routes prerendered    | 100% — the Worker never runs for a page request |
 
 ## Content drift (highest value, no design work required)
 
 The site and the updated CV describe two different engineers.
 
-| Field | Site | Updated CV |
-| --- | --- | --- |
-| Headline | Data Scientist & Software Engineer | Software Engineering & Data Engineering |
-| Current role | SWE Intern, Otokoç — Present | Data Science Engineer, SeturTech (Koç Group), Jul 2026–Present |
-| Otokoç | Ongoing | Working Student, 24 months, ended May 2026 |
-| Freelance | Absent | Dec 2023–Feb 2025, two production systems |
-| Projects | Klauthed, Scivex, SpaceX, Data Analysis | TELCO CRM, video pipeline, Nesin property platform, SaaS e-commerce |
-| Certifications | IBM only | Turkcell GYGY 5.0 (35 of ~5,000) + IBM |
-| Education | GPA 2.99 displayed | GPA omitted |
-| Relocation | Silent | EU Blue Card + NL Highly Skilled Migrant eligible |
+| Field          | Site                                    | Updated CV                                                          |
+| -------------- | --------------------------------------- | ------------------------------------------------------------------- |
+| Headline       | Data Scientist & Software Engineer      | Software Engineering & Data Engineering                             |
+| Current role   | SWE Intern, Otokoç — Present            | Data Science Engineer, SeturTech (Koç Group), Jul 2026–Present      |
+| Otokoç         | Ongoing                                 | Working Student, 24 months, ended May 2026                          |
+| Freelance      | Absent                                  | Dec 2023–Feb 2025, two production systems                           |
+| Projects       | Klauthed, Scivex, SpaceX, Data Analysis | TELCO CRM, video pipeline, Nesin property platform, SaaS e-commerce |
+| Certifications | IBM only                                | Turkcell GYGY 5.0 (35 of ~5,000) + IBM                              |
+| Education      | GPA 2.99 displayed                      | GPA omitted                                                         |
+| Relocation     | Silent                                  | EU Blue Card + NL Highly Skilled Migrant eligible                   |
 
 **Fix immediately:** the site publishes the 2.99 GPA that the CV deliberately drops.
 `src/lib/data/education.ts` and hardcoded again in `src/routes/cv/+page.svelte`.

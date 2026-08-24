@@ -1,6 +1,6 @@
 /* TEAM */
 Name: Ömer Ekmen
-Role: Developer & Designer
+Role: Software & Data Engineer
 Location: Istanbul, Turkey
 Contact: omerekmenn@gmail.com
 GitHub: github.com/omerekmen

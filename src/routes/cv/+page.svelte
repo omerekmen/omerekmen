@@ -1,148 +1,14 @@
 <script lang="ts">
 	import { personal } from '$lib/data/personal';
+	import { experiences } from '$lib/data/experience';
+	import { education, certificates } from '$lib/data/education';
+	import { skillGroups, projectExperienceSkills } from '$lib/data/skills';
+	import { cvProjects } from '$lib/data/projects';
+	import { spokenLanguages } from '$lib/data/languages';
+	import * as m from '$lib/paraglide/messages.js';
 	import { gsap, SplitText } from '$lib/utils/gsap';
 
-	// ── CV Data ──
-	const summary =
-		'Mathematics graduate (B.Sc., Galatasaray University) with a 4.0/4.0 reinforcement learning thesis and hands-on experience building production-grade, data-driven systems in enterprise environments. Combines a strong academic foundation in data science, optimization, and machine learning, complemented by hands-on experience building enterprise ERP systems and independently deploying full-stack cloud platforms.';
-
-	const education = {
-		degree: 'B.Sc. in Mathematics',
-		school: 'Galatasaray University',
-		location: 'Istanbul, Turkey',
-		period: 'Sep 2018 – Feb 2026',
-		gpa: '2.99 / 4.0',
-		details: [
-			{
-				label: 'Thesis',
-				text: 'Apprentissage par Renforcement (Reinforcement Learning) — Grade: AA (4.0 / 4.0), Advisor: Assoc. Prof. Dr. Ayşegül Ulus'
-			},
-			{
-				label: 'Coursework',
-				text: 'Machine Learning, Natural Language Processing, Probability Theory, Linear Algebra, Numerical Analysis, Applied Mathematics, Cryptography'
-			},
-			{
-				label: 'Language',
-				text: 'French (full 4-year academic curriculum delivered in French)'
-			},
-			{
-				label: 'Leadership',
-				text: 'Mathematics Club Board Member (2021–2022), Photography Club Board Member (2018–2023); organized 35+ academic and cultural events'
-			}
-		]
-	};
-
-	const experience = [
-		{
-			role: 'Software Engineer Intern',
-			company: 'Otokoç Otomotiv',
-			location: 'Istanbul, Turkey',
-			period: 'Jun 2024 – Present',
-			bullets: [
-				'Contributed to backend development of enterprise ERP systems using .NET and SQL Server, supporting finance and operational domains across multiple departments.',
-				'Developed and optimized T-SQL stored procedures for operational workflows, reporting pipelines, and data transformation processes.',
-				'Designed complex queries across highly relational schemas to support system operations and analytical reporting.',
-				'Built SSIS packages to automate recurring data integration and ETL processes.',
-				'Developed SSRS reports used by business teams for operational monitoring and decision-making.',
-				'Collaborated on 20+ deliverables using Agile methodologies and Azure DevOps with cross-functional teams.'
-			]
-		},
-		{
-			role: 'Data Analytics Intern',
-			company: 'Vakıf Katılım Bank',
-			location: 'Istanbul, Turkey',
-			period: 'Sep 2023 – Oct 2023',
-			bullets: [
-				'Analyzed financial and operational datasets using SQL and Python to support senior management decision-making.',
-				'Developed structured reports and dashboards using business intelligence tools for data visualization.',
-				'Collaborated with finance and compliance teams to streamline data workflows and ensure regulatory alignment.'
-			]
-		}
-	];
-
-	const projects = [
-		{
-			name: 'Property Management Analytics Platform',
-			meta: 'Production System — Private Repository',
-			github: null,
-			bullets: [
-				'Engineered a full-stack platform managing 100+ property listings with automated rent tracking, expense analytics, and tenant management for a real client.',
-				'Designed a PostgreSQL schema with 15+ normalized tables; optimized queries reduced dashboard load time by 60%.',
-				'Built financial reporting module generating monthly P&L statements, occupancy metrics, and payment summaries.'
-			],
-			stack: ['Django', 'PostgreSQL', 'REST APIs', 'HTML/CSS', 'JavaScript', 'Bootstrap']
-		},
-		{
-			name: 'SpaceX Falcon 9 Landing Prediction System',
-			meta: null,
-			github: 'https://github.com/omerekmen/Space-X-Falcon-9-Landing-Analysis',
-			bullets: [
-				'Built classification models (Logistic Regression, SVM, Decision Trees, KNN) achieving 85% accuracy in predicting first-stage landing success.',
-				'Performed end-to-end data pipeline: API data collection, cleaning, feature engineering, and model evaluation with cross-validation.',
-				'Created interactive geospatial visualizations using Folium and Plotly for landing site analysis.'
-			],
-			stack: ['Python', 'Scikit-Learn', 'Pandas', 'NumPy', 'Matplotlib', 'Folium', 'Plotly']
-		},
-		{
-			name: 'Real-World Data Analysis Portfolio',
-			meta: null,
-			github: 'https://github.com/omerekmen/Working-with-real-world-data-sets',
-			bullets: [
-				'Conducted multi-dataset analysis: housing price prediction (regression), customer segmentation (K-means clustering), and market trend classification.',
-				'Applied statistical hypothesis testing and feature selection techniques to improve model interpretability.'
-			],
-			stack: ['Python', 'Scikit-Learn', 'Pandas', 'Plotly', 'Seaborn']
-		}
-	];
-
-	const skills = [
-		{
-			category: 'Languages',
-			items: ['Python', 'SQL (T-SQL, PostgreSQL)', 'C#', 'JavaScript']
-		},
-		{
-			category: 'Data Science & ML',
-			items: [
-				'Scikit-Learn',
-				'TensorFlow',
-				'PyTorch',
-				'Pandas',
-				'NumPy',
-				'Statistical Modeling',
-				'Hypothesis Testing',
-				'Feature Engineering',
-				'A/B Testing'
-			]
-		},
-		{
-			category: 'Visualization & BI',
-			items: ['Matplotlib', 'Seaborn', 'Plotly', 'Folium', 'Tableau', 'Power BI', 'SSRS']
-		},
-		{
-			category: 'Databases & Data Engineering',
-			items: ['SQL Server', 'PostgreSQL', 'SSIS', 'Query Optimization', 'Data Modeling']
-		},
-		{
-			category: 'Software Engineering',
-			items: ['Django', '.NET', 'REST APIs', 'Git', 'Docker', 'Azure DevOps', 'Agile/Scrum']
-		}
-	];
-
-	const certifications = [
-		{
-			name: 'IBM Data Science Professional Certificate',
-			issuer: 'Coursera',
-			date: 'Aug 2023',
-			credential: 'TK3PHHTVV248',
-			url: 'https://www.coursera.org/account/accomplishments/professional-cert/TK3PHHTVV248'
-		}
-	];
-
-	const languages = [
-		{ name: 'Turkish', level: 'Native', dots: 5 },
-		{ name: 'English', level: 'Professional Working Proficiency (B2+)', dots: 4 },
-		{ name: 'French', level: 'Professional Working Proficiency (B2+)', dots: 4 }
-	];
+	const degree = education[0];
 
 	// ── Refs ──
 	let pageEl: HTMLElement | undefined = $state();
@@ -161,7 +27,6 @@
 		}
 
 		const ctx = gsap.context(() => {
-			// Name entrance
 			const splitName = new SplitText(nameEl!, { type: 'chars' });
 			gsap.from(splitName.chars, {
 				opacity: 0,
@@ -173,7 +38,6 @@
 				delay: 0.2
 			});
 
-			// Section reveals
 			const sections = pageEl!.querySelectorAll('.cv-section');
 			sections.forEach((section) => {
 				gsap.from(section, {
@@ -181,44 +45,29 @@
 					y: 30,
 					duration: 0.7,
 					ease: 'power3.out',
-					scrollTrigger: {
-						trigger: section,
-						start: 'top 85%',
-						once: true
-					}
+					scrollTrigger: { trigger: section, start: 'top 85%', once: true }
 				});
 			});
 
-			// Skill pills
 			const pillGroups = pageEl!.querySelectorAll('.skill-group');
 			pillGroups.forEach((group) => {
-				const pills = group.querySelectorAll('.skill-pill');
-				gsap.from(pills, {
+				gsap.from(group.querySelectorAll('.skill-pill'), {
 					opacity: 0,
 					scale: 0.6,
 					duration: 0.4,
 					stagger: 0.04,
 					ease: 'back.out(1.7)',
-					scrollTrigger: {
-						trigger: group,
-						start: 'top 85%',
-						once: true
-					}
+					scrollTrigger: { trigger: group, start: 'top 85%', once: true }
 				});
 			});
 
-			// Timeline dots pulse
 			const dots = pageEl!.querySelectorAll('.timeline-dot');
 			dots.forEach((dot) => {
 				gsap.from(dot, {
 					scale: 0,
 					duration: 0.5,
 					ease: 'back.out(2)',
-					scrollTrigger: {
-						trigger: dot,
-						start: 'top 85%',
-						once: true
-					}
+					scrollTrigger: { trigger: dot, start: 'top 85%', once: true }
 				});
 			});
 		}, pageEl);
@@ -235,16 +84,16 @@
 	<title>CV — {personal.name}</title>
 	<meta
 		name="description"
-		content="Curriculum Vitae of {personal.name} — Data Scientist & Software Engineer. Mathematics graduate from Galatasaray University with expertise in ML, Python, SQL, and full-stack development."
+		content="Curriculum Vitae of {personal.name} — {personal.title}. Production data pipelines on Microsoft Fabric and Azure Data Factory, enterprise backend in .NET and Python."
 	/>
 	<meta property="og:type" content="profile" />
-	<meta property="og:url" content="https://www.omerekmen.com/cv" />
+	<meta property="og:url" content="{personal.website}/cv" />
 	<meta property="og:title" content="CV — {personal.name}" />
 	<meta
 		property="og:description"
-		content="Interactive CV — Data Scientist & Software Engineer building production-grade data-driven systems."
+		content="{personal.title} — production data pipelines and enterprise backend systems."
 	/>
-	<meta property="og:image" content="https://www.omerekmen.com/og-image.png" />
+	<meta property="og:image" content="{personal.website}/og-image.png" />
 	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
@@ -305,7 +154,7 @@
 				{personal.name.toUpperCase()}
 			</h1>
 
-			<p class="mt-3 text-lg text-text-secondary">Data Science & Software Engineering</p>
+			<p class="mt-3 text-lg text-text-secondary">{personal.title}</p>
 
 			<!-- Contact row -->
 			<div
@@ -330,7 +179,7 @@
 					{personal.location}
 				</span>
 				<a
-					href="mailto:omerekmenn@gmail.com"
+					href="mailto:{personal.email}"
 					class="flex items-center gap-1.5 transition-colors hover:text-accent"
 				>
 					<svg
@@ -346,7 +195,26 @@
 							d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"
 						/>
 					</svg>
-					omerekmenn@gmail.com
+					{personal.email}
+				</a>
+				<a
+					href="tel:{personal.phone.replace(/\s/g, '')}"
+					class="flex items-center gap-1.5 transition-colors hover:text-accent"
+				>
+					<svg
+						class="h-3.5 w-3.5"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path
+							d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"
+						/>
+					</svg>
+					{personal.phone}
 				</a>
 				<a
 					href={personal.website}
@@ -395,37 +263,55 @@
 				</a>
 			</div>
 
+			<p class="mt-4 text-xs leading-relaxed text-text-muted">
+				{m.work_auth_full()}
+			</p>
+
 			<div class="mx-auto mt-5 h-px w-24 bg-accent/40"></div>
 		</header>
 
-		<!-- ═══ SUMMARY ═══ -->
+		<!-- ═══ PROFILE ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Summary</h2>
-			<p class="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{summary}</p>
+			<h2 class="section-title">Profile</h2>
+			<p class="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+				{personal.summary}
+			</p>
 		</section>
 
-		<!-- ═══ EDUCATION ═══ -->
+		<!-- ═══ TECHNICAL SKILLS ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Education</h2>
-			<div class="mt-6 border-l-2 border-accent/20 pl-6">
-				<div class="relative">
-					<div class="timeline-dot"></div>
-					<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-						<h3 class="text-base font-bold text-text">{education.degree}</h3>
-						<span class="font-mono text-xs tracking-wider text-text-muted">{education.period}</span>
+			<h2 class="section-title">Technical Skills</h2>
+			<div class="mt-6 flex flex-col gap-5">
+				{#each skillGroups as group (group.categoryKey)}
+					<div class="skill-group">
+						<h3 class="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
+							{group.label}
+						</h3>
+						<div class="mt-2.5 flex flex-wrap gap-2">
+							{#each group.skills as item (item)}
+								<span
+									class="skill-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-3 py-1.5 text-xs font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent"
+								>
+									{item}
+								</span>
+							{/each}
+						</div>
 					</div>
-					<p class="mt-1 text-sm text-text-secondary italic">
-						{education.school} — {education.location}
-						<span class="text-text-muted not-italic">| GPA: {education.gpa}</span>
-					</p>
-					<ul class="mt-4 flex flex-col gap-3">
-						{#each education.details as detail (detail.label)}
-							<li class="text-sm leading-relaxed text-text-secondary">
-								<span class="font-semibold text-text">{detail.label}:</span>
-								{detail.text}
-							</li>
+				{/each}
+
+				<div class="skill-group">
+					<h3 class="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
+						Project Experience
+					</h3>
+					<div class="mt-2.5 flex flex-wrap gap-2">
+						{#each projectExperienceSkills as item (item)}
+							<span
+								class="skill-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-3 py-1.5 text-xs font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent"
+							>
+								{item}
+							</span>
 						{/each}
-					</ul>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -434,14 +320,27 @@
 		<section class="cv-section mt-12">
 			<h2 class="section-title">Experience</h2>
 			<div class="mt-6 flex flex-col gap-10">
-				{#each experience as job (job.company)}
+				{#each experiences as job (job.id)}
 					<div class="relative border-l-2 border-accent/20 pl-6">
 						<div class="timeline-dot"></div>
 						<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-							<h3 class="text-base font-bold text-text">{job.role}</h3>
+							<h3 class="text-base font-bold text-text">
+								{job.role}
+								{#if job.current}
+									<span
+										class="ml-2 rounded-full bg-accent/10 px-2 py-0.5 align-middle font-mono text-[10px] font-semibold tracking-wider text-accent uppercase"
+									>
+										Current
+									</span>
+								{/if}
+							</h3>
 							<span class="font-mono text-xs tracking-wider text-text-muted">{job.period}</span>
 						</div>
-						<p class="mt-1 text-sm text-text-secondary italic">{job.company} — {job.location}</p>
+						<p class="mt-1 text-sm text-text-secondary italic">
+							{job.company}{#if job.via}<span class="text-text-muted not-italic">
+									&nbsp;via {job.via}</span
+								>{/if} — {job.location}
+						</p>
 						<ul class="mt-4 flex flex-col gap-2">
 							{#each job.bullets as bullet (bullet)}
 								<li
@@ -462,7 +361,7 @@
 		<section class="cv-section mt-12">
 			<h2 class="section-title">Projects</h2>
 			<div class="mt-6 flex flex-col gap-6">
-				{#each projects as project (project.name)}
+				{#each cvProjects as project (project.name)}
 					<div
 						class="project-card rounded-xl border border-border-subtle bg-bg-secondary/30 p-5 transition-all duration-200 hover:border-accent/20 hover:bg-bg-secondary/60"
 					>
@@ -482,7 +381,7 @@
 									</svg>
 									GitHub
 								</a>
-							{:else if project.meta}
+							{:else}
 								<span class="font-mono text-xs text-text-muted">{project.meta}</span>
 							{/if}
 						</div>
@@ -509,47 +408,56 @@
 			</div>
 		</section>
 
-		<!-- ═══ TECHNICAL SKILLS ═══ -->
+		<!-- ═══ EDUCATION ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Technical Skills</h2>
-			<div class="mt-6 flex flex-col gap-5">
-				{#each skills as group (group.category)}
-					<div class="skill-group">
-						<h3 class="font-mono text-xs font-semibold tracking-wider text-accent uppercase">
-							{group.category}
-						</h3>
-						<div class="mt-2.5 flex flex-wrap gap-2">
-							{#each group.items as item (item)}
-								<span
-									class="skill-pill rounded-full border border-border-subtle bg-bg-secondary/60 px-3 py-1.5 text-xs font-medium text-text-secondary transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 hover:text-accent"
-								>
-									{item}
-								</span>
-							{/each}
-						</div>
+			<h2 class="section-title">Education</h2>
+			<div class="mt-6 border-l-2 border-accent/20 pl-6">
+				<div class="relative">
+					<div class="timeline-dot"></div>
+					<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+						<h3 class="text-base font-bold text-text">{degree.degree}</h3>
+						<span class="font-mono text-xs tracking-wider text-text-muted">{degree.period}</span>
 					</div>
-				{/each}
+					<p class="mt-1 text-sm text-text-secondary italic">
+						{degree.institution} — {degree.location}
+					</p>
+					<ul class="mt-4 flex flex-col gap-3">
+						{#each degree.details as detail (detail.label)}
+							<li class="text-sm leading-relaxed text-text-secondary">
+								<span class="font-semibold text-text">{detail.label}:</span>
+								{detail.text}
+							</li>
+						{/each}
+					</ul>
+				</div>
 			</div>
 		</section>
 
-		<!-- ═══ CERTIFICATIONS ═══ -->
+		<!-- ═══ TRAINING & CERTIFICATIONS ═══ -->
 		<section class="cv-section mt-12">
-			<h2 class="section-title">Certifications</h2>
-			<div class="mt-4">
-				{#each certifications as cert (cert.name)}
-					<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-						<div>
-							<span class="text-sm font-bold text-text">{cert.name}</span>
-							<span class="text-sm text-text-muted"> — {cert.issuer}, {cert.date}</span>
+			<h2 class="section-title">Training &amp; Certifications</h2>
+			<div class="mt-5 flex flex-col gap-5">
+				{#each certificates as cert (cert.id)}
+					<div>
+						<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+							<div>
+								<span class="text-sm font-bold text-text">{cert.name}</span>
+								<span class="text-sm text-text-muted"> — {cert.issuer}, {cert.date}</span>
+							</div>
+							{#if cert.credentialUrl && cert.credentialId}
+								<a
+									href={cert.credentialUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="shrink-0 font-mono text-xs text-accent transition-colors hover:text-accent-hover"
+								>
+									Credential: {cert.credentialId}
+								</a>
+							{/if}
 						</div>
-						<a
-							href={cert.url}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="font-mono text-xs text-accent transition-colors hover:text-accent-hover"
-						>
-							Credential: {cert.credential}
-						</a>
+						{#if cert.note}
+							<p class="mt-1.5 text-sm leading-relaxed text-text-secondary">{cert.note}</p>
+						{/if}
 					</div>
 				{/each}
 			</div>
@@ -559,12 +467,12 @@
 		<section class="cv-section mt-12 mb-16">
 			<h2 class="section-title">Languages</h2>
 			<div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-				{#each languages as lang (lang.name)}
+				{#each spokenLanguages as lang (lang.name)}
 					<div class="rounded-xl border border-border-subtle bg-bg-secondary/30 p-4">
 						<h3 class="text-sm font-bold text-text">{lang.name}</h3>
-						<p class="mt-1 text-xs text-text-muted">{lang.level}</p>
+						<p class="mt-1 text-xs leading-relaxed text-text-muted">{lang.level}</p>
 						<div class="mt-3 flex gap-1.5">
-							{#each { length: 5 } as _item, i (i)}
+							{#each { length: 5 } as _unused, i (i)}
 								<span
 									class="h-2 w-2 rounded-full {i < lang.dots ? 'bg-accent' : 'bg-border-subtle'}"
 								></span>

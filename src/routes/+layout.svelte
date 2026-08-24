@@ -113,9 +113,9 @@
 					{personal.name.toUpperCase()}
 				</a>
 				<span
-					class="hidden text-[10px] font-extrabold tracking-[0.2em] text-text-muted/90 uppercase sm:block"
+					class="hidden text-[11px] font-extrabold tracking-[0.18em] text-text-muted/90 uppercase sm:block"
 				>
-					Data Scientist & <br />Software Engineer
+					Software Engineering & <br />Data Engineering
 				</span>
 			</header>
 

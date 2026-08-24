@@ -45,7 +45,6 @@
 
 	// React to theme changes
 	$effect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const _theme = getResolvedTheme();
 		if (sceneInstance) {
 			sceneInstance.updateColors(getAccentColor());

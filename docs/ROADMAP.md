@@ -2,12 +2,12 @@
 
 ## Decisions locked
 
-| Area | Decision |
-| --- | --- |
+| Area     | Decision                                                                 |
+| -------- | ------------------------------------------------------------------------ |
 | Projects | CV set + Klauthed/Scivex as in-progress + new data-engineering showcases |
-| Content | Markdown case studies in the repo |
-| Visual | Prototype all three directions, decide after seeing them |
-| Audience | Loud EU/NL relocation signalling, gated for visitors in Turkey |
+| Content  | Markdown case studies in the repo                                        |
+| Visual   | Prototype all three directions, decide after seeing them                 |
+| Audience | Loud EU/NL relocation signalling, gated for visitors in Turkey           |
 
 ## Content architecture
 
@@ -26,22 +26,22 @@ src/content/projects/
 ```
 
 ```yaml
-title:        TELCO CRM Platform
-slug:         telco-crm-platform
-track:        production          # production | in-progress | lab
-role:         Backend engineer, 4-person capstone team
-period:       2026-03 .. 2026-07
-summary:      Telecommunications CRM spanning KYC, catalog, ordering,
-              subscriptions, billing and ticketing.
-stack:        [Java 21, Spring Cloud, Kafka, PostgreSQL, Redis, Kubernetes]
-domains:      [data-engineering, backend, distributed-systems]
+title: TELCO CRM Platform
+slug: telco-crm-platform
+track: production # production | in-progress | lab
+role: Backend engineer, 4-person capstone team
+period: 2026-03 .. 2026-07
+summary: Telecommunications CRM spanning KYC, catalog, ordering,
+  subscriptions, billing and ticketing.
+stack: [Java 21, Spring Cloud, Kafka, PostgreSQL, Redis, Kubernetes]
+domains: [data-engineering, backend, distributed-systems]
 metrics:
-  - { label: Services,   value: 9 }
-  - { label: Events/day, value: "1.2M" }
-links:        { github: "...", demo: null }
-cover:        ./media/telco-architecture.svg
-featured:     true
-confidential: false               # gates NDA-sensitive detail
+  - { label: Services, value: 9 }
+  - { label: Events/day, value: '1.2M' }
+links: { github: '...', demo: null }
+cover: ./media/telco-architecture.svg
+featured: true
+confidential: false # gates NDA-sensitive detail
 ---
 ## The problem
 ## Architecture
@@ -55,11 +55,11 @@ long-form technical narrative five ways is what makes portfolios rot.
 
 ## Project tracks
 
-| Track | Contents | Purpose |
-| --- | --- | --- |
-| Production | TELCO CRM, Nesin property platform, SaaS e-commerce, video pipeline | Shipped, CV-backed, carries the most weight |
-| In progress | Klauthed, Scivex | Honestly labelled with a specific progress state |
-| Lab | Airflow/dbt pipeline, Kafka→Spark demo, Fabric/ADF writeup | Publishable evidence for the DE stack |
+| Track       | Contents                                                            | Purpose                                          |
+| ----------- | ------------------------------------------------------------------- | ------------------------------------------------ |
+| Production  | TELCO CRM, Nesin property platform, SaaS e-commerce, video pipeline | Shipped, CV-backed, carries the most weight      |
+| In progress | Klauthed, Scivex                                                    | Honestly labelled with a specific progress state |
+| Lab         | Airflow/dbt pipeline, Kafka→Spark demo, Fabric/ADF writeup          | Publishable evidence for the DE stack            |
 
 In-progress labels must be specific. "Ongoing" reads as abandoned; "In development · 15 of
 22 services · targeting v0.1 Q4" reads as an engineer shipping something hard. Klauthed
@@ -88,6 +88,7 @@ in structured data.
 Ordered by value per hour. Every phase ends deployable.
 
 ### 00 — Truth pass (do first)
+
 - Remove the GPA everywhere it renders
 - Headline → "Software Engineering & Data Engineering", site-wide including `/s` and `/cv`
 - Experience: SeturTech current, Otokoç closed May 2026, freelance track added
@@ -96,6 +97,7 @@ Ordered by value per hour. Every phase ends deployable.
 - Single source of truth for email and phone; fix `llms.txt`, JSON-LD and README
 
 ### 01 — Foundation
+
 - Delete 1,487 lines of dead code
 - Vendor inlang plugins; remove the build-time CDN dependency
 - Replace three.js with Canvas 2D (recovers 181 KB gzip)
@@ -104,6 +106,7 @@ Ordered by value per hour. Every phase ends deployable.
 - Add real navigation; make the custom cursor fail safe
 
 ### 02 — Content pipeline
+
 - Wire `mdsvex` + typed frontmatter validation
 - Migrate the existing five projects to Markdown as the proving run
 - Build `/projects` with track and stack filtering
@@ -111,10 +114,12 @@ Ordered by value per hour. Every phase ends deployable.
 - Per-project OG images, JSON-LD, hreflang across all locales
 
 ### 03 — Write the case studies (needs input)
+
 Four production projects, two in-progress, with diagrams and screenshots. Slowest phase,
 and the one that wins interviews.
 
 ### 04 — Three directions → pick one
+
 Built as real routes `/lab/a`, `/lab/b`, `/lab/c` (all `noindex`), rendering the same real
 content and case studies from phase 03 so the comparison is honest.
 
@@ -130,12 +135,14 @@ creative-agency portfolio — an asset for design-adjacent roles, a mild liabili
 enterprise data engineering.
 
 ### 05 — Positioning & polish
+
 - Geo-gated relocation banner via `/api/geo`, hidden on `/tr`
 - Regenerate `cv.pdf` from the new CV; sync `/cv` to match exactly
 - Sitemap covering locales and the projects index, with real `lastmod` dates
 - Lighthouse and axe passes; performance budget enforced in CI
 
 ### 06 — Optional: lab projects
+
 Airflow/dbt pipeline and a Kafka streaming demo.
 
 ## Blocked on input
