@@ -1,16 +1,18 @@
 <script lang="ts">
 	import { personal } from '$lib/data/personal';
+	import * as m from '$lib/paraglide/messages.js';
+	import { localizeHref } from '$lib/paraglide/runtime';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
 	import type { ProjectTrack } from '$lib/types/content';
 
 	let { data } = $props();
 
 	const TRACK_ORDER: ProjectTrack[] = ['production', 'in-progress', 'lab', 'archive'];
-	const TRACK_LABELS: Record<ProjectTrack, string> = {
-		production: 'Production',
-		'in-progress': 'In development',
-		lab: 'Lab',
-		archive: 'Archive'
+	const TRACK_LABELS: Record<ProjectTrack, () => string> = {
+		production: m.track_production,
+		'in-progress': m.track_in_progress,
+		lab: m.track_lab,
+		archive: m.track_archive
 	};
 
 	let activeTrack = $state<ProjectTrack | 'all'>('all');
@@ -33,9 +35,8 @@
 		)
 	);
 
-	const title = `Projects — ${personal.name}`;
-	const description =
-		'Production data pipelines, backend systems and open-source work by Ömer Ekmen — with the stack, role and outcome for each.';
+	const title = $derived(`${m.projects_eyebrow()} — ${personal.name}`);
+	const description = $derived(m.projects_intro());
 </script>
 
 <svelte:head>
@@ -52,8 +53,10 @@
 <div class="min-h-screen px-6 pt-28 pb-24 sm:px-10 lg:px-16">
 	<div class="mx-auto max-w-5xl">
 		<header>
-			<p class="font-mono text-xs tracking-widest text-accent-text uppercase">Projects</p>
-			<h1 class="page-title mt-4 text-text">Selected work</h1>
+			<p class="font-mono text-xs tracking-widest text-accent-text uppercase">
+				{m.projects_eyebrow()}
+			</p>
+			<h1 class="page-title mt-4 text-text">{m.projects_title()}</h1>
 			<p class="mt-5 max-w-2xl leading-relaxed text-text-secondary">
 				{description}
 			</p>
@@ -62,13 +65,13 @@
 		<!-- ═══ FILTERS ═══ -->
 		<div class="mt-12 flex flex-col gap-4">
 			<div class="flex flex-wrap items-center gap-2">
-				<span class="filter-label">Track</span>
+				<span class="filter-label">{m.filter_track()}</span>
 				<button
 					class="chip"
 					class:active={activeTrack === 'all'}
 					onclick={() => (activeTrack = 'all')}
 				>
-					All
+					{m.filter_all()}
 				</button>
 				{#each tracks as track (track)}
 					<button
@@ -76,19 +79,19 @@
 						class:active={activeTrack === track}
 						onclick={() => (activeTrack = track)}
 					>
-						{TRACK_LABELS[track]}
+						{TRACK_LABELS[track]()}
 					</button>
 				{/each}
 			</div>
 
 			<div class="flex flex-wrap items-center gap-2">
-				<span class="filter-label">Stack</span>
+				<span class="filter-label">{m.filter_stack()}</span>
 				<button
 					class="chip"
 					class:active={activeStack === 'all'}
 					onclick={() => (activeStack = 'all')}
 				>
-					All
+					{m.filter_all()}
 				</button>
 				{#each stacks as tech (tech)}
 					<button
@@ -103,14 +106,13 @@
 		</div>
 
 		<p class="mt-6 font-mono text-xs text-text-muted" aria-live="polite">
-			{visible.length}
-			{visible.length === 1 ? 'project' : 'projects'}
+			{m.projects_count({ count: visible.length })}
 		</p>
 
 		<!-- ═══ LIST ═══ -->
 		<div class="mt-6 flex flex-col gap-4">
 			{#each visible as project (project.slug)}
-				<a href="/projects/{project.slug}" class="card group" data-cursor="Read">
+				<a href={localizeHref(`/projects/${project.slug}`)} class="card group" data-cursor="Read">
 					<div class="flex flex-wrap items-start justify-between gap-3">
 						<div class="min-w-0">
 							<h2

@@ -2,7 +2,8 @@
 	import { gsap } from '$lib/utils/gsap';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
 	import { featuredProjects } from '$lib/content/projects';
-	import { getLocale } from '$lib/paraglide/runtime';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages.js';
 	import { parseMetric, formatMetric } from '$lib/utils/metric';
 
 	const projects = featuredProjects(getLocale());
@@ -267,7 +268,11 @@
 		>
 			<div bind:this={carouselEl} class="carousel relative h-full w-full">
 				{#each projects as project, i (project.slug)}
-					<a href="/projects/{project.slug}" class="project-slide group" data-cursor="View">
+					<a
+						href={localizeHref(`/projects/${project.slug}`)}
+						class="project-slide group"
+						data-cursor="View"
+					>
 						<!-- Browser chrome -->
 						<div class="chrome">
 							<span class="dot red"></span>
@@ -322,7 +327,7 @@
 							</div>
 
 							<span class="cta">
-								View project
+								{m.work_view_project()}
 								<svg
 									viewBox="0 0 24 24"
 									fill="none"

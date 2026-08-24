@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { personal } from '$lib/data/personal';
 	import * as m from '$lib/paraglide/messages.js';
+	import { localizeHref } from '$lib/paraglide/runtime';
 	import { getProject } from '$lib/content/projects';
 	import { gsap } from '$lib/utils/gsap';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
@@ -170,7 +171,9 @@
 			<div
 				class="hero-meta absolute top-28 right-8 left-8 z-10 flex items-center gap-3 font-mono text-[11px] tracking-widest text-text-muted sm:left-12 lg:left-20"
 			>
-				<a href="/projects" class="transition-colors hover:text-accent-text">Projects</a>
+				<a href={localizeHref('/projects')} class="transition-colors hover:text-accent-text"
+					>{m.projects_eyebrow()}</a
+				>
 				<span aria-hidden="true">/</span>
 				<span class="tabular-nums">{number} of {String(data.total).padStart(2, '0')}</span>
 			</div>
@@ -191,7 +194,8 @@
 				aria-hidden="true"
 			>
 				<div class="flex flex-col items-center gap-2">
-					<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase">Scroll</span
+					<span class="font-mono text-[10px] tracking-widest text-text-muted uppercase"
+						>{m.nav_scroll()}</span
 					>
 					<div class="scroll-line h-8 w-px"></div>
 				</div>
@@ -212,28 +216,26 @@
 		<section class="reveal border-b border-border-subtle px-6 py-12 sm:px-10 lg:px-16">
 			<div class="mx-auto grid max-w-4xl gap-10 sm:grid-cols-2">
 				<div>
-					<h2 class="section-label">Role</h2>
+					<h2 class="section-label">{m.detail_role()}</h2>
 					<p class="mt-3 leading-relaxed text-text-secondary">{meta.role}</p>
 				</div>
 
 				<div>
-					<h2 class="section-label">Links</h2>
+					<h2 class="section-label">{m.detail_links()}</h2>
 					<div class="mt-3 flex flex-col gap-2">
 						{#if meta.links.github}
 							<a href={meta.links.github} target="_blank" rel="noopener noreferrer" class="link">
-								Source on GitHub &rarr;
+								{m.detail_source_github()} &rarr;
 							</a>
 						{/if}
 						{#if meta.links.demo}
 							<a href={meta.links.demo} target="_blank" rel="noopener noreferrer" class="link">
-								Live demo &rarr;
+								{m.detail_demo()} &rarr;
 							</a>
 						{/if}
 						{#if !meta.links.github && !meta.links.demo}
 							<p class="text-sm text-text-muted">
-								{meta.confidential
-									? 'Client work — source not public.'
-									: 'No public repository yet.'}
+								{meta.confidential ? m.detail_confidential() : m.detail_no_repo()}
 							</p>
 						{/if}
 					</div>
@@ -241,7 +243,7 @@
 
 				{#if meta.metrics.length > 0}
 					<div class="sm:col-span-2">
-						<h2 class="section-label">Outcome</h2>
+						<h2 class="section-label">{m.detail_outcome()}</h2>
 						<dl class="mt-4 flex flex-wrap gap-x-12 gap-y-4">
 							{#each meta.metrics as metric (metric.label)}
 								<div>
@@ -258,7 +260,7 @@
 				{/if}
 
 				<div class="sm:col-span-2">
-					<h2 class="section-label">Stack</h2>
+					<h2 class="section-label">{m.detail_stack()}</h2>
 					<div class="mt-4 flex flex-wrap gap-2">
 						{#each meta.stack as tech (tech)}
 							<span class="tech">{tech}</span>
@@ -281,13 +283,13 @@
 		{#if data.next}
 			<nav class="border-t border-border-subtle" aria-label="Next project">
 				<a
-					href="/projects/{data.next.slug}"
+					href={localizeHref(`/projects/${data.next.slug}`)}
 					data-cursor="Next"
 					class="group block px-6 py-16 transition-colors duration-300 hover:bg-bg-secondary/40 sm:px-10 lg:px-16"
 				>
 					<div class="mx-auto max-w-4xl">
 						<span class="font-mono text-[11px] tracking-widest text-text-muted uppercase">
-							Next project
+							{m.detail_next()}
 						</span>
 						<div class="mt-4 flex items-center gap-5">
 							<h2

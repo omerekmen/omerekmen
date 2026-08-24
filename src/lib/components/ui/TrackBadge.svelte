@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { ProjectTrack } from '$lib/types/content';
+	import * as m from '$lib/paraglide/messages.js';
 
 	interface Props {
 		track: ProjectTrack;
@@ -8,11 +9,13 @@
 
 	let { track, progress = null }: Props = $props();
 
-	const LABELS: Record<ProjectTrack, string> = {
-		production: 'Production',
-		'in-progress': 'In development',
-		lab: 'Lab',
-		archive: 'Archive'
+	// Static references, so the bundler keeps every message. See the note in
+	// HeroSection about dynamic m[key] lookups.
+	const LABELS: Record<ProjectTrack, () => string> = {
+		production: m.track_production,
+		'in-progress': m.track_in_progress,
+		lab: m.track_lab,
+		archive: m.track_archive
 	};
 </script>
 
@@ -20,7 +23,7 @@
 	{#if track === 'in-progress'}
 		<span class="pulse" aria-hidden="true"></span>
 	{/if}
-	{progress ?? LABELS[track]}
+	{progress ?? LABELS[track]()}
 </span>
 
 <style>
