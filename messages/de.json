@@ -115,5 +115,16 @@
 	"notes_next": "Nächste Notiz",
 	"notes_english_only": "Notizen erscheinen nur auf Englisch. Ein Argument in vier Sprachen zu pflegen, macht aus einem Schreibbereich ein Archiv halb aktualisierter Fassungen.",
 	"notes_all": "Alle Notizen",
-	"notes_updated": "Zuletzt hinzugefügt"
+	"notes_updated": "Zuletzt hinzugefügt",
+	"approach_label": "Wie ich arbeite",
+	"approach_title": "Vier Positionen",
+	"approach_intro": "Not values. The specific calls I make, and what each one costs.",
+	"approach_1_title": "Build the seam before the replacement",
+	"approach_1_body": "A migration is a routing problem before it is a rewrite. The boundary that lets you send one request to the old system and the next to the new one produces no visible progress and everything after it depends on existing. Build it first, and move the boring path across it first — the first path is a test of the seam, not of the new architecture.",
+	"approach_2_title": "A rollback should be the current state, not a plan",
+	"approach_2_body": "A recovery procedure written six months ago by someone who has since left is not a rollback. Running the old and new systems in parallel costs duplicated behaviour and the discipline of keeping both correct, and it buys the property that reverting is a routing change nobody has to rehearse.",
+	"approach_3_title": "Write down what the words mean, from the first report",
+	"approach_3_body": "Not a semantic layer, not a tool — a file saying what an approved purchase is, what an active tenancy is, what counts as revenue in a month. It costs an afternoon and constrains nothing. Skipping it is why reporting layers rot: not slow queries, but a room of people who cannot agree which number is true.",
+	"approach_4_title": "Say no to the modelled layer until it earns itself",
+	"approach_4_body": "Reports reading straight off the transactional schema is right at ten reports and wrong at forty, and building the modelled version early means designing for a load nobody has demonstrated. I defer it, and I watch for one signal: the same business term defined two different ways in two different queries."
 }

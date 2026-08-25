@@ -1,6 +1,7 @@
 <script lang="ts">
 	import HeroSection from '$lib/components/sections/HeroSection.svelte';
 	import WorkSection from '$lib/components/sections/WorkSection.svelte';
+	import ApproachSection from '$lib/components/sections/ApproachSection.svelte';
 	import { personal } from '$lib/data/personal';
 	import { experiences } from '$lib/data/experience';
 
@@ -72,3 +73,4 @@
 
 <HeroSection />
 <WorkSection />
+<ApproachSection />

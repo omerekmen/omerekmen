@@ -115,5 +115,16 @@
 	"notes_next": "Sonraki not",
 	"notes_english_only": "Notlar yalnızca İngilizce yazılıyor. Bir argümanı dört dile çevirmek, bir yazı bölümünün yarısı güncellenmiş sürümlerden oluşan bir arşive dönüşme yoludur.",
 	"notes_all": "Tüm notlar",
-	"notes_updated": "Son eklenen"
+	"notes_updated": "Son eklenen",
+	"approach_label": "Nasıl çalışıyorum",
+	"approach_title": "Dört duruş",
+	"approach_intro": "Değerler değil. Verdiğim somut kararlar ve her birinin bedeli.",
+	"approach_1_title": "Yerine geçecek şeyden önce dikişi kur",
+	"approach_1_body": "Bir göç, yeniden yazımdan önce bir yönlendirme problemidir. Bir isteği eski sisteme, sonrakini yenisine göndermenizi sağlayan sınır görünür ilerleme üretmez ve sonrasındaki her şey onun varlığına bağlıdır. Önce onu kurun ve önce sıkıcı yolu taşıyın — ilk yol yeni mimarinin değil, dikişin sınavıdır.",
+	"approach_2_title": "Geri dönüş bir plan değil, mevcut durum olmalı",
+	"approach_2_body": "Altı ay önce, o zamandan beri ayrılmış biri tarafından yazılmış bir kurtarma prosedürü geri dönüş değildir. Eski ve yeni sistemi paralel çalıştırmanın bedeli, davranışın iki yerde bulunması ve ikisini de doğru tutma disiplinidir; karşılığında geri dönüş, kimsenin prova etmesi gerekmeyen bir yönlendirme değişikliğine dönüşür.",
+	"approach_3_title": "İlk rapordan itibaren kelimelerin ne demek olduğunu yaz",
+	"approach_3_body": "Anlamsal bir katman değil, bir araç değil — onaylanmış bir satın almanın, aktif bir kiralamanın, bir ayda gelir sayılan şeyin ne olduğunu söyleyen bir dosya. Bir öğleden sonra sürer ve hiçbir şeyi kısıtlamaz. Atlanması, raporlama katmanlarının çürüme sebebidir: yavaş sorgular değil, hangi sayının doğru olduğunda anlaşamayan bir oda dolusu insan.",
+	"approach_4_title": "Modellenmiş katmana hak edene kadar hayır de",
+	"approach_4_body": "Raporların doğrudan işlem şemasından okuması on raporda doğru, kırkta yanlıştır; modellenmiş sürümü erken kurmak ise kimsenin göstermediği bir yük için tasarlamak demektir. Bunu erteliyorum ve tek bir sinyali izliyorum: aynı iş teriminin iki farklı sorguda iki farklı şekilde tanımlanması."
 }

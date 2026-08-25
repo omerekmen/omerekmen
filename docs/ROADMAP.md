@@ -15,7 +15,7 @@
 | 08 — Scroll that means something | Done — see GUIDELINE.md                               |
 | 09 — One case-study structure    | Done — see GUIDELINE.md                               |
 | 10 — Notes                       | Done — three pieces, needs your fact-check            |
-| 11 — How the work is done        | Planned — see DEPTH.md                                |
+| 11 — How the work is done        | Done — on the homepage, needs your fact-check         |
 | 12 — Craft                       | Planned — see DEPTH.md                                |
 
 Payload after phase 01: client JS 1.02 MB → 328 KB raw, fonts 742 KB → 115 KB,

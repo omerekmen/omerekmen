@@ -148,6 +148,26 @@ selection rate or a certificate belongs in the body.
 Archived projects keep their URLs and stay in the sitemap at lower priority, but
 are excluded from the homepage carousel.
 
+## The approach section
+
+Four positions on the homepage, after the work. Not values — the specific calls
+made, each with what it costs. Two hundred words of real position beats a page
+of adjectives, and this is where limited years matter least: judgement is
+demonstrable at any length of service.
+
+It lives on the homepage rather than behind a nav item deliberately. A statement
+of how someone works that nobody navigates to is worth nothing, and a fifth nav
+item costs every visitor attention in order to serve a few.
+
+Each position is drawn from a decision a case study actually records, so it can
+be checked rather than believed.
+
+**Its reveal uses an IntersectionObserver, not a ScrollTrigger.** The section
+sits below a pinned one: a trigger's start is measured when it is created, the
+pin then changes every offset beneath it, and the reveal fires early or never —
+which is what happened on the first attempt, leaving all four positions at
+opacity 0. Anything revealing below a pinned section should use an observer.
+
 ## Notes
 
 `/notes` is the one part of the site that does not depend on an employer, a
