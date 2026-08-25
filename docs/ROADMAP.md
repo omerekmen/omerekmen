@@ -11,6 +11,12 @@
 | 04 — Three directions     | Direction A chosen                           |
 | 05 — Positioning & polish | Geo notice + CV done; perf/a11y pending      |
 | 06 — Lab projects         | Optional                                     |
+| 07 — Draw the systems     | Planned — see DEPTH.md                       |
+| 08 — Floor and curation   | Planned — see DEPTH.md                       |
+| 09 — Show the reasoning   | Planned — see DEPTH.md                       |
+| 10 — Notes                | Undecided — see DEPTH.md                     |
+| 11 — How the work is done | Planned — see DEPTH.md                       |
+| 12 — Craft                | Planned — see DEPTH.md                       |
 
 Payload after phase 01: client JS 1.02 MB → 328 KB raw, fonts 742 KB → 115 KB,
 OG image 1.8 MB → 106 KB. Roughly 3.1 MB removed from a cold visit.
