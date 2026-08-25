@@ -5,6 +5,8 @@
 	import { getProject } from '$lib/content/projects';
 	import { gsap } from '$lib/utils/gsap';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
+	import SystemDiagram from '$lib/components/ui/SystemDiagram.svelte';
+	import { getDiagram } from '$lib/diagrams';
 
 	let { data } = $props();
 
@@ -24,6 +26,7 @@
 		...(meta.links.github ? { codeRepository: meta.links.github } : {})
 	});
 	const ogImage = $derived(`${personal.website}/og/${meta.slug}.jpg`);
+	const diagram = $derived(getDiagram(meta.slug));
 
 	const jsonLdTag = $derived(
 		`<script type="application/ld+json">${JSON.stringify(jsonLd)}${'<'}/script>`
@@ -271,6 +274,18 @@
 				</div>
 			</div>
 		</section>
+
+		<!-- ═══ DIAGRAM ═══ -->
+		<!-- Above the prose deliberately: a reader skims for the shape of a system
+		     before they read a word about it. -->
+		{#if diagram}
+			<section class="reveal border-b border-border-subtle px-6 py-14 sm:px-10 lg:px-16">
+				<div class="mx-auto max-w-6xl">
+					<h2 class="section-label mb-6">{m.detail_diagram()}</h2>
+					<SystemDiagram {diagram} locale={data.locale} />
+				</div>
+			</section>
+		{/if}
 
 		<!-- ═══ CASE STUDY ═══ -->
 		{#if Body}

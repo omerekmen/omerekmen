@@ -138,6 +138,58 @@ selection rate or a certificate belongs in the body.
 Archived projects keep their URLs and stay in the sitemap at lower priority, but
 are excluded from the homepage carousel.
 
+## Diagrams
+
+A case study about a distributed system with no picture in it asks the reader to
+hold an architecture in their head from prose alone. Most will not; they skim for
+the diagram, find nothing, and leave with no idea what was built.
+
+Diagrams are **data, not drawings**. A definition lives at
+`src/lib/diagrams/<slug>.ts` and the detail page picks it up by slug — so a
+project gains a diagram by adding one file, with no markdown edit in any locale.
+`SystemDiagram.svelte` owns geometry, theming, the legend and the accessible
+description.
+
+Authors place nodes on a grid (`col`, `row`, optional spans) and name the edges.
+Everything else is derived, so no diagram carries hand-tuned coordinates that the
+next edit has to preserve.
+
+```ts
+{ id: 'ingest', label: 'Ingestion', detail: 'Azure Data Factory',
+  kind: 'process', col: 1, row: 1 }
+```
+
+`kind` is what a box _is_, and it decides how the box is drawn: `source`
+(upstream, not owned here), `process`, `store`, `serve`, `legacy` (being
+retired) and `target` (what replaces it). Colour comes from the theme tokens —
+accent for the main flow, `ongoing` for what is going away, `completed` for what
+arrives — so a palette change carries automatically and contrast stays vetted.
+Only the kinds a diagram actually uses reach its legend.
+
+Rules that keep them honest and readable:
+
+- **Draw what the system does, not the version you wish you had shipped.** The
+  property-management dashboard reads straight off the transactional schema in
+  the picture because that is what it does, and the retrospective argues about
+  exactly that edge. Routing it through an imaginary modelled layer would be
+  describing a system that does not exist.
+- **Draw one real journey, not every possible connection.** The TELCO CRM has
+  nine services; wiring all of them to each other produces noise. An order
+  arriving, becoming an event, and billing and notification reacting to it is
+  the same architecture and is legible.
+- **A migration diagram shows both halves live.** Only drawing the target state
+  hides the thing that made the work hard.
+- **Diagrams render at natural size and scroll**, rather than scaling to fit.
+  Scaling looked tidier and put the mono detail line at roughly 6px on a phone,
+  which is under the type floor above. A diagram nobody can read is not a
+  smaller diagram, it is a missing one.
+- **Every diagram carries a text alternative.** `<title>` and a `<desc>`
+  generated from the edges, so the flow is available to a reader who is not
+  looking at it.
+- **Translate only the generic words.** Product names stay as they are in
+  Turkish technical writing too, so `locales` holds a handful of overrides
+  rather than forty message keys nobody maintains.
+
 ## Colour
 
 `--color-accent` is decorative: fills, borders, oversized display type, the dot

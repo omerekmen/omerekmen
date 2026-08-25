@@ -2,21 +2,21 @@
 
 ## Status
 
-| Phase                            | State                                        |
-| -------------------------------- | -------------------------------------------- |
-| 00 — Truth pass                  | Done                                         |
-| 01 — Foundation                  | Done                                         |
-| 02 — Content pipeline            | Done                                         |
-| 03 — Case studies                | Done — screenshots and diagrams still to add |
-| 04 — Three directions            | Direction A chosen                           |
-| 05 — Positioning & polish        | Geo notice + CV done; perf/a11y pending      |
-| 06 — Lab projects                | Optional                                     |
-| 07 — Draw the systems            | Planned — see DEPTH.md                       |
-| 08 — Scroll that means something | Planned — see DEPTH.md                       |
-| 09 — One case-study structure    | Planned — see DEPTH.md                       |
-| 10 — Notes                       | Decided: three pieces — see DEPTH.md         |
-| 11 — How the work is done        | Planned — see DEPTH.md                       |
-| 12 — Craft                       | Planned — see DEPTH.md                       |
+| Phase                            | State                                                 |
+| -------------------------------- | ----------------------------------------------------- |
+| 00 — Truth pass                  | Done                                                  |
+| 01 — Foundation                  | Done                                                  |
+| 02 — Content pipeline            | Done                                                  |
+| 03 — Case studies                | Done — diagrams landed in 07; screenshots outstanding |
+| 04 — Three directions            | Direction A chosen                                    |
+| 05 — Positioning & polish        | Geo notice + CV done; perf/a11y pending               |
+| 06 — Lab projects                | Optional                                              |
+| 07 — Draw the systems            | Done — five diagrams, see GUIDELINE.md                |
+| 08 — Scroll that means something | Planned — see DEPTH.md                                |
+| 09 — One case-study structure    | Planned — see DEPTH.md                                |
+| 10 — Notes                       | Decided: three pieces — see DEPTH.md                  |
+| 11 — How the work is done        | Planned — see DEPTH.md                                |
+| 12 — Craft                       | Planned — see DEPTH.md                                |
 
 Payload after phase 01: client JS 1.02 MB → 328 KB raw, fonts 742 KB → 115 KB,
 OG image 1.8 MB → 106 KB. Roughly 3.1 MB removed from a cold visit.
