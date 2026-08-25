@@ -114,7 +114,9 @@ evaluate the thinking except by trusting the summary.
 
 ## The plan
 
-Ordered by what a reader notices first, not by what is easiest.
+Ordered by what a reader notices first, not by what is easiest. Phases 08, 09
+and 10 reflect decisions taken after the audit — recorded in "Decisions taken"
+below.
 
 ### 07 — Draw the systems
 
@@ -126,57 +128,105 @@ One diagram per production case study, placed above the prose.
   at once, and what moved when
 - `property-management` — Django in production, .NET reporting path alongside
 - `video-transcription-pipeline` — the queue and the stages
+- `saas-ecommerce-platform`, `klauthed`, `scivex` — as their write-ups land
 
 Built as inline SVG committed to the repo, using the existing theme tokens so
 they work in light and dark and cost nothing at runtime. Not screenshots: a
 diagram states the shape a screenshot hides, and it carries no disclosure risk
 the prose does not already carry.
 
-**Unlocks the largest perceived gap for the least content work.**
+Doing this first is also what makes phase 08 worth building — a horizontal
+panel with a diagram in it is worth stopping on; one with three lines of text
+is a card that has been made wider.
 
-### 08 — Set a floor, then curate
+### 08 — Make the scroll mean something
 
-Two changes that work together:
+**Every project stays, including future ones.** The problem was never the
+count; it was that 1700vh of vertical stacking gives a visitor no sense of
+progress, so it reads as scrolling for its own sake.
 
-1. Bring every production case study to a floor of roughly 300 words on the
-   same beats — problem, what I chose, what it cost, what I would change.
-   `saas-ecommerce-platform` (97) and `video-transcription-pipeline` (170) are
-   the ones below it.
-2. Make `featured` actually mean something: have `featuredProjects()` read the
-   flag, and cut the homepage stack to the four that carry the argument. The
-   rest stay on `/projects`, which is what an index is for.
+Replace it with a horizontally travelling track driven by vertical scroll —
+the page pins, the work moves sideways, and the reader is visibly moving
+_through_ something rather than past it.
 
-Side effect: the homepage scroll drops from 1700vh to around 940vh.
+What makes this work rather than annoy:
 
-### 09 — Show the reasoning
+- **Progress is always visible.** A position indicator and the panel count, so
+  the reader knows how far in they are and how much is left. Scroll that hides
+  its own length is what makes horizontal sections feel like a trap.
+- **It scales past eight.** The track must not simply get longer forever. Panel
+  width is capped and the section ends with a link to `/projects`, so the
+  homepage stays a curated pass through everything rather than a full index —
+  and adding a twentieth project does not add twenty screens of scroll.
+- **Keyboard and touch are first-class.** Arrow keys move panel to panel, `Tab`
+  reaches every card in order and scrolls it into view, touch gets native
+  horizontal swipe rather than a hijacked vertical gesture.
+- **Reduced motion gets a real layout**, not a broken one: a plain vertical
+  list of the same cards, no pinning, no translation.
+- **No scroll hijacking.** Vertical scrolling drives horizontal travel at a
+  proportional rate and never traps the wheel; a reader who keeps scrolling
+  always exits the section.
 
-- A **"What I considered"** beat in each production study — the alternative,
-  and the specific reason it lost. Two to four sentences, not an essay.
-- **Methodology on every metric.** What was measured, over what window, against
-  what baseline. Where a number cannot be sourced, cut it: an unsourced metric
-  is worth less than no metric, because it invites the question you cannot
-  answer.
-- Metrics for `travel-data-platform`, currently zero — pipeline count, source
-  systems integrated, refresh cadence, extracts retired. All disclosable.
+The interaction ideas already prototyped in `/lab/a` — rows that open in place,
+metrics that count on arrival, the title marquee behind the live panel — are
+the raw material for the panels themselves.
+
+The honest risk to watch: horizontally scrolling sections are one of the more
+commonly disliked patterns on the web, and almost always because of the five
+points above rather than the direction of travel. Each is a requirement, not a
+nice-to-have, and the section is not done until all five hold.
+
+### 09 — One case-study structure, applied to all of them
+
+Not a word-count floor — a **shape**, so every study answers the same questions
+and a reader can compare two projects without re-learning the format:
+
+| Beat              | What it answers                                                                   |
+| ----------------- | --------------------------------------------------------------------------------- |
+| **Goal**          | What the system had to do, in business terms, before any technology               |
+| **Constraints**   | Team size, timeline, what was already in production, what could not change        |
+| **Challenges**    | The two or three things that made it hard, specifically                           |
+| **Decisions**     | What was chosen, what was rejected, and the reason it lost                        |
+| **What I built**  | The implementation, briefly — this is the part already written                    |
+| **Impact**        | The numbers, each with what was measured, over what window, against what baseline |
+| **Retrospective** | What I would change, and what I took into the next project                        |
+
+Applied everywhere, starting with the two thinnest — `saas-ecommerce-platform`
+(97 words) and `video-transcription-pipeline` (170) — and rolled back through
+the rest. The decisions beat is where most of the senior signal lives, and the
+material already exists unwritten: CQRS on the ERP read path, RabbitMQ at
+Otokoç against Kafka on the TELCO CRM, Fabric notebooks over the visual
+designer, Django kept running while .NET is built beside it.
+
+Two rules that come with it:
+
+- **Every metric names its basis.** Where a number cannot be sourced, cut it —
+  an unsourced metric is worth less than no metric, because it invites the
+  question you cannot answer.
+- **`travel-data-platform` gets metrics**, currently zero: pipelines, source
+  systems integrated, refresh cadence, manual extracts retired.
+
+The structure goes into `GUIDELINE.md` so it holds for projects added later.
 
 ### 10 — Publish thinking, not just outcomes
 
-A `/notes` section, three or four pieces, drawn from work already done:
+A `/notes` section with three pieces, drafted from work already done and
+fact-checked by you before publishing:
 
-- Migrating an ERP module with no maintenance window
-- Watermarking ADF pipelines so a failed run resumes instead of replaying
-- Why the reporting layer is where ERP projects rot — the lesson already sitting
-  in the `erp-modernisation` retrospective, argued properly
-- What a governed model is actually for, in terms of arguments it prevents
+1. Migrating an ERP module with no maintenance window
+2. Watermarking ADF pipelines so a failed run resumes instead of replaying
+3. Why the reporting layer is where ERP projects rot — the lesson already
+   sitting in the `erp-modernisation` retrospective, argued properly
 
-This is the strongest available senior signal and the only one entirely under
-your control: it does not depend on an employer, a title, or a public repo. The
-infrastructure exists — mdsvex, the locale-aware content loader and the
-frontmatter validator all work unchanged for a second content type.
+The strongest senior signal available and the only one entirely under your
+control: it depends on no employer, title or public repo. The infrastructure —
+mdsvex, the locale-aware loader, the frontmatter validator — works unchanged
+for a second content type.
 
-It is also the only item here with an ongoing cost. Three good pieces beat
-eight thin ones, and a notes section with one post from eighteen months ago is
-worse than no notes section.
+Its one cost is ongoing. Three good pieces beat eight thin ones, and a notes
+section whose newest post is eighteen months old is worse than no notes
+section, so the section carries a visible date and stays at three until there
+is a fourth worth reading.
 
 ### 11 — How the work gets done
 
@@ -193,22 +243,34 @@ service.
 
 ### 12 — Craft, once the substance is there
 
-- Harvest the `/lab/a` interactions into the live site — the work index that
-  opens in place, metrics that count on arrival, the case-study contents rail
 - Reading time and a last-reviewed date on each study
 - `prefers-reduced-data` handling for the canvas hero
+- The remaining `/lab/a` interactions not already absorbed by phase 08
 
 Deliberately last. Motion on a thin case study amplifies the thinness.
 
-## Where I would start
+## Decisions taken
 
-**07 and the `featured` half of 08, in that order.** Diagrams close the biggest
-gap and need no new facts; fixing `featured` is a small change that removes the
-weakest page from the front of the site and cuts the homepage scroll almost in
-half. Together they change the first impression without waiting on any writing.
+| Question                       | Decision                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Curate the homepage down to 4? | **No.** Keep every project, including future ones, and fix the presentation instead — phase 08         |
+| The two thin case studies?     | **Write them properly**, on a structure that carries goal, challenges, decisions and impact — phase 09 |
+| Build `/notes`?                | **Yes, three pieces**, drafted here and fact-checked before publishing — phase 10                      |
 
-Then 09, which is editing rather than authoring — the decisions were made years
-ago and only need recording.
+`featuredProjects()` still ignores the `featured` flag. With every project
+staying on the homepage that is no longer costing anything, so the flag gets
+removed rather than honoured — a field that means nothing is worse than no
+field.
 
-10 is the highest ceiling and the highest ongoing cost, and it is the one worth
-deciding deliberately rather than drifting into.
+## Order of work
+
+**07 first.** Diagrams close the biggest gap, need no new facts, and give
+phase 08 something worth putting in a panel.
+
+**Then 09**, which is mostly editing rather than authoring — the decisions were
+made years ago and only need recording. It also settles what each card says
+before the cards get rebuilt.
+
+**Then 08**, with real content to present.
+
+**Then 10 and 11**, which are new writing rather than revision, and 12 last.
