@@ -148,6 +148,30 @@ selection rate or a certificate belongs in the body.
 Archived projects keep their URLs and stay in the sitemap at lower priority, but
 are excluded from the homepage carousel.
 
+## Notes
+
+`/notes` is the one part of the site that does not depend on an employer, a
+title or a public repository. It is also the only part with an ongoing cost, and
+a writing section whose newest piece is eighteen months old says something worse
+than no writing section — so the index carries a visible date and the count
+stays at three until there is a fourth worth reading.
+
+Each note names the case study it came out of, so a reader can check the
+argument against the work rather than take it on trust.
+
+**Notes are English-only.** Translating a short structured case study is bounded
+work; translating an argument is not, and maintaining four versions of one is
+how a writing section becomes an archive of half-updated drafts. Non-English
+readers get the same localised notice the CV prose uses. This is a deliberate
+inconsistency with projects, which are translated.
+
+Reading time is counted from the prose at build time rather than written into
+frontmatter, so it cannot drift from the piece it describes.
+
+**Frontmatter values containing `": "` must be quoted.** YAML reads an unquoted
+colon-space as a nested mapping, so a summary with a colon in it fails the build
+— by design, with a message that says what to do. `summary: 'like this'`.
+
 ## Case-study structure
 
 Every study answers the same questions in the same order, so two projects can be

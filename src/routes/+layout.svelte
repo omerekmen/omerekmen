@@ -151,6 +151,7 @@
 
 					<nav class="ml-auto flex items-center gap-5 pr-14" aria-label="Primary">
 						<a href={localizeHref('/projects')} class="nav-link">{m.nav_projects()}</a>
+						<a href={localizeHref('/notes')} class="nav-link">{m.nav_notes()}</a>
 						<a href={localizeHref('/cv')} class="nav-link">{m.nav_cv()}</a>
 						<a href={localizeHref('/s')} class="nav-link">{m.nav_links()}</a>
 					</nav>

@@ -106,5 +106,14 @@
 	"work_all_projects": "Tüm projeler",
 	"work_scroll_hint": "Çalışmalar arasında ilerlemek için kaydırmaya devam edin",
 	"work_swipe_hint": "Çalışmalar arasında ilerlemek için kaydırın",
-	"work_position": "Proje konumu"
+	"work_position": "Proje konumu",
+	"nav_notes": "Notlar",
+	"notes_title": "Notlar",
+	"notes_intro": "Gerçekten yapmak zorunda kaldığım şeyler üzerine kısa yazılar. Üç tane; okumaya değer bir dördüncüsü çıkana kadar üç kalacak.",
+	"notes_read_time": "dk okuma",
+	"notes_from_project": "Vaka çalışmasından",
+	"notes_next": "Sonraki not",
+	"notes_english_only": "Notlar yalnızca İngilizce yazılıyor. Bir argümanı dört dile çevirmek, bir yazı bölümünün yarısı güncellenmiş sürümlerden oluşan bir arşive dönüşme yoludur.",
+	"notes_all": "Tüm notlar",
+	"notes_updated": "Son eklenen"
 }

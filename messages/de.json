@@ -106,5 +106,14 @@
 	"work_all_projects": "Alle Projekte",
 	"work_scroll_hint": "Weiterscrollen, um durch die Arbeiten zu gehen",
 	"work_swipe_hint": "Wischen, um durch die Arbeiten zu gehen",
-	"work_position": "Projektposition"
+	"work_position": "Projektposition",
+	"nav_notes": "Notizen",
+	"notes_title": "Notizen",
+	"notes_intro": "Kurze Texte über Dinge, die ich tatsächlich tun musste. Drei davon — und bei drei, bis ein vierter lesenswert ist.",
+	"notes_read_time": "Min. Lesezeit",
+	"notes_from_project": "Aus der Fallstudie",
+	"notes_next": "Nächste Notiz",
+	"notes_english_only": "Notizen erscheinen nur auf Englisch. Ein Argument in vier Sprachen zu pflegen, macht aus einem Schreibbereich ein Archiv halb aktualisierter Fassungen.",
+	"notes_all": "Alle Notizen",
+	"notes_updated": "Zuletzt hinzugefügt"
 }

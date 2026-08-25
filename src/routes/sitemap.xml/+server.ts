@@ -1,4 +1,5 @@
 import { projectMeta } from '$lib/content/projects';
+import { allNotes } from '$lib/content/notes';
 import { locales, localizeHref } from '$lib/paraglide/runtime';
 import { personal } from '$lib/data/personal';
 
@@ -18,6 +19,12 @@ export function GET() {
 		{ path: '/projects', priority: '0.9', changefreq: 'weekly' },
 		{ path: '/cv', priority: '0.9', changefreq: 'monthly' },
 		{ path: '/s', priority: '0.6', changefreq: 'monthly' },
+		{ path: '/notes', priority: '0.8', changefreq: 'monthly' },
+		...allNotes().map((n) => ({
+			path: `/notes/${n.slug}`,
+			priority: '0.7',
+			changefreq: 'yearly'
+		})),
 		...projectMeta('en').map((p) => ({
 			path: `/projects/${p.slug}`,
 			priority: p.track === 'archive' ? '0.5' : '0.8',

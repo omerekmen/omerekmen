@@ -106,5 +106,14 @@
 	"work_all_projects": "All projects",
 	"work_scroll_hint": "Keep scrolling to move through the work",
 	"work_swipe_hint": "Swipe to move through the work",
-	"work_position": "Project position"
+	"work_position": "Project position",
+	"nav_notes": "Notes",
+	"notes_title": "Notes",
+	"notes_intro": "Short pieces on things I have actually had to do. Three of them, kept at three until there is a fourth worth reading.",
+	"notes_read_time": "min read",
+	"notes_from_project": "From the case study",
+	"notes_next": "Next note",
+	"notes_english_only": "Notes are written in English only. Translating an argument into four languages is how a writing section becomes an archive of half-updated versions.",
+	"notes_all": "All notes",
+	"notes_updated": "Last added"
 }

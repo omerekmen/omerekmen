@@ -23,8 +23,11 @@ function resolveSiteEnv() {
 	return 'production';
 }
 
-const PROJECTS_DIR = 'src/content/projects';
-const FRONTMATTER_ID = 'virtual:project-frontmatter';
+/** Content collections served as frontmatter-only virtual modules. */
+const COLLECTIONS = [
+	{ dir: 'src/content/projects', id: 'virtual:project-frontmatter' },
+	{ dir: 'src/content/notes', id: 'virtual:note-frontmatter' }
+];
 
 /**
  * Serves every project's frontmatter as plain data, with no compiled component
@@ -41,29 +44,54 @@ const FRONTMATTER_ID = 'virtual:project-frontmatter';
  * component entirely. The .md files stay the single source of truth.
  */
 function projectFrontmatter(): Plugin {
-	const load = () => {
-		const dir = join(process.cwd(), PROJECTS_DIR);
+	const load = (relativeDir: string) => {
+		const dir = join(process.cwd(), relativeDir);
 		const entries = readdirSync(dir)
 			.filter((name) => name.endsWith('.md'))
 			.sort()
 			.map((name) => {
 				const raw = readFileSync(join(dir, name), 'utf8');
 				const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw);
-				if (!match) throw new Error(`${PROJECTS_DIR}/${name} has no frontmatter`);
-				return { file: `/${PROJECTS_DIR}/${name}`, data: yaml.parse(match[1]) };
+				if (!match) throw new Error(`${relativeDir}/${name} has no frontmatter`);
+				// Reading time is counted from the prose rather than written by hand,
+				// so it cannot drift from the piece it describes.
+				const words = raw.slice(match[0].length).trim().split(/\s+/).length;
+				let parsed: Record<string, unknown>;
+				try {
+					parsed = yaml.parse(match[1]);
+				} catch (cause) {
+					throw new Error(
+						`${relativeDir}/${name}: frontmatter is not valid YAML. ` +
+							`A value containing ": " must be quoted — summary: 'like this'.\n` +
+							`${(cause as Error).message}`
+					);
+				}
+				const data = { ...parsed, minutes: Math.max(1, Math.round(words / 220)) };
+				return { file: `/${relativeDir}/${name}`, data };
 			});
 		return `export const entries = ${JSON.stringify(entries)};`;
 	};
 
+	const byVirtualId = new Map(COLLECTIONS.map((c) => [`\0${c.id}`, c.dir]));
+
 	return {
-		name: 'project-frontmatter',
-		resolveId: (id) => (id === FRONTMATTER_ID ? `\0${FRONTMATTER_ID}` : null),
-		load: (id) => (id === `\0${FRONTMATTER_ID}` ? load() : null),
-		// Editing a case study must invalidate the generated module in dev.
+		name: 'content-frontmatter',
+		resolveId(id) {
+			const match = COLLECTIONS.find((c) => c.id === id);
+			return match ? `\0${match.id}` : null;
+		},
+		load(id) {
+			const dir = byVirtualId.get(id);
+			return dir ? load(dir) : null;
+		},
+		// Editing a file must invalidate the generated module in dev.
 		handleHotUpdate({ file, server }) {
-			if (!file.includes(PROJECTS_DIR) || !file.endsWith('.md')) return;
-			const mod = server.moduleGraph.getModuleById(`\0${FRONTMATTER_ID}`);
-			if (mod) server.moduleGraph.invalidateModule(mod);
+			if (!file.endsWith('.md')) return;
+			for (const [virtualId, dir] of byVirtualId) {
+				if (!file.includes(dir)) continue;
+				const mod = server.moduleGraph.getModuleById(virtualId);
+				if (mod) server.moduleGraph.invalidateModule(mod);
+			}
 		}
 	};
 }

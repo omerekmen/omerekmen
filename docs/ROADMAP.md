@@ -14,7 +14,7 @@
 | 07 — Draw the systems            | Done — five diagrams, see GUIDELINE.md                |
 | 08 — Scroll that means something | Done — see GUIDELINE.md                               |
 | 09 — One case-study structure    | Done — see GUIDELINE.md                               |
-| 10 — Notes                       | Decided: three pieces — see DEPTH.md                  |
+| 10 — Notes                       | Done — three pieces, needs your fact-check            |
 | 11 — How the work is done        | Planned — see DEPTH.md                                |
 | 12 — Craft                       | Planned — see DEPTH.md                                |
 

@@ -47,3 +47,17 @@ export interface ProjectEntry {
 	/** Whether prose exists. The body itself comes from `project-bodies.ts`. */
 	hasBody: boolean;
 }
+
+export interface NoteFrontmatter {
+	title: string;
+	slug: string;
+	/** ISO date. Notes carry one because a stale writing section is worse than none. */
+	date: string;
+	/** One or two sentences. Used on the index, meta description and OG text. */
+	summary: string;
+	tags: string[];
+	/** The case study this came out of, when it came out of one. */
+	related?: string | null;
+	/** Roughly how long it takes to read, counted from the prose at build time. */
+	minutes: number;
+}

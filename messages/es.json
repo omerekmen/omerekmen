@@ -106,5 +106,14 @@
 	"work_all_projects": "Todos los proyectos",
 	"work_scroll_hint": "Sigue desplazándote para recorrer el trabajo",
 	"work_swipe_hint": "Desliza para recorrer el trabajo",
-	"work_position": "Posición del proyecto"
+	"work_position": "Posición del proyecto",
+	"nav_notes": "Notas",
+	"notes_title": "Notas",
+	"notes_intro": "Textos breves sobre cosas que he tenido que hacer de verdad. Tres, y seguirán siendo tres hasta que haya un cuarto que merezca leerse.",
+	"notes_read_time": "min de lectura",
+	"notes_from_project": "De este caso de estudio",
+	"notes_next": "Siguiente nota",
+	"notes_english_only": "Las notas se escriben solo en inglés. Traducir un argumento a cuatro idiomas es como una sección de escritura acaba siendo un archivo de versiones a medio actualizar.",
+	"notes_all": "Todas las notas",
+	"notes_updated": "Última incorporación"
 }
