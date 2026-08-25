@@ -50,6 +50,37 @@ Altta ise platform bir .NET Framework monoliti idi. Herhangi bir şeyi
 değiştirmek her şeyi riske atmak anlamına geliyordu — ki bu tam olarak bir ekibin
 ekranları iyileştirmeyi bırakmasına yol açan koşuldur.
 
+## Kısıtlar
+
+İnsanların gün boyu kullandığı bir sistem, dolayısıyla hiçbir şey duramazdı. Üç
+ila dört mühendis, yaklaşık iki ay boyunca bire düşerek. Ve çalışan öğrenci
+mesaisi — ki bu kendi başına bir kısıt: tasarımın bırakılıp yeniden elde
+alınmaya dayanması gerekiyordu.
+
+## Kararlar
+
+**Modül başına tek model değil, CQRS ayrımı.** Yoğun bir liste ekranı ile bir
+onay akışı aynı veriden zıt şeyler ister — biri geniş ve denormalize bir okuma,
+diğeri dar ve doğrulanmış bir yazma. İkisini tek modelden beslemek, her okuma
+optimizasyonunu para hareket ettiren bir yazma yolu için risk hâline getirir.
+
+**Log tabanlı bir aracı yerine RabbitMQ.** Servislerin ihtiyacı, yüksek
+verimde yeniden oynatılabilir bir geçmiş değil; yönlendirme ve yeniden denemeyle
+güvenilir iş dağıtımıydı. Log'u seçmek kimsenin istemediği bir dayanıklılık
+hikâyesi satın alır ve ekibin göç ortasında öğrenmesi gereken bir operasyonel
+yüzey eklerdi.
+
+**Ani geçiş değil, paralel çalışma.** Framework monoliti, .NET 8/9 servisleri
+yanında kurulurken hizmet vermeye devam etti. Ani geçiş daha hızlıdır ve bir
+muhasebe kapanışını bir sürüm tarihinin insafına bırakırdı. Paralel çalışmanın
+bedeli, davranışın iki yerde bulunması ve ikisini de doğru tutma disiplinidir;
+karşılığında hiçbir operasyonel gün göçün bitmesine bağlı kalmaz.
+
+**Verinin yanında duran mantık için saklı yordamlar.** Ne bir moda ne de bir
+varsayılan — büyük tablolar üzerindeki küme tabanlı iş, ağdan bir sıçrama
+uzakta değil verinin olduğu yere aittir ve optimize edilen şey sorgu
+planlayıcısıdır. Aynı zamanda mantığı iki yere yayan tercih de budur; bedeli o.
+
 ## Ne inşa ettim
 
 Muhasebe ve satın alma modüllerini, Entity Framework Core üzerinde ASP.NET Core
@@ -59,9 +90,21 @@ aynı modeli paylaşmak zorunda kalmamasını sağladım.
 
 Otomasyon işi bunun üzerine oturdu. Personel masraf süreci — iş seyahati ve
 konaklama — iki ekranı karşılaştıran bir insan yerine, Otokoç ve Setur
-sistemleri arasında kural tabanlı bir entegrasyona dönüştü. Yalnızca bu akışın
-işlem süresi %70'in üzerinde azaldı; muhasebe ve satın alma genelinde ise
-yaklaşık %30.
+sistemleri arasında kural tabanlı bir entegrasyona dönüştü.
+
+## Etki
+
+Yalnızca bu akışın işlem süresi %70'in üzerinde azaldı; muhasebe ve satın alma
+genelinde ise yaklaşık %30.
+
+Her iki rakam da aynı işin öncesi ve sonrasındaki işlem süresi. %70'in temel
+aldığı hâl manuel yol: bir kişinin Otokoç ve Setur sistemlerini açıp elle
+karşılaştırması; kıyaslanan ise onun yerini alan kural tabanlı entegrasyon. %30
+ise muhasebe ve satın almanın tamamında aynı ölçü — çoğu adımın zaten manuel
+olmadığı bir bütün, ki küçük olmasının sebebi bu.
+
+Bu sayfadaki diğer iki rakam ölçüm değil sayım: iki modül genelinde teslim
+edilen saklı yordamlar ve SSRS raporları.
 
 ## Altındaki veri
 

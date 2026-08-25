@@ -314,7 +314,7 @@
 
 	<!-- ═══ CASE STUDY ═══ -->
 	{#if sample.caseStudy}
-		{@const Body = sample.caseStudy.body}
+		{@const Body = sample.caseStudyBody}
 		<section class="case on-scroll">
 			<div class="wrap narrow">
 				<h2 class="mono heading">Case study — {sample.caseStudy.meta.title}</h2>

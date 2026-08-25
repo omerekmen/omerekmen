@@ -40,6 +40,47 @@ accounting, customer support and their leads — and each one had historically g
 it by asking someone to pull an extract. That works until two extracts disagree,
 and then nobody can tell which number is wrong.
 
+## Constraints
+
+The sources are not mine to change. An operational system being written to right
+now, a partner integration on someone else's release schedule, an API that
+answers when it answers — none of them will restructure themselves because the
+warehouse would prefer it. Every design choice below starts from the fact that
+the platform absorbs variation rather than negotiating it away.
+
+## What made it hard
+
+Integrating a source means understanding what it means, not just how to read it.
+An SAP record and a CRM record describing the same customer have to agree before
+either is worth reporting on, and they disagree in ways that are invisible until
+someone asks a question that touches both. The technical work of moving bytes is
+the small half.
+
+## Decisions
+
+**Python in Fabric notebooks over the visual designer.** A drag-and-drop
+transformation is faster to build and effectively impossible to review — the
+logic lives in a diagram nobody can diff, and a change is a click that leaves no
+trace. Notebooks put transformation logic in files that can be read, reviewed
+and reasoned about six months later by someone who was not in the room.
+
+**Watermarking, not full reloads.** Reprocessing a history that has not changed
+is the default because it is simple and always correct. It also makes every
+failed run cost the whole window, which is how a nightly load becomes a daily
+incident. Watermarks make a failed run resume; the cost is that the pipeline now
+owns state, and state can be wrong.
+
+**A governed warehouse in the middle, rather than reports reading the
+lakehouse.** Letting each report define its own logic over raw tables is faster
+per report and produces exactly the disagreement the platform exists to end. The
+warehouse is the place where "an active customer" is defined once.
+
+**The same models for forecasting and R&D as for reporting.** The alternative —
+an experiment pulling its own extract — is quicker and reintroduces the original
+problem in a place where it is harder to notice. An experiment and a board
+report disagreeing about last quarter is a much worse problem than either being
+slightly late.
+
 ## The shape of the platform
 
 Five stages, and the value is in the boundaries between them:

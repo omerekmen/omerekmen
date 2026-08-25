@@ -40,6 +40,45 @@ destek talepleri. Bu alanlar birbirinden çok farklı hızlarda ve çok farklı 
 altında değişir. Hepsini tek bir uygulama olarak modellemek, her dağıtımı tüm
 sistemi riske atan bir işleme dönüştürür.
 
+## Kısıtlar
+
+Sabit bir program takvimi üzerinde çalışan, sonrasında kimsenin işletmeyeceği
+bir sistem kuran bir bitirme ekibi. Bu iki yönlü keser: hakkında yanılınacak
+üretim trafiği yok, ama tasarımı düzeltecek operasyonel geri bildirim de yok.
+Aşağıdaki her şey, bir çağrı cihazından değil ilk ilkelerden kurulması gereken
+bir savunma.
+
+## Zor olan neydi
+
+Abone yaşam döngüsü müşteriye tek bir hikâye, mühendise dokuz farklı değişim
+hızıdır. Katalog pazarlama öyle dediğinde değişir; kullanım sürekli değişir; bir
+fatura ayda bir kez değişir ve sonra bir daha asla değişmemelidir. Bunların
+hepsini tek uygulamada tutmak, her dağıtımın dokuzunun birden riskini taşıması
+demektir — ve en sık değişen parçalar, hiç değişmemesi gereken parçaları
+tutuyordur.
+
+## Kararlar
+
+**Ayrı servislerin arkasında paylaşılan şema değil, servis başına veritabanı.**
+Ucuz seçenek — tek veritabanı, dokuz dağıtılabilir — size izolasyon olmadan
+dağıtım hikâyesini verir; ilk bağlamlar arası join de onu sessizce fazladan ağ
+çağrıları olan bir monolite geri çevirir. Bedeli aşağıda dürüstçe ödeniyor.
+
+**Senkron çağrılar değil, bağlamlar arası tek durum olarak Kafka alan olayları.**
+Faturalama, Sipariş'ten siparişi isteyebilirdi. O zaman Sipariş çöktüğünde
+Faturalama da çöker ve bu bağımlılık başarısız olana kadar görünmez. Olaylar
+bunu tersine çevirir: Sipariş ne olduğunu bildirir ve kimin dinlediğini
+umursamayı bırakır.
+
+**Redis yalnızca okumanın baskın, değişimin seyrek olduğu yerde.** Katalog ve
+uygunluk sorguları buna uyar; siparişler ve kullanım uymaz. Sürekli değişen
+verinin önündeki bir önbellek gecikme satın alıp doğruluk satar, ki bir
+faturalama sistemi için yanlış yön budur.
+
+**Üç değil, dokuz bağlam.** Daha az ve daha büyük servisler daha az iş olurdu ve
+kullanımı, faturalamayı ve abonelikleri — gerçekten farklı üç değişim hızını —
+tek dağıtıma geri koyardı.
+
 ## Mimari
 
 Platform, sınırlı bağlam (bounded context) sınırları boyunca dokuz servise
@@ -66,6 +105,16 @@ tek bir sipariş uçtan uca takip edilebiliyor.
 
 Backend servisleri ve aralarındaki olay sözleşmeleri; ayrıca ekibin dağıtım için
 kullandığı konteynerleştirme ve Kubernetes manifestoları.
+
+## Etki
+
+Kubernetes üzerinde çalışan dokuz servis ve OpenTelemetry ile servis sınırları
+boyunca uçtan uca izlenebilen tek bir sipariş — henüz kullanıcısı olmayan bir
+sistem için önemli olan sonuç bu, çünkü dağıtık izleme "sipariş bir yerde
+başarısız oldu"yu belirli bir servise ve belirli bir aralığa çeviren şeydir.
+
+Bu sayfadaki iki sayı ölçüm değil sayım: dokuz sınırlı bağlam, dokuz veritabanı,
+kuruluş gereği servis başına bir tane.
 
 ## Bağlam
 

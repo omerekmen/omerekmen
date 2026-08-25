@@ -38,6 +38,24 @@ algebra and transform routines are written from their mathematical definitions.
 That constraint is the point. It is also the reason this is slower going than a
 binding layer would be.
 
+## Decisions
+
+**Implement the primitives, do not bind to BLAS/LAPACK.** Binding is the correct
+engineering answer: those libraries are decades of accumulated numerical care
+and nothing I write will beat them. The project exists precisely not to do that
+— the goal is understanding the mathematics well enough to implement it, and a
+binding layer skips the part worth doing. A deliberate choice about what this
+project is for, not a claim that it is the better approach.
+
+**A workspace of focused crates, not one library.** Tensors, dataframes and
+linear algebra have genuinely different dependency shapes and stability
+horizons. One crate would let the least stable part dictate the release cadence
+of the most stable.
+
+**API stability deferred on purpose.** Fixing the surface early would lock in
+guesses made before the numerical routines were written — and in a numerical
+library, the routines are what tell you what the types should have been.
+
 ## Status
 
 **In development, API not yet stable.** The repository is public and the work is

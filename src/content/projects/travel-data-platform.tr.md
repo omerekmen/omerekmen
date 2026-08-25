@@ -40,6 +40,49 @@ müşteri destek ve yöneticileri — ve tarihsel olarak her biri bu cevabı bir
 bir döküm çekmesini isteyerek alıyordu. Bu, iki döküm birbirini tutmayana kadar
 işe yarar; ondan sonra hangi sayının yanlış olduğunu kimse söyleyemez.
 
+## Kısıtlar
+
+Kaynaklar benim değiştirebileceğim şeyler değil. Şu anda üzerine yazılan bir
+operasyonel sistem, başkasının sürüm takvimindeki bir iş ortağı entegrasyonu,
+cevap verdiğinde cevap veren bir API — hiçbiri ambar öyle tercih ettiği için
+kendini yeniden yapılandırmayacak. Aşağıdaki her tasarım kararı, platformun
+değişkenliği pazarlıkla ortadan kaldırmak yerine soğurduğu gerçeğinden
+başlıyor.
+
+## Zor olan neydi
+
+Bir kaynağı entegre etmek, onu nasıl okuyacağınızı değil ne anlama geldiğini
+anlamak demek. Aynı müşteriyi tarif eden bir SAP kaydıyla bir CRM kaydının,
+ikisinden biri raporlanmaya değer olmadan önce anlaşması gerekiyor — ve
+anlaşamadıkları yerler, biri ikisine birden dokunan bir soru sorana kadar
+görünmez kalıyor. Bayt taşımanın teknik işi küçük yarısı.
+
+## Kararlar
+
+**Görsel tasarımcı yerine Fabric not defterlerinde Python.** Sürükle-bırak bir
+dönüşümü kurmak daha hızlı ve gözden geçirmek fiilen imkânsız — mantık kimsenin
+diff alamayacağı bir diyagramda yaşıyor ve bir değişiklik iz bırakmayan bir tık.
+Not defterleri dönüşüm mantığını, altı ay sonra o odada olmayan birinin
+okuyabileceği, gözden geçirebileceği ve üzerine düşünebileceği dosyalara koyuyor.
+
+**Tam yeniden yükleme değil, filigran.** Değişmemiş bir geçmişi yeniden işlemek
+varsayılan tercihtir, çünkü basit ve her zaman doğrudur. Aynı zamanda başarısız
+her koşunun bedelini tüm pencereye ödetir; gecelik bir yüklemenin günlük bir
+olaya dönüşmesi de böyledir. Filigran başarısız bir koşunun kaldığı yerden devam
+etmesini sağlar; bedeli, hattın artık durum sahibi olması ve durumun yanlış
+olabilmesidir.
+
+**Raporların göl evinden okuması yerine ortada yönetilen bir ambar.** Her
+raporun kendi mantığını ham tablolar üzerinde tanımlamasına izin vermek rapor
+başına daha hızlıdır ve platformun var oluş sebebi olan anlaşmazlığı birebir
+üretir. Ambar, "aktif müşteri"nin bir kez tanımlandığı yerdir.
+
+**Tahminleme ve Ar-Ge için raporlamayla aynı modeller.** Alternatif — bir
+denemenin kendi dökümünü çekmesi — daha hızlıdır ve asıl sorunu, fark
+edilmesinin daha zor olduğu bir yerde geri getirir. Bir denemeyle bir yönetim
+kurulu raporunun geçen çeyrek konusunda anlaşamaması, ikisinden birinin biraz
+geç kalmasından çok daha kötü bir sorundur.
+
 ## Platformun şekli
 
 Beş aşama, ve değer aralarındaki sınırlarda:

@@ -49,6 +49,29 @@ ClickHouse üstleniyor. Önünde bir SvelteKit konsolu var.
 Devam eden kapsam: OAuth/OIDC akışları, sosyal giriş, MFA ve kiracı bazında özel
 alan adları.
 
+## Kararlar
+
+**Kiracı izolasyonu bir filtre olarak değil, veri modelinde.** Yaygın yaklaşım
+tek şema ve her sorgunun eklemeyi hatırladığı bir kiracı sütunudur. Bir sorgu
+unutana kadar işe yarar; hata biçimi ise bir kiracının başka bir kiracının
+kimliklerini okumasıdır — bir kimlik sağlayıcısının yapabileceği en kötü hata.
+İzolasyonu yapısal kılmak, o hatayı yapılabilir olmaktan çıkarır.
+
+**PostgreSQL yerine CockroachDB.** Postgres sıkıcı ve doğru varsayılan olurdu;
+çoğu projede ona uzanırdım. Kimlik, hayatta kalabilirliğin ve dağıtık
+işlemlerin bir ekstra değil ürünün kendisi olduğu durum: bir bölge çöktüğü için
+başarısız olan bir giriş, o bölgedeki her kiracı için kesinti demektir.
+
+**Denetim için işlem veritabanı değil, ClickHouse.** Denetim kaydı ekleme
+ağırlıklı, nadiren okunur ve sınırsız büyür. Hızlı kalması gereken kimliklerin
+yanına koymak iki iş yükünü yarıştırır ve denetim hep kazanır, çünkü sayıca
+fazladır.
+
+**Hızı bilerek feda ederek Rust.** CRUD biçimli bir kimlik servisi neredeyse her
+şeyde daha hızlı ilerlerdi. CRUD biçimli olmayan kısımlar — token işleme, oturum
+durumu, denetim yolu — bellek güvenliği garantisinin ve kapsamlı bir tip
+sisteminin estetik bir tercih olmaktan çıktığı yerler.
+
 ## Durum
 
 **Bu proje tamamlanmadı ve aktif olarak geliştiriliyor.** Burada yer almasının

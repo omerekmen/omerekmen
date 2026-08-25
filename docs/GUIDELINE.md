@@ -31,10 +31,20 @@ in the PR rather than six months later.
 
 | Limit                         | Budget | Currently                            |
 | ----------------------------- | ------ | ------------------------------------ |
-| Homepage JS, gzipped          | 150 KB | ~127 KB                              |
+| Homepage JS, gzipped          | 150 KB | ~113 KB                              |
 | Largest single chunk, gzipped | 60 KB  | ~51 KB (GSAP)                        |
 | Any one image or font         | 200 KB | largest is the social card at ~63 KB |
 | Third-party requests          | 0      | 0                                    |
+
+**Case-study prose must not reach a page that renders cards.** mdsvex compiles
+each `.md` into a Svelte component whose module body builds templates at the top
+level, so Rollup cannot treat the default export as side-effect-free — asking a
+glob for `metadata` alone still drags in every compiled case study. Frontmatter
+therefore comes from the `projectFrontmatter` plugin in `vite.config.ts`, which
+reads the files at build time and emits parsed YAML; bodies come from
+`project-bodies.ts`, imported only by routes that render them. Undoing that
+split silently adds about 27 KB gzipped to every homepage visit and grows with
+every word written.
 
 Fonts are subset to the characters the copy actually uses; see the Latin ranges
 in the subsetting note. Raising a budget is a decision to record in the commit
@@ -137,6 +147,66 @@ selection rate or a certificate belongs in the body.
 
 Archived projects keep their URLs and stay in the sitemap at lower priority, but
 are excluded from the homepage carousel.
+
+## Case-study structure
+
+Every study answers the same questions in the same order, so two projects can be
+compared without re-learning the format. This is a **shape, not a word count** —
+a floor produces padding, and padding is the thing it was supposed to prevent.
+
+| Heading                | What it answers                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `## The problem`       | What the system had to do, in business terms, before any technology appears |
+| `## Constraints`       | Team size, timeline, what was already in production, what could not change  |
+| `## What made it hard` | The two or three things that made it genuinely difficult, specifically      |
+| `## Decisions`         | What was chosen, what was rejected, and the reason it lost                  |
+| `## What I built`      | The implementation, briefly                                                 |
+| `## Impact`            | The numbers, each with what was measured and against what baseline          |
+| `## What I'd change`   | The retrospective, and what it changed about the next project               |
+
+**The problem**, **Decisions**, **What I built** and **What I'd change** are
+required. **Constraints**, **What made it hard** and **Impact** appear when there
+is something true to put in them — an empty section is worse than a missing one,
+and a study padded to reach a heading reads exactly like a study padded to reach
+a heading. A project may add its own headings (`## Architecture`, `## Status`,
+`## Where it is going`) where they carry something the standard set does not.
+
+### Decisions carry most of the weight
+
+This is the section that separates a builder from an engineer, and the one most
+likely to be skipped because it is the hardest to write. A decision entry names
+the alternative and why it lost:
+
+> **Kafka domain events as the only cross-context state, not synchronous calls.**
+> Billing could have asked Ordering for an order. Then Billing is down when
+> Ordering is, and the dependency is invisible until it fails.
+
+Not "we used Kafka for event-driven architecture". The rejected option is the
+content.
+
+Never claim a formal evaluation that did not happen. Stating the reasoning
+behind a choice is honest; describing a trade study nobody ran is not. Phrase it
+as why the choice is right, not as the minutes of a meeting.
+
+### Every metric names its basis
+
+A number with no basis is the number an interviewer asks about, and "I'd have to
+check" costs more than never having shown it. State what was measured and
+against what:
+
+> That figure is dashboard load time, before and after the query and indexing
+> work, on the same portfolio — roughly a hundred property listings.
+
+Distinguish **measurements** from **counts**. Nine services and fifty stored
+procedures are counts and should say so; a percentage is a measurement and needs
+a baseline. Where a number cannot be sourced, **cut it** — an unsourced metric
+is worth less than no metric.
+
+### Archive projects stay short
+
+`track: archive` exists for work kept for its URL and its history. A brief entry
+that says what it was and why it is archived is honest; expanding it to match a
+production study is the padding this section exists to prevent.
 
 ## Diagrams
 

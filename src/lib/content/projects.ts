@@ -1,4 +1,4 @@
-import type { Component } from 'svelte';
+import { entries as frontmatter } from 'virtual:project-frontmatter';
 import type {
 	ProjectEntry,
 	ProjectFrontmatter,
@@ -6,10 +6,7 @@ import type {
 	ProjectTrack
 } from '$lib/types/content';
 
-interface MarkdownModule {
-	default: Component;
-	metadata?: Record<string, unknown>;
-}
+type MarkdownModule = Record<string, unknown> | undefined;
 
 const TRACKS: ProjectTrack[] = ['production', 'in-progress', 'lab', 'archive'];
 
@@ -21,7 +18,12 @@ const TRACK_WEIGHT: Record<ProjectTrack, number> = {
 	archive: 3
 };
 
-const modules = import.meta.glob<MarkdownModule>('/src/content/projects/*.md', { eager: true });
+// Frontmatter comes from a build-time plugin rather than a glob over the .md
+// files, so no compiled case-study component reaches a page that only renders
+// cards. See the plugin in vite.config.ts for why the glob cannot do this.
+const modules: Record<string, MarkdownModule> = Object.fromEntries(
+	frontmatter.map((entry) => [entry.file, entry.data as MarkdownModule])
+);
 
 const LOCALES = ['en', 'tr', 'fr', 'de', 'es'] as const;
 type Locale = (typeof LOCALES)[number];
@@ -82,7 +84,7 @@ function parseMetrics(file: string, data: Record<string, unknown>): ProjectMetri
  * rendering a broken page. See docs/GUIDELINE.md "Adding a project".
  */
 function parse(file: string, module: MarkdownModule): ProjectEntry {
-	const data = module.metadata ?? {};
+	const data: Record<string, unknown> = module ?? {};
 	if (Object.keys(data).length === 0) fail(file, 'no frontmatter found');
 
 	const track = requireString(file, data, 'track') as ProjectTrack;
@@ -125,7 +127,7 @@ function parse(file: string, module: MarkdownModule): ProjectEntry {
 		progress: typeof data.progress === 'string' ? data.progress : null
 	};
 
-	return { meta, body: module.default ?? null, hasBody: data.hasBody !== false };
+	return { meta, hasBody: data.hasBody !== false };
 }
 
 /** Every parsed file, keyed by slug then locale. */

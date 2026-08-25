@@ -218,7 +218,7 @@
 
 	<!-- ═══ THE ARTICLE ═══ -->
 	{#if sample.caseStudy}
-		{@const Body = sample.caseStudy.body}
+		{@const Body = sample.caseStudyBody}
 		<article id="feature" class="feature">
 			<div class="col-side">
 				<p class="side-label">Case study</p>

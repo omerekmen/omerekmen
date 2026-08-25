@@ -1,6 +1,7 @@
 import { personal } from '$lib/data/personal';
 import { experiences } from '$lib/data/experience';
 import { featuredProjects, getProject } from '$lib/content/projects';
+import { getProjectBody } from '$lib/content/project-bodies';
 
 /**
  * The single content set every direction renders.
@@ -18,7 +19,9 @@ export const sample = {
 	linkedin: personal.linkedin,
 	currentRole: experiences.find((e) => e.current) ?? experiences[0],
 	projects: featuredProjects(),
-	caseStudy: getProject('telco-crm-platform')
+	caseStudy: getProject('telco-crm-platform'),
+	/** Kept beside the metadata so each direction renders the same article. */
+	caseStudyBody: getProjectBody('telco-crm-platform')
 };
 
 /** Drawn from the CV, used where a direction wants a capability strip. */

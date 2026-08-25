@@ -464,7 +464,7 @@
 
 	<!-- ═══ CASE STUDY ═══ -->
 	{#if sample.caseStudy}
-		{@const Body = sample.caseStudy.body}
+		{@const Body = sample.caseStudyBody}
 		<section id="case" class="case">
 			<aside class="contents" aria-label="Case study contents">
 				<div class="contents-sticky">

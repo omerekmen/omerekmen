@@ -2,7 +2,7 @@
 	import { personal } from '$lib/data/personal';
 	import * as m from '$lib/paraglide/messages.js';
 	import { localizeHref } from '$lib/paraglide/runtime';
-	import { getProject } from '$lib/content/projects';
+	import { getProjectBody } from '$lib/content/project-bodies';
 	import { gsap } from '$lib/utils/gsap';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
 	import SystemDiagram from '$lib/components/ui/SystemDiagram.svelte';
@@ -11,8 +11,7 @@
 	let { data } = $props();
 
 	const meta = $derived(data.meta);
-	const entry = $derived(getProject(meta.slug, data.locale));
-	const Body = $derived(entry?.body ?? null);
+	const Body = $derived(getProjectBody(meta.slug, data.locale));
 	const number = $derived(String(data.index).padStart(2, '0'));
 
 	const jsonLd = $derived({

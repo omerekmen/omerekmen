@@ -40,6 +40,43 @@ and support tickets. Those concerns change at very different rates and under
 very different load. Modelling them as one application makes every deployment a
 whole-system risk.
 
+## Constraints
+
+A capstone team on a fixed programme timeline, building a system nobody would
+operate afterwards. That cuts both ways: no production traffic to be wrong
+about, and no operational feedback to correct the design either. Everything
+below is an argument that had to be made from first principles rather than from
+a pager.
+
+## What made it hard
+
+The subscriber lifecycle is one story to a customer and nine different rates of
+change to an engineer. A catalog changes when marketing says so; usage changes
+continuously; an invoice changes once a month and then must never change again.
+Holding all of that in one application means every deployment carries the risk
+of all nine, and the parts that change most often hold the parts that must not.
+
+## Decisions
+
+**Database per service, not a shared schema behind separate services.** The
+cheaper option — one database, nine deployables — gives you the deployment story
+without the isolation, and the first cross-context join quietly turns it back
+into a monolith with extra network calls. The cost is paid honestly below.
+
+**Kafka domain events as the only cross-context state, not synchronous calls.**
+Billing could have asked Ordering for an order. Then Billing is down when
+Ordering is, and the dependency is invisible until it fails. Events invert it:
+Ordering states what happened and stops caring who listens.
+
+**Redis only where reads dominate and change is rare.** Catalog and eligibility
+lookups qualify; orders and usage do not. A cache in front of data that changes
+constantly buys latency and sells correctness, which is the wrong direction for
+a billing system.
+
+**Nine contexts, not three.** Fewer, larger services would have been less work
+and would have put usage, billing and subscriptions — three genuinely different
+rates of change — back into one deployment.
+
 ## Architecture
 
 The platform is split into nine services along bounded-context lines, each
@@ -65,6 +102,16 @@ followed end to end.
 
 Backend services and the event contracts between them, plus the containerisation
 and Kubernetes manifests the team deployed with.
+
+## Impact
+
+Nine services running on Kubernetes with a single order traceable end to end
+across service boundaries through OpenTelemetry — which is the outcome that
+matters for a system with no users yet, because distributed tracing is what
+turns "the order failed somewhere" into a specific service and a specific span.
+
+The two numbers on this page are counts rather than measurements: nine bounded
+contexts, nine databases, one per service by construction.
 
 ## Context
 

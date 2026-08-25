@@ -1,5 +1,3 @@
-import type { Component } from 'svelte';
-
 /**
  * How much weight a project carries, and how it should be framed.
  *
@@ -46,7 +44,6 @@ export interface ProjectFrontmatter {
 
 export interface ProjectEntry {
 	meta: ProjectFrontmatter;
-	/** The compiled case-study body, or null when the file has no prose yet. */
-	body: Component | null;
+	/** Whether prose exists. The body itself comes from `project-bodies.ts`. */
 	hasBody: boolean;
 }

@@ -50,6 +50,38 @@ Underneath, the platform was a .NET Framework monolith. Changing anything meant
 risking everything, which is exactly the condition that makes a team stop
 improving the screens in the first place.
 
+## Constraints
+
+A system people used all day, so nothing could stop. Three to four engineers,
+dropping to one for about two months. And working-student hours, which is its
+own constraint: the design had to survive being picked up and put down.
+
+## Decisions
+
+**A CQRS split, not a single model per module.** A busy list screen and an
+approval workflow want opposite things from the same data — one wants a wide,
+denormalised read; the other wants a narrow, validated write. Serving both from
+one model means every read optimisation is a risk to a write path that moves
+money.
+
+**RabbitMQ rather than a log-based broker.** What the services needed was
+reliable work distribution with routing and retries, not a replayable history at
+high throughput. Choosing the log would have bought a durability story nobody
+had asked for and added an operational surface the team would have had to learn
+mid-migration.
+
+**Parallel running, not a cut-over.** The Framework monolith kept serving while
+the .NET 8/9 services were built beside it. A cut-over is faster and would have
+put an accounting close at the mercy of a release date. Parallel running costs
+duplicated behaviour and the discipline of keeping both correct, and it means no
+operational day depends on the migration being finished.
+
+**Stored procedures for the logic that sits next to the data.** Not a fashion,
+and not a default — set-based work over large tables belongs where the data is
+rather than a network hop away, and the query planner is the thing being
+optimised. It is also the choice that spreads logic across two places, which is
+the cost.
+
 ## What I built
 
 The accounting and purchasing modules, as ASP.NET Core Web APIs over Entity
@@ -59,9 +91,22 @@ approval.
 
 The automation work sat on top of that. Personnel expense processing — business
 travel and lodging — became a rule-based integration between the Otokoç and
-Setur systems rather than a person comparing two screens. That single path came
-down by more than 70% in processing time, and accounting and purchasing overall
-by roughly 30%.
+Setur systems rather than a person comparing two screens.
+
+## Impact
+
+That single path came down by more than 70% in processing time, and accounting
+and purchasing overall by roughly 30%.
+
+Both figures are processing time for the same work before and after. The
+baseline for the 70% is the manual path — a person opening the Otokoç and Setur
+systems and comparing them by hand; the comparison is the rule-based integration
+that replaced it. The 30% is the same measure across accounting and purchasing
+as a whole, where most steps were never manual to begin with, which is why it is
+the smaller number.
+
+The other two figures on this page are counts, not measurements: stored
+procedures and SSRS reports delivered across the two modules.
 
 ## The data underneath
 

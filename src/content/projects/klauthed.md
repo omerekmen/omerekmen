@@ -49,6 +49,30 @@ append-heavy and read-rarely. A SvelteKit console sits in front.
 Scope in progress: OAuth/OIDC flows, social login, MFA, and per-tenant custom
 domains.
 
+## Decisions
+
+**Tenant isolation in the data model, not as a filter.** The common approach is
+one schema and a tenant column every query remembers to include. It works until
+one query forgets, and the failure mode is a tenant reading another tenant's
+identities — the single worst bug an identity provider can have. Making
+isolation structural means the mistake is not available to make.
+
+**CockroachDB rather than PostgreSQL.** Postgres would be the boring, correct
+default and I would reach for it in most projects. Identity is the case where
+survivability and distributed transactions are the product rather than a
+nice-to-have: a login that fails because a region is down is an outage for every
+tenant in it.
+
+**ClickHouse for audit, not the transactional store.** Audit is append-heavy,
+read-rarely, and grows without bound. Putting it beside the identities that must
+stay fast means the two workloads compete, and audit always wins because there
+is more of it.
+
+**Rust, knowingly at the cost of speed.** A CRUD-shaped identity service would
+go faster in almost anything else. The parts that are not CRUD-shaped — token
+handling, session state, the audit path — are where a memory-safety guarantee
+and an exhaustive type system stop being an aesthetic preference.
+
 ## Status
 
 **This is unfinished and actively being built.** It is here because it is the
