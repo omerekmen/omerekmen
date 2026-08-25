@@ -126,5 +126,6 @@
 	"approach_3_title": "İlk rapordan itibaren kelimelerin ne demek olduğunu yaz",
 	"approach_3_body": "Anlamsal bir katman değil, bir araç değil — onaylanmış bir satın almanın, aktif bir kiralamanın, bir ayda gelir sayılan şeyin ne olduğunu söyleyen bir dosya. Bir öğleden sonra sürer ve hiçbir şeyi kısıtlamaz. Atlanması, raporlama katmanlarının çürüme sebebidir: yavaş sorgular değil, hangi sayının doğru olduğunda anlaşamayan bir oda dolusu insan.",
 	"approach_4_title": "Modellenmiş katmana hak edene kadar hayır de",
-	"approach_4_body": "Raporların doğrudan işlem şemasından okuması on raporda doğru, kırkta yanlıştır; modellenmiş sürümü erken kurmak ise kimsenin göstermediği bir yük için tasarlamak demektir. Bunu erteliyorum ve tek bir sinyali izliyorum: aynı iş teriminin iki farklı sorguda iki farklı şekilde tanımlanması."
+	"approach_4_body": "Raporların doğrudan işlem şemasından okuması on raporda doğru, kırkta yanlıştır; modellenmiş sürümü erken kurmak ise kimsenin göstermediği bir yük için tasarlamak demektir. Bunu erteliyorum ve tek bir sinyali izliyorum: aynı iş teriminin iki farklı sorguda iki farklı şekilde tanımlanması.",
+	"detail_read_time": "dk okuma"
 }

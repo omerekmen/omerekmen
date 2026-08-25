@@ -40,6 +40,8 @@ export interface ProjectFrontmatter {
 	order: number;
 	/** Free-text state for in-progress work, e.g. "15 of 22 services". */
 	progress?: string | null;
+	/** Counted from the prose at build time, so it cannot drift from the piece. */
+	minutes: number;
 }
 
 export interface ProjectEntry {

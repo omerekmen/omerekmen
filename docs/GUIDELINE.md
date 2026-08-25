@@ -66,7 +66,10 @@ optical-size axis of a variable font, which is usually the difference between
 ## Motion is progressive enhancement
 
 Every page must be fully readable and navigable with JavaScript disabled and with
-`prefers-reduced-motion: reduce`. The reduced-motion path is tested, not assumed — that is
+`prefers-reduced-motion: reduce`. `prefers-reduced-data: reduce` is honoured
+too: the hero's particle field carries no information and runs a rAF loop for as
+long as the page is open, which makes it the first thing to drop for a visitor
+who has asked for less. The reduced-motion path is tested, not assumed — that is
 how the card-stacking bug survived to production.
 
 Animation belongs in `$effect` with a GSAP context that is reverted on cleanup. Never leave

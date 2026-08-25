@@ -289,8 +289,11 @@
 		<!-- ═══ CASE STUDY ═══ -->
 		{#if Body}
 			<section class="px-6 py-16 sm:px-10 lg:px-16">
-				<div class="prose-body reveal mx-auto max-w-2xl">
-					<Body />
+				<div class="reveal mx-auto max-w-2xl">
+					<p class="read-time">{meta.minutes} {m.detail_read_time()}</p>
+					<div class="prose-body">
+						<Body />
+					</div>
 				</div>
 			</section>
 		{/if}
@@ -445,6 +448,15 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 12px;
 		color: var(--color-text-secondary);
+	}
+
+	.read-time {
+		margin-bottom: 2rem;
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-text-muted);
 	}
 
 	/* ── Case-study prose ── */

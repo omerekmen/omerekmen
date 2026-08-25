@@ -16,7 +16,7 @@
 | 09 — One case-study structure    | Done — see GUIDELINE.md                               |
 | 10 — Notes                       | Done — three pieces, needs your fact-check            |
 | 11 — How the work is done        | Done — on the homepage, needs your fact-check         |
-| 12 — Craft                       | Planned — see DEPTH.md                                |
+| 12 — Craft                       | Done — read time, reduced-data                        |
 
 Payload after phase 01: client JS 1.02 MB → 328 KB raw, fonts 742 KB → 115 KB,
 OG image 1.8 MB → 106 KB. Roughly 3.1 MB removed from a cold visit.

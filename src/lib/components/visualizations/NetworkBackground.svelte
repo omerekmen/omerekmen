@@ -14,6 +14,10 @@
 		if (!browser || !canvasEl) return;
 
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		// A visitor on a metered or slow connection has asked for less. An ambient
+		// particle field is the definition of what to drop first: it carries no
+		// information and it runs a rAF loop for as long as the page is open.
+		if (window.matchMedia('(prefers-reduced-data: reduce)').matches) return;
 
 		const isMobile = window.innerWidth < 768;
 		const instance = createNetworkScene(canvasEl, accentFor(getResolvedTheme()), isMobile);

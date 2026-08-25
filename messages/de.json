@@ -126,5 +126,6 @@
 	"approach_3_title": "Write down what the words mean, from the first report",
 	"approach_3_body": "Not a semantic layer, not a tool — a file saying what an approved purchase is, what an active tenancy is, what counts as revenue in a month. It costs an afternoon and constrains nothing. Skipping it is why reporting layers rot: not slow queries, but a room of people who cannot agree which number is true.",
 	"approach_4_title": "Say no to the modelled layer until it earns itself",
-	"approach_4_body": "Reports reading straight off the transactional schema is right at ten reports and wrong at forty, and building the modelled version early means designing for a load nobody has demonstrated. I defer it, and I watch for one signal: the same business term defined two different ways in two different queries."
+	"approach_4_body": "Reports reading straight off the transactional schema is right at ten reports and wrong at forty, and building the modelled version early means designing for a load nobody has demonstrated. I defer it, and I watch for one signal: the same business term defined two different ways in two different queries.",
+	"detail_read_time": "Min. Lesezeit"
 }

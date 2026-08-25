@@ -124,7 +124,9 @@ function parse(file: string, module: MarkdownModule): ProjectEntry {
 		featured: data.featured === true,
 		confidential: data.confidential === true,
 		order: typeof data.order === 'number' ? data.order : 0,
-		progress: typeof data.progress === 'string' ? data.progress : null
+		progress: typeof data.progress === 'string' ? data.progress : null,
+		// Injected by the content-frontmatter plugin from the body's word count.
+		minutes: typeof data.minutes === 'number' ? data.minutes : 1
 	};
 
 	return { meta, hasBody: data.hasBody !== false };
