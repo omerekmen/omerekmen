@@ -101,5 +101,10 @@
 	"work_auth_full": "Ressortissant turc — éligible à la carte bleue européenne et au statut de migrant hautement qualifié aux Pays-Bas.",
 	"work_auth_short": "Ouvert à une mobilité en Europe",
 	"work_view_project": "Voir le projet",
-	"detail_diagram": "Comment cela s’articule"
+	"detail_diagram": "Comment cela s’articule",
+	"work_heading": "Travaux",
+	"work_all_projects": "Tous les projets",
+	"work_scroll_hint": "Continuez à faire défiler pour parcourir les travaux",
+	"work_swipe_hint": "Balayez pour parcourir les travaux",
+	"work_position": "Position du projet"
 }

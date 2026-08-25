@@ -101,5 +101,10 @@
 	"work_auth_full": "Turkish national — eligible for EU Blue Card and Netherlands Highly Skilled Migrant sponsorship.",
 	"work_auth_short": "Open to EU relocation",
 	"work_view_project": "View project",
-	"detail_diagram": "How it fits together"
+	"detail_diagram": "How it fits together",
+	"work_heading": "Work",
+	"work_all_projects": "All projects",
+	"work_scroll_hint": "Keep scrolling to move through the work",
+	"work_swipe_hint": "Swipe to move through the work",
+	"work_position": "Project position"
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { gsap } from '$lib/utils/gsap';
+	import { gsap, ScrollTrigger } from '$lib/utils/gsap';
 	import TrackBadge from '$lib/components/ui/TrackBadge.svelte';
 	import { featuredProjects } from '$lib/content/projects';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
@@ -7,202 +7,277 @@
 	import { parseMetric, formatMetric } from '$lib/utils/metric';
 
 	const projects = featuredProjects(getLocale());
-	const projectCount = projects.length;
-	const sectionHeight = `${180 + projectCount * 190}vh`;
+	const total = projects.length;
 
-	// Scatter keeps the stack from reading as a slideshow.
-	const cardPositions = [
-		{ x: 7, y: -4, rotate: -1.8 },
-		{ x: -10, y: 3, rotate: 1.4 },
-		{ x: 4, y: -7, rotate: -1 },
-		{ x: -7, y: 5, rotate: 1.8 },
-		{ x: 9, y: -2, rotate: -1.4 }
-	];
+	/**
+	 * How the section behaves, decided once from the visitor's own settings.
+	 *
+	 * - `pinned` — vertical scroll drives horizontal travel. The default on a
+	 *   mouse, where scroll is the only gesture available.
+	 * - `swipe` — a natively scrollable track with snap points. Touch already has
+	 *   a horizontal gesture; taking the vertical one away and translating it is
+	 *   what makes these sections hated on phones.
+	 * - `list` — a plain vertical list. Not a degraded pinned mode: no pinning, no
+	 *   translation, nothing left mid-animation.
+	 */
+	type Mode = 'pinned' | 'swipe' | 'list';
+	let mode = $state<Mode>('list');
 
-	let reducedMotion = $state(false);
 	let activeIndex = $state(0);
+	let progress = $state(0);
+
+	const LETTERS = ['W', 'O', 'R', 'K'];
+
 	let sectionEl: HTMLElement | undefined = $state();
-	let pinEl: HTMLDivElement | undefined = $state();
-	let pillEl: HTMLDivElement | undefined = $state();
 	let lettersEl: HTMLDivElement | undefined = $state();
-	let carouselEl: HTMLDivElement | undefined = $state();
+	let pinEl: HTMLDivElement | undefined = $state();
+	let trackEl: HTMLDivElement | undefined = $state();
+	let sectionHeight = $state('auto');
 
-	$effect(() => {
-		if (!sectionEl || !pinEl || !pillEl || !lettersEl || !carouselEl) return;
+	const panelEls: HTMLElement[] = [];
+	/** Metrics count once, the first time their panel is reached. */
+	const counted: boolean[] = [];
 
-		const rows = lettersEl.querySelectorAll('.letter-row');
-		const slides = Array.from(carouselEl.querySelectorAll<HTMLElement>('.project-slide'));
-		const isMobile = window.innerWidth < 640;
+	function countPanel(index: number) {
+		if (counted[index]) return;
+		counted[index] = true;
+		const panel = panelEls[index];
+		if (!panel) return;
+		panel.querySelectorAll<HTMLElement>('[data-count]').forEach((el, i) => {
+			const parsed = parseMetric(el.dataset.final ?? '');
+			if (parsed.literal) return;
+			const counter = { v: 0 };
+			gsap.to(counter, {
+				v: parsed.value,
+				duration: 1,
+				delay: i * 0.08,
+				ease: 'power2.out',
+				onUpdate: () => {
+					el.textContent = formatMetric(parsed, counter.v);
+				}
+			});
+		});
+	}
 
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-			// Cards are absolutely positioned for the choreography; without the
-			// timeline they would all land on the same spot. Hand layout to CSS.
-			reducedMotion = true;
-			gsap.set(slides, { opacity: 1, clearProps: 'transform' });
-			for (const el of carouselEl.querySelectorAll<HTMLElement>('[data-count]')) {
-				el.textContent = el.dataset.final ?? el.textContent;
-			}
-			gsap.set(carouselEl.querySelectorAll('.chip'), { opacity: 1, y: 0 });
+	function setActive(index: number) {
+		const clamped = Math.max(0, Math.min(total - 1, index));
+		if (clamped !== activeIndex) activeIndex = clamped;
+		countPanel(clamped);
+	}
+
+	/** Left edge of a panel within the track, in track coordinates. */
+	function panelOffset(index: number): number {
+		const panel = panelEls[index];
+		if (!panel || !trackEl) return 0;
+		return panel.offsetLeft - trackEl.offsetLeft;
+	}
+
+	let travel = 0;
+	let triggerStart = 0;
+	let triggerEnd = 0;
+	/** The scrubbed tween and its trigger, so a focus jump can bypass the lag. */
+	let scrubTween: gsap.core.Tween | undefined;
+	let scrubTrigger: ScrollTrigger | undefined;
+
+	/**
+	 * Scrubbing is what makes the travel feel weighted, and it is exactly wrong
+	 * when focus moves: the page jumps instantly, the track follows 0.6s later,
+	 * and for that window the focused panel is still off screen. Snap the tween
+	 * to the new scroll position so focus and the panel arrive together.
+	 */
+	function snapTrack() {
+		if (!scrubTween || !scrubTrigger) return;
+		ScrollTrigger.update();
+		scrubTween.progress(scrubTrigger.progress);
+	}
+
+	/**
+	 * Brings a panel into view in whichever mode is running. In `pinned` mode the
+	 * track's position is a function of page scroll, so moving to a panel means
+	 * scrolling the page to the offset that puts it there.
+	 */
+	function goToPanel(index: number, smooth = true) {
+		const clamped = Math.max(0, Math.min(total - 1, index));
+		const behavior: ScrollBehavior = smooth ? 'smooth' : 'auto';
+
+		if (mode === 'swipe' && trackEl) {
+			trackEl.scrollTo({ left: panelOffset(clamped), behavior });
+			return;
+		}
+		if (mode === 'pinned' && travel > 0) {
+			const ratio = Math.max(0, Math.min(1, panelOffset(clamped) / travel));
+			window.scrollTo({ top: triggerStart + (triggerEnd - triggerStart) * ratio, behavior });
+			if (!smooth) snapTrack();
+			return;
+		}
+		panelEls[clamped]?.scrollIntoView({ behavior, block: 'nearest' });
+	}
+
+	/** Sends the track all the way to the end cap. */
+	function scrollToEnd() {
+		if (mode === 'swipe' && trackEl) {
+			trackEl.scrollTo({ left: trackEl.scrollWidth, behavior: 'auto' });
+			return;
+		}
+		if (mode === 'pinned') {
+			window.scrollTo({ top: triggerEnd, behavior: 'auto' });
+			snapTrack();
+		}
+	}
+
+	function onKeydown(event: KeyboardEvent) {
+		const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+		if (step === 0) return;
+		event.preventDefault();
+		goToPanel(activeIndex + step);
+	}
+
+	/**
+	 * Tabbing must not move focus to something off screen. In `pinned` mode the
+	 * browser cannot scroll a translated track into view by itself, so the page
+	 * scroll is moved instead.
+	 */
+	function onFocusIn(event: FocusEvent) {
+		const panel = (event.target as HTMLElement)?.closest<HTMLElement>('.panel');
+		if (!panel) return;
+
+		const box = panel.getBoundingClientRect();
+		const onScreen = box.left >= 0 && box.right <= window.innerWidth;
+
+		const index = panelEls.indexOf(panel);
+		if (index === -1) {
+			// The end cap sits past the last panel and is not one of them, so it has
+			// no index to scroll to — send the track to the end instead. Without
+			// this, tabbing to it leaves focus on something off screen.
+			if (!onScreen) scrollToEnd();
 			return;
 		}
 
-		reducedMotion = false;
+		if (!onScreen) goToPanel(index, false);
+		setActive(index);
+	}
 
-		const tl = gsap.timeline({
-			scrollTrigger: {
-				trigger: sectionEl,
-				start: 'top top',
-				end: 'bottom bottom',
-				pin: pinEl,
-				scrub: 1.2,
-				onUpdate: (self) => {
-					const span = 1 - 0.18;
-					const raw = (self.progress - 0.18) / span;
-					activeIndex = Math.max(0, Math.min(projectCount - 1, Math.floor(raw * projectCount)));
+	/** Progress in `swipe` mode comes from the track's own scroll position. */
+	function onTrackScroll() {
+		if (mode !== 'swipe' || !trackEl) return;
+		const max = trackEl.scrollWidth - trackEl.clientWidth;
+		progress = max > 0 ? trackEl.scrollLeft / max : 0;
+		let nearest = 0;
+		let best = Infinity;
+		for (let i = 0; i < total; i++) {
+			const distance = Math.abs(panelOffset(i) - trackEl.scrollLeft);
+			if (distance < best) {
+				best = distance;
+				nearest = i;
+			}
+		}
+		setActive(nearest);
+	}
+
+	$effect(() => {
+		if (!sectionEl || !pinEl || !trackEl) return;
+
+		const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const coarse = window.matchMedia('(pointer: coarse)');
+
+		let ctx: gsap.Context | undefined;
+
+		const build = () => {
+			ctx?.revert();
+			ctx = undefined;
+			gsap.set(trackEl!, { clearProps: 'transform' });
+			sectionHeight = 'auto';
+			scrubTween = undefined;
+			scrubTrigger = undefined;
+
+			mode = reduced.matches ? 'list' : coarse.matches ? 'swipe' : 'pinned';
+
+			if (mode === 'list') {
+				// Every metric is final immediately; nothing here waits on a timeline.
+				for (const el of sectionEl!.querySelectorAll<HTMLElement>('[data-count]')) {
+					el.textContent = el.dataset.final ?? el.textContent;
 				}
-			}
-		});
-
-		const pillDur = 0.12;
-		const projectStart = 0.18;
-		const slice = (1 - projectStart) / projectCount;
-		const overlap = 0.3;
-
-		// ── Pill opens like a portal ──
-		tl.to(pillEl, { scale: 25, opacity: 0, duration: pillDur, ease: 'power2.in' }, 0);
-
-		// ── Letter rows fade in with depth, then drift ──
-		const depths = [-30, -60, -40, -20];
-		const tilts = [2, -1.5, 1, -2.5];
-		rows.forEach((row, i) => {
-			tl.fromTo(
-				row,
-				{ opacity: 0, z: depths[i] - 50, rotateX: tilts[i] + 3 },
-				{ opacity: 0.4, z: depths[i], rotateX: tilts[i], duration: 0.08, ease: 'power2.out' },
-				0.08 + i * 0.015
-			);
-			tl.fromTo(
-				row,
-				{ xPercent: i % 2 === 0 ? 0 : -50 },
-				{ xPercent: i % 2 === 0 ? -50 : 0, duration: 0.85, ease: 'none' },
-				0.12
-			);
-		});
-
-		// ── Cards ──
-		slides.forEach((slide, i) => {
-			const pos = cardPositions[i % cardPositions.length];
-			const start = projectStart + i * slice * (1 - overlap);
-			const enterEnd = start + slice * 0.16;
-			const holdEnd = start + slice * 0.85;
-			const exitEnd = holdEnd + slice * 0.25;
-			const enterDur = enterEnd - start;
-
-			if (isMobile) {
-				tl.fromTo(
-					slide,
-					{ yPercent: 36, opacity: 0, scale: 0.92 },
-					{ yPercent: 0, opacity: 1, scale: 1, duration: enterDur, ease: 'power3.out' },
-					start
-				);
-			} else {
-				tl.fromTo(
-					slide,
-					{
-						xPercent: 118,
-						yPercent: 18,
-						opacity: 0,
-						rotateY: -9,
-						rotateZ: pos.rotate * 1.6,
-						scale: 0.86
-					},
-					{
-						xPercent: pos.x,
-						yPercent: pos.y,
-						opacity: 1,
-						rotateY: 0,
-						rotateZ: pos.rotate,
-						scale: 1,
-						duration: enterDur,
-						ease: 'power3.out'
-					},
-					start
-				);
-				// Slow drift while the card holds, so it never feels parked.
-				tl.to(
-					slide,
-					{ xPercent: pos.x - 3, yPercent: pos.y - 2, duration: holdEnd - enterEnd, ease: 'none' },
-					enterEnd
-				);
+				projects.forEach((_, i) => (counted[i] = true));
+				progress = 0;
+				return;
 			}
 
-			// Accent rail sweeps across the card as it lands.
-			const rail = slide.querySelector('.rail-fill');
-			if (rail) {
-				tl.fromTo(
-					rail,
-					{ scaleX: 0 },
-					{ scaleX: 1, duration: enterDur * 1.3, ease: 'power2.out', transformOrigin: 'left' },
-					start + enterDur * 0.3
-				);
+			if (mode === 'swipe') {
+				onTrackScroll();
+				countPanel(0);
+				return;
 			}
 
-			// Metrics count up as the card scrolls in — the numbers are the point.
-			slide.querySelectorAll<HTMLElement>('[data-count]').forEach((el, mi) => {
-				const target = Number(el.dataset.count);
-				const decimals = Number(el.dataset.decimals ?? 0);
-				const prefix = el.dataset.prefix ?? '';
-				const suffix = el.dataset.suffix ?? '';
-				const counter = { v: 0 };
-				tl.to(
-					counter,
-					{
-						v: target,
-						duration: enterDur * 1.6,
-						ease: 'power2.out',
-						onUpdate: () => {
-							el.textContent = `${prefix}${counter.v.toFixed(decimals)}${suffix}`;
+			ctx = gsap.context(() => {
+				travel = trackEl!.scrollWidth - window.innerWidth;
+				if (travel <= 0) return;
+
+				/*
+				 * Scroll distance is deliberately shorter than the travel, so the
+				 * track moves faster than the page and the section costs about three
+				 * screens instead of one per project. The cap is what stops a
+				 * twentieth project adding twenty screens: past roughly a dozen the
+				 * panels start moving fast enough that curating beats scrolling, and
+				 * that is the signal to curate rather than to raise the cap.
+				 */
+				const distance = Math.min(travel * 0.6, window.innerHeight * 3.2);
+				sectionHeight = `${window.innerHeight + distance}px`;
+
+				scrubTween = gsap.to(trackEl!, {
+					x: -travel,
+					ease: 'none',
+					scrollTrigger: {
+						trigger: sectionEl!,
+						start: 'top top',
+						end: 'bottom bottom',
+						pin: pinEl!,
+						scrub: 0.6,
+						invalidateOnRefresh: true,
+						onRefresh: (self) => {
+							travel = trackEl!.scrollWidth - window.innerWidth;
+							triggerStart = self.start;
+							triggerEnd = self.end;
+							scrubTrigger = self;
+						},
+						onUpdate: (self) => {
+							progress = self.progress;
+							// Each row drifts at its own rate, against the track.
+							if (lettersEl) {
+								const rows = lettersEl.querySelectorAll<HTMLElement>('.letter-row');
+								rows.forEach((row, i) => {
+									const rate = 0.12 + i * 0.05;
+									row.style.transform = `translate3d(${self.progress * travel * rate}px,0,0)`;
+								});
+							}
+							const x = self.progress * travel;
+							let nearest = 0;
+							let best = Infinity;
+							for (let i = 0; i < total; i++) {
+								const d = Math.abs(panelOffset(i) - x);
+								if (d < best) {
+									best = d;
+									nearest = i;
+								}
+							}
+							setActive(nearest);
 						}
-					},
-					start + enterDur * 0.35 + mi * 0.006
-				);
-			});
+					}
+				});
+			}, sectionEl);
 
-			// Stack chips cascade in behind the metrics.
-			const chips = slide.querySelectorAll('.chip');
-			if (chips.length) {
-				tl.fromTo(
-					chips,
-					{ opacity: 0, y: 10 },
-					{
-						opacity: 1,
-						y: 0,
-						duration: enterDur * 0.9,
-						stagger: enterDur * 0.08,
-						ease: 'power2.out'
-					},
-					start + enterDur * 0.5
-				);
-			}
+			// Display faces land after first layout and every measurement above
+			// depends on them.
+			void document.fonts?.ready.then(() => ScrollTrigger.refresh());
+		};
 
-			if (i < projectCount - 1) {
-				const exit = isMobile
-					? { yPercent: -28, opacity: 0, scale: 0.95 }
-					: {
-							xPercent: -100,
-							yPercent: -15,
-							opacity: 0,
-							rotateY: 6,
-							rotateZ: -pos.rotate,
-							scale: 0.9
-						};
-				tl.to(slide, { ...exit, duration: exitEnd - holdEnd, ease: 'power2.in' }, holdEnd);
-			}
-		});
+		build();
+		reduced.addEventListener('change', build);
+		coarse.addEventListener('change', build);
 
 		return () => {
-			tl.scrollTrigger?.kill();
-			tl.kill();
+			reduced.removeEventListener('change', build);
+			coarse.removeEventListener('change', build);
+			ctx?.revert();
 		};
 	});
 </script>
@@ -210,147 +285,137 @@
 <section
 	id="work"
 	bind:this={sectionEl}
-	class="relative"
-	class:reduced-motion={reducedMotion}
-	style={reducedMotion ? '' : `height: ${sectionHeight};`}
+	class="work mode-{mode}"
+	style={mode === 'pinned' ? `height: ${sectionHeight};` : ''}
 >
-	<h2 class="work-heading">Work</h2>
+	<h2 class="sr-only">{m.work_heading()}</h2>
 
-	<div bind:this={pinEl} class="pin-container relative h-screen w-full overflow-hidden bg-bg">
-		<div class="dot-grid"></div>
+	<div bind:this={pinEl} class="stage">
+		<div class="dot-grid" aria-hidden="true"></div>
 
-		<!-- ═══ PILL ═══ -->
-		<div
-			bind:this={pillEl}
-			class="pill-layer pointer-events-none absolute inset-0 z-30 flex items-center justify-center"
-		>
-			<div class="work-pill">
-				{#each ['W', 'O', 'R', 'K'] as letter (letter)}
-					<span class="pill-letter">{letter}</span>
-				{/each}
-			</div>
-		</div>
-
-		<!-- ═══ LETTER ROWS ═══ -->
-		<div
-			bind:this={lettersEl}
-			class="letters-layer pointer-events-none absolute inset-0 z-0 flex flex-col justify-center overflow-hidden select-none"
-			aria-hidden="true"
-			style="perspective: 600px; transform-style: preserve-3d;"
-		>
-			{#each ['W', 'O', 'R', 'K'] as letter (letter)}
-				<div class="letter-row" style="opacity: 0; transform-style: preserve-3d;">
-					{#each { length: 15 } as _unused, j (j)}
-						<span class="letter-char">{letter}</span>
-					{/each}
-					{#each { length: 15 } as _unused, j (`dup-${j}`)}
-						<span class="letter-char">{letter}</span>
+		<!--
+			The oversized WORK rows are part of the site's identity, kept from the
+			stacked version. They run counter to the track so the two layers read as
+			depth rather than as one sheet sliding.
+		-->
+		<div bind:this={lettersEl} class="letters" aria-hidden="true">
+			{#each LETTERS as letter, row (letter)}
+				<div class="letter-row" data-row={row}>
+					{#each { length: 18 } as _unused, i (i)}
+						<span>{letter}</span>
 					{/each}
 				</div>
 			{/each}
 		</div>
 
-		<!-- ═══ PROGRESS RAIL ═══ -->
-		{#if !reducedMotion}
-			<div class="progress-rail" aria-hidden="true">
-				{#each projects as project, i (project.slug)}
-					<span class="tick" class:on={i === activeIndex}>
-						{String(i + 1).padStart(2, '0')}
+		<header class="stage-head">
+			<span class="stage-label">{m.work_heading()}</span>
+
+			{#if mode !== 'list'}
+				<!-- Progress is not decoration: a horizontal section that hides its own
+				     length is the thing that makes people distrust them. -->
+				<div class="progress" role="group" aria-label={m.work_position()}>
+					<span class="position">
+						<b>{String(activeIndex + 1).padStart(2, '0')}</b>
+						<i>/</i>
+						{String(total).padStart(2, '0')}
 					</span>
-				{/each}
-			</div>
-		{/if}
+					<div class="bar">
+						<span style="transform: scaleX({Math.max(0.02, progress)})"></span>
+					</div>
+				</div>
+			{/if}
+		</header>
 
-		<!-- ═══ CARDS ═══ -->
+		<!--
+			A scrollable region must be reachable and operable from the keyboard, or
+			a keyboard user cannot read past the first panel — WCAG 2.1.1, and the
+			reason browsers focus overflow containers natively. The rules below fire
+			on the generic pattern and do not know about the scrollable-region
+			exception, so they are silenced here rather than the markup made worse.
+		-->
+		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<div
-			class="absolute inset-0 z-20 flex items-center justify-center"
-			style="perspective: 1000px; transform-style: preserve-3d;"
+			bind:this={trackEl}
+			class="track"
+			role="region"
+			aria-label={m.work_heading()}
+			tabindex="0"
+			onscroll={onTrackScroll}
+			onkeydown={onKeydown}
+			onfocusin={onFocusIn}
 		>
-			<div bind:this={carouselEl} class="carousel relative h-full w-full">
-				{#each projects as project, i (project.slug)}
-					<a
-						href={localizeHref(`/projects/${project.slug}`)}
-						class="project-slide group"
-						data-cursor="View"
-					>
-						<!-- Browser chrome -->
-						<div class="chrome">
-							<span class="dot red"></span>
-							<span class="dot amber"></span>
-							<span class="dot green"></span>
-							<div class="url">
-								<span>omerekmen.com/projects/{project.slug}</span>
-							</div>
-						</div>
+			{#each projects as project, i (project.slug)}
+				<article class="panel" class:on={i === activeIndex} bind:this={panelEls[i]}>
+					<div class="panel-head">
+						<span class="index">{String(i + 1).padStart(2, '0')}</span>
+						<TrackBadge track={project.track} progress={project.progress} />
+					</div>
 
-						<div class="rail"><span class="rail-fill"></span></div>
+					<h3 class="title">
+						<a href={localizeHref(`/projects/${project.slug}`)} data-cursor="View">
+							{project.title}
+						</a>
+					</h3>
+					<p class="role">{project.role}</p>
+					<p class="summary">{project.summary}</p>
 
-						<div class="body">
-							<div class="head">
-								<span class="counter">
-									{String(i + 1).padStart(2, '0')} / {String(projectCount).padStart(2, '0')}
-								</span>
-								<TrackBadge track={project.track} progress={project.progress} />
-							</div>
+					{#if project.metrics.length}
+						<dl class="metrics">
+							{#each project.metrics.slice(0, 3) as metric (metric.label)}
+								{@const parsed = parseMetric(metric.value)}
+								<div>
+									<dd
+										data-count={parsed.literal ? undefined : parsed.value}
+										data-final={metric.value}
+									>
+										{parsed.literal ? metric.value : formatMetric(parsed, 0)}
+									</dd>
+									<dt>{metric.label}</dt>
+								</div>
+							{/each}
+						</dl>
+					{/if}
 
-							<h3 class="title">{project.title}</h3>
-							<p class="role">{project.role}</p>
-							<p class="summary">{project.summary}</p>
+					<div class="chips">
+						{#each project.stack.slice(0, 5) as tech (tech)}
+							<span class="chip">{tech}</span>
+						{/each}
+						{#if project.stack.length > 5}
+							<span class="chip">+{project.stack.length - 5}</span>
+						{/if}
+					</div>
 
-							{#if project.metrics.length}
-								<dl class="metrics">
-									{#each project.metrics.slice(0, 3) as metric (metric.label)}
-										{@const parsed = parseMetric(metric.value)}
-										<div>
-											<dd
-												data-count={parsed.literal ? undefined : parsed.value}
-												data-decimals={parsed.decimals}
-												data-prefix={parsed.prefix}
-												data-suffix={parsed.suffix}
-												data-final={metric.value}
-											>
-												{parsed.literal ? metric.value : formatMetric(parsed, 0)}
-											</dd>
-											<dt>{metric.label}</dt>
-										</div>
-									{/each}
-								</dl>
-							{/if}
+					<span class="cta" aria-hidden="true">
+						{m.work_view_project()}
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="5" y1="12" x2="19" y2="12" />
+							<polyline points="12 5 19 12 12 19" />
+						</svg>
+					</span>
+				</article>
+			{/each}
 
-							<div class="chips">
-								{#each project.stack.slice(0, 5) as tech (tech)}
-									<span class="chip">{tech}</span>
-								{/each}
-								{#if project.stack.length > 5}
-									<span class="chip">+{project.stack.length - 5}</span>
-								{/if}
-							</div>
-
-							<span class="cta">
-								{m.work_view_project()}
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<line x1="5" y1="12" x2="19" y2="12" />
-									<polyline points="12 5 19 12 12 19" />
-								</svg>
-							</span>
-						</div>
-					</a>
-				{/each}
-			</div>
+			<!-- The end cap. The homepage is a pass through the work, not the index. -->
+			<a href={localizeHref('/projects')} class="panel panel-more">
+				<span class="more-count">{String(total).padStart(2, '0')}</span>
+				<span class="more-label">{m.work_all_projects()}</span>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+					<line x1="5" y1="12" x2="19" y2="12" />
+					<polyline points="12 5 19 12 12 19" />
+				</svg>
+			</a>
 		</div>
+
+		{#if mode !== 'list'}
+			<p class="hint">{mode === 'swipe' ? m.work_swipe_hint() : m.work_scroll_hint()}</p>
+		{/if}
 	</div>
 </section>
 
 <style>
-	/* ── Accessible heading (the giant WORK letters are decoration) ── */
-	.work-heading {
+	.sr-only {
 		position: absolute;
 		width: 1px;
 		height: 1px;
@@ -362,10 +427,34 @@
 		border: 0;
 	}
 
+	.work {
+		position: relative;
+	}
+
+	.stage {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 1.75rem;
+		overflow: hidden;
+		background: var(--color-bg);
+	}
+
+	.mode-pinned .stage,
+	.mode-swipe .stage {
+		height: 100vh;
+		width: 100%;
+	}
+
+	.mode-list .stage {
+		padding: 4rem 0;
+	}
+
 	.dot-grid {
 		position: absolute;
 		inset: 0;
-		z-index: 1;
+		z-index: 0;
 		pointer-events: none;
 		background-image: radial-gradient(
 			circle,
@@ -373,281 +462,254 @@
 			transparent 1px
 		);
 		background-size: 28px 28px;
-		mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
-		-webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+		mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 78%);
+		-webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 78%);
 	}
 
-	/* ── Pill ── */
-	.work-pill {
+	/* ── Identity layer ── */
+	.letters {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
 		display: flex;
-		width: 200px;
-		height: 520px;
 		flex-direction: column;
-		align-items: center;
 		justify-content: center;
-		gap: 0.1em;
-		border: 1.5px solid var(--color-border-subtle);
-		border-radius: 110px;
-		background: var(--color-bg-secondary);
+		gap: 0.5rem;
+		overflow: hidden;
+		pointer-events: none;
+		user-select: none;
+		mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+		-webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+	}
+
+	.letter-row {
+		display: flex;
+		gap: 2.5rem;
+		white-space: nowrap;
 		will-change: transform;
 	}
 
-	.pill-letter {
-		display: block;
+	.letter-row:nth-child(even) {
+		margin-left: -8rem;
+	}
+
+	.letter-row span {
 		font-family: 'Bagel Fat One', sans-serif;
-		font-size: 4.5rem;
+		font-size: clamp(4rem, 11vw, 9rem);
+		line-height: 0.9;
+		color: transparent;
+		-webkit-text-stroke: 1px rgba(var(--color-accent-rgb), 0.16);
+	}
+
+	.mode-list .letters {
+		display: none;
+	}
+
+	/* ── Head ── */
+	.stage-head {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-inline: clamp(1.5rem, 5vw, 4rem);
+	}
+
+	.stage-label {
+		font-family: 'Bagel Fat One', sans-serif;
+		font-size: clamp(1.75rem, 4vw, 2.75rem);
 		line-height: 1;
 		color: var(--color-accent);
 	}
 
-	/* ── Letter rows ── */
-	.letter-row {
+	.progress {
 		display: flex;
-		width: max-content;
 		align-items: center;
-		white-space: nowrap;
-		transform-style: preserve-3d;
+		gap: 0.85rem;
+	}
+
+	.position {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.1em;
+		color: var(--color-text-muted);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.position b {
+		color: var(--color-text);
+		font-weight: 600;
+	}
+
+	.position i {
+		margin-inline: 0.15rem;
+		font-style: normal;
+	}
+
+	.bar {
+		position: relative;
+		width: clamp(80px, 18vw, 200px);
+		height: 2px;
+		border-radius: 2px;
+		background: var(--color-border);
+		overflow: hidden;
+	}
+
+	.bar span {
+		position: absolute;
+		inset: 0;
+		background: var(--color-accent);
+		transform-origin: left;
+		transition: transform 0.15s linear;
+	}
+
+	/* ── Track ── */
+	.track {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		align-items: stretch;
+		gap: 1.5rem;
+		padding-inline: clamp(1.5rem, 5vw, 4rem);
+	}
+
+	.mode-pinned .track {
+		width: max-content;
 		will-change: transform;
 	}
 
-	.letter-char {
-		display: inline-block;
-		flex-shrink: 0;
-		padding: 0 0.08em;
-		font-family: 'Bagel Fat One', sans-serif;
-		font-size: clamp(5rem, 14vw, 12rem);
-		line-height: 1.05;
-		color: var(--color-accent);
-		text-shadow: 0 4px 20px rgba(var(--color-accent-rgb), 0.15);
+	.mode-swipe .track {
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: thin;
+		-webkit-overflow-scrolling: touch;
 	}
 
-	/* ── Progress rail ── */
-	.progress-rail {
-		position: absolute;
-		top: 50%;
-		right: 1.5rem;
-		z-index: 25;
-		display: none;
+	.mode-swipe .panel {
+		scroll-snap-align: start;
+	}
+
+	.mode-list .track {
 		flex-direction: column;
-		gap: 0.7rem;
-		transform: translateY(-50%);
+		align-items: stretch;
+		max-width: 46rem;
+		margin-inline: auto;
+		gap: 1.25rem;
 	}
 
-	@media (min-width: 900px) {
-		.progress-rail {
-			display: flex;
-		}
-	}
-
-	.tick {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
-		letter-spacing: 0.1em;
-		color: var(--color-text-muted);
-		opacity: 0.4;
+	/* ── Panel ── */
+	.panel {
+		display: flex;
+		width: min(26rem, 78vw);
+		flex: 0 0 auto;
+		flex-direction: column;
+		gap: 0.6rem;
+		border: 1px solid var(--color-border);
+		border-radius: 18px;
+		background: var(--color-bg-secondary);
+		padding: 1.5rem;
 		transition:
-			opacity 0.3s ease,
-			color 0.3s ease,
+			border-color 0.3s ease,
 			transform 0.3s ease;
 	}
 
-	.tick.on {
-		color: var(--color-accent-text);
-		opacity: 1;
-		transform: translateX(-4px) scale(1.15);
+	.mode-list .panel {
+		width: auto;
 	}
 
-	/* ── Cards ── */
-	.project-slide {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		display: block;
-		width: min(78vw, 320px);
-		overflow: hidden;
-		border: 1px solid var(--color-border-subtle);
-		border-radius: 14px;
-		background: var(--color-bg-secondary);
-		text-decoration: none;
-		transform: translate(-50%, -50%);
-		box-shadow:
-			0 25px 80px rgba(0, 0, 0, 0.3),
-			0 0 0 0.5px rgba(var(--color-accent-rgb), 0.05);
-		transition: box-shadow 0.3s ease;
-		will-change: transform, opacity;
+	.mode-pinned .panel.on,
+	.mode-swipe .panel.on {
+		border-color: rgba(var(--color-accent-rgb), 0.55);
+		transform: translateY(-6px);
 	}
 
-	@media (min-width: 640px) {
-		.project-slide {
-			width: min(70vw, 540px);
-			border-radius: 18px;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.project-slide {
-			width: min(58vw, 620px);
-		}
-	}
-
-	.project-slide:hover {
-		box-shadow:
-			0 30px 100px rgba(0, 0, 0, 0.42),
-			0 0 0 1px rgba(var(--color-accent-rgb), 0.25);
-	}
-
-	.chrome {
-		display: flex;
-		align-items: center;
-		gap: 0.4rem;
-		border-bottom: 1px solid var(--color-border-subtle);
-		padding: 0.6rem 0.9rem;
-	}
-
-	@media (min-width: 640px) {
-		.chrome {
-			gap: 0.5rem;
-			padding: 0.75rem 1.2rem;
-		}
-	}
-
-	.chrome .dot {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-	}
-
-	.chrome .red {
-		background: #ff5f57;
-	}
-	.chrome .amber {
-		background: #febc2e;
-	}
-	.chrome .green {
-		background: #28c840;
-	}
-
-	.url {
-		margin-left: 0.6rem;
-		flex: 1;
-		overflow: hidden;
-		border-radius: 6px;
-		background: rgba(var(--color-text-rgb), 0.04);
-		padding: 0.15rem 0.6rem;
-	}
-
-	.url span {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
-		color: var(--color-text-muted);
-		opacity: 0.75;
-	}
-
-	/* Accent sweep as the card lands */
-	.rail {
-		height: 2px;
-		width: 100%;
-		background: rgba(var(--color-accent-rgb), 0.1);
-	}
-
-	.rail-fill {
-		display: block;
-		height: 100%;
-		width: 100%;
-		background: linear-gradient(90deg, var(--color-accent), transparent);
-	}
-
-	.body {
-		padding: 1.1rem 1.1rem 1.3rem;
-	}
-
-	@media (min-width: 640px) {
-		.body {
-			padding: 1.6rem 1.7rem 1.8rem;
-		}
-	}
-
-	.head {
+	.panel-head {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.75rem;
 	}
 
-	.counter {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
+	.index {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
 		letter-spacing: 0.12em;
 		color: var(--color-text-muted);
+		font-variant-numeric: tabular-nums;
 	}
 
 	.title {
-		margin: 0.85rem 0 0.25rem;
-		font-family: 'Bagel Fat One', sans-serif;
-		font-size: 1.25rem;
-		line-height: 1.15;
-		color: var(--color-text);
+		margin: 0.35rem 0 0;
+		font-size: 1.3rem;
+		font-weight: 700;
+		letter-spacing: -0.015em;
+		line-height: 1.2;
 	}
 
-	@media (min-width: 640px) {
-		.title {
-			font-size: 1.75rem;
-		}
+	.title a {
+		color: var(--color-text);
+		text-decoration: none;
+	}
+
+	/* The whole panel is the target; the link keeps the accessible name. */
+	.title a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+
+	.panel {
+		position: relative;
+	}
+
+	.title a:hover,
+	.title a:focus-visible {
+		color: var(--color-accent-text);
 	}
 
 	.role {
 		margin: 0;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 12px;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
 		line-height: 1.5;
 		color: var(--color-text-muted);
 	}
 
 	.summary {
-		margin: 0.8rem 0 0;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 3;
-		line-clamp: 3;
-		overflow: hidden;
-		font-size: 0.85rem;
+		margin: 0.5rem 0 0;
+		font-size: 0.9rem;
 		line-height: 1.65;
 		color: var(--color-text-secondary);
-	}
-
-	@media (min-width: 640px) {
-		.summary {
-			font-size: 0.93rem;
-		}
 	}
 
 	.metrics {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1.5rem;
-		margin: 1.15rem 0 0;
+		margin: 1rem 0 0;
 	}
 
 	.metrics div {
 		display: flex;
 		flex-direction: column;
+		gap: 0.15rem;
 	}
 
 	.metrics dd {
 		margin: 0;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 1.3rem;
+		font-family: var(--font-mono);
+		font-size: 1.25rem;
 		font-weight: 700;
-		line-height: 1.1;
 		color: var(--color-accent-text);
 		font-variant-numeric: tabular-nums;
 	}
 
 	.metrics dt {
-		margin-top: 0.2rem;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
-		letter-spacing: 0.12em;
+		font-family: var(--font-mono);
+		font-size: 0.625rem;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
 	}
@@ -656,32 +718,40 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.35rem;
-		margin-top: 1.2rem;
+		margin-top: auto;
+		padding-top: 1.1rem;
+	}
+
+	/*
+	 * Pushing the chips to the bottom keeps the panels aligned on a wide screen.
+	 * On a phone the panel is far taller than its content, so the same rule opens
+	 * a hole in the middle of every card — pack the content instead and let the
+	 * spare room fall below it.
+	 */
+	@media (max-width: 640px) {
+		.chips {
+			margin-top: 0.75rem;
+		}
 	}
 
 	.chip {
 		border: 1px solid var(--color-border-subtle);
 		border-radius: 999px;
-		background: var(--color-bg-tertiary);
 		padding: 0.2rem 0.6rem;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 11px;
+		font-family: var(--font-mono);
+		font-size: 0.625rem;
 		color: var(--color-text-muted);
 	}
 
 	.cta {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.5rem;
-		margin-top: 1.3rem;
-		font-size: 0.82rem;
-		font-weight: 500;
+		gap: 0.4rem;
+		margin-top: 0.9rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
 		color: var(--color-accent-text);
-		transition: gap 0.2s ease;
-	}
-
-	.project-slide:hover .cta {
-		gap: 0.8rem;
 	}
 
 	.cta svg {
@@ -689,42 +759,58 @@
 		height: 14px;
 	}
 
-	/* ── Reduced motion: a plain, readable vertical list ── */
-	.reduced-motion .pin-container {
-		height: auto;
-		overflow: visible;
-		padding: 5rem 1rem;
+	/* ── End cap ── */
+	.panel-more {
+		align-items: flex-start;
+		justify-content: center;
+		width: min(18rem, 70vw);
+		gap: 0.75rem;
+		border-style: dashed;
+		background: transparent;
+		color: var(--color-text);
+		text-decoration: none;
 	}
 
-	.reduced-motion .pill-layer,
-	.reduced-motion .letters-layer {
-		display: none;
+	.panel-more:hover,
+	.panel-more:focus-visible {
+		border-color: rgba(var(--color-accent-rgb), 0.55);
 	}
 
-	.reduced-motion .carousel {
-		display: flex;
-		height: auto;
-		flex-direction: column;
-		align-items: center;
-		gap: 2rem;
-	}
-
-	.reduced-motion .carousel > :global(.project-slide) {
-		position: relative;
-		top: auto;
-		left: auto;
-		transform: none;
-	}
-
-	.reduced-motion .work-heading {
-		position: static;
-		width: auto;
-		height: auto;
-		margin: 0 0 2.5rem;
-		clip-path: none;
+	.more-count {
 		font-family: 'Bagel Fat One', sans-serif;
-		font-size: clamp(2.5rem, 8vw, 5rem);
+		font-size: 3rem;
+		line-height: 1;
 		color: var(--color-accent);
-		text-align: center;
+	}
+
+	.more-label {
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	.panel-more svg {
+		width: 22px;
+		height: 22px;
+		color: var(--color-accent-text);
+	}
+
+	/* ── Hint ── */
+	.hint {
+		position: relative;
+		z-index: 2;
+		margin: 0;
+		padding-inline: clamp(1.5rem, 5vw, 4rem);
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-text-muted);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.panel,
+		.bar span {
+			transition: none;
+		}
 	}
 </style>

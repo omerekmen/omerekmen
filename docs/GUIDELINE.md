@@ -208,6 +208,51 @@ is worth less than no metric.
 that says what it was and why it is archived is honest; expanding it to match a
 production study is the padding this section exists to prevent.
 
+## The work section
+
+Every project stays on the homepage, including future ones, and the section is a
+**pass through the work** rather than the index — it ends with a link to
+`/projects`, which is what an index is for.
+
+Vertical scroll drives horizontal travel. The old stacked version cost 190vh per
+project and reached 1700vh at eight; the track costs about three screens in
+total, because the scroll distance is deliberately shorter than the travel and
+capped at 3.2 screens. Past roughly a dozen projects the panels start moving
+fast enough that curating beats scrolling — that is the signal to curate, not to
+raise the cap.
+
+Three modes, chosen from the visitor's own settings, not from a breakpoint:
+
+| Mode     | When                     | What it does                                       |
+| -------- | ------------------------ | -------------------------------------------------- |
+| `pinned` | fine pointer, motion on  | Page pins, track translates with a scrubbed tween  |
+| `swipe`  | coarse pointer           | Natively scrollable track with snap points, no pin |
+| `list`   | `prefers-reduced-motion` | Plain vertical list, no pin, no translation        |
+
+`swipe` exists because touch already has a horizontal gesture. Taking the
+vertical one away and translating it is what makes these sections hated on
+phones.
+
+Five things are requirements, not nice-to-haves. They are why horizontal
+sections are usually disliked, and the section is not done unless all five hold:
+
+- **Progress is visible.** Position readout and a bar. A horizontal section that
+  hides its own length is the one people distrust.
+- **The track does not grow forever.** See the cap above.
+- **Keyboard is first-class.** The track is a focusable region — a scrollable
+  region that cannot be reached from the keyboard fails WCAG 2.1.1. Arrow keys
+  move panel to panel; `Tab` reaches every panel and brings it on screen.
+  Scrubbing is bypassed for focus jumps, or focus lands 0.6s before the panel
+  arrives.
+- **Reduced motion gets a real layout**, not a pinned one with the animation
+  removed.
+- **No scroll hijacking.** Travel is proportional to scroll and a reader who
+  keeps scrolling always exits.
+
+The oversized `WORK` rows are kept from the stacked version and drift against
+the track. They are identity, not decoration — removing them to simplify a
+rebuild is how a site loses what made it recognisable.
+
 ## Diagrams
 
 A case study about a distributed system with no picture in it asks the reader to
