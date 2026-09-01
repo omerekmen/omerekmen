@@ -503,14 +503,14 @@
 		background: var(--color-bg-secondary);
 		padding: 0.3rem 0.8rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 11px;
+		font-size: var(--text-xs);
 		color: var(--color-text-muted);
 	}
 
 	/* ── Section titles ── */
 	.section-title {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
+		font-size: var(--text-xs);
 		font-weight: 600;
 		letter-spacing: 0.15em;
 		text-transform: uppercase;

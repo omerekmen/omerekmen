@@ -17,7 +17,8 @@
 		"assert:messages": "node scripts/assert-no-raw-keys.mjs",
 		"check:budget": "node scripts/check-budget.mjs",
 		"check:contrast": "node scripts/check-contrast.mjs",
-		"og": "python3 scripts/generate-og-images.py"
+		"og": "python3 scripts/generate-og-images.py",
+		"check:tokens": "node scripts/check-tokens.mjs"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",

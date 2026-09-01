@@ -200,7 +200,7 @@
 		background: var(--color-ongoing);
 		padding: 3px 10px 4px;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 9px;
+		font-size: var(--text-2xs);
 		font-weight: 700;
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
@@ -210,7 +210,7 @@
 
 	.nav-link {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 11px;
+		font-size: var(--text-xs);
 		font-weight: 500;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;

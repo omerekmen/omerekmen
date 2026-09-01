@@ -300,6 +300,72 @@ The oversized `WORK` rows are kept from the stacked version and drift against
 the track. They are identity, not decoration — removing them to simplify a
 rebuild is how a site loses what made it recognisable.
 
+## Design system
+
+Colour was tokenised from the start and held. Nothing else was. An audit of the
+site found **45 distinct font sizes**, with `0.7`, `0.75`, `0.8125`, `0.85`,
+`0.875`, `0.9`, `0.95` and `0.98rem` all in use — eight sizes inside a
+quarter-rem, none of them chosen. They accumulated.
+
+`layout.css` now carries scales for type, spacing, radii and motion alongside
+the colour tokens. Every step was drawn from a value the site already used, so
+snapping to them moved nothing by more than 1px.
+
+| Scale   | Tokens                                | Notes                                                   |
+| ------- | ------------------------------------- | ------------------------------------------------------- |
+| Type    | `--text-2xs` … `--text-6xl`           | Fixed steps, 10px to 48px                               |
+| Display | `--display-sm` … `--display-xl`       | Fluid `clamp()`, for type that scales with the viewport |
+| Spacing | `--space-1` … `--space-9`             | 0.25rem to 6rem                                         |
+| Radii   | `--radius-xs` … `--radius-pill`       |                                                         |
+| Motion  | `--ease`, `--duration-fast/base/slow` | One easing. More than one is indecision.                |
+
+The type floors still hold: `--text-sm` (12px) is the smallest sentence-case
+size, `--text-2xs` (10px) is for tracked uppercase mono only.
+
+### Primitives
+
+Three patterns were being re-declared in every section, so they are declared
+once as global classes:
+
+- `.ds-eyebrow` — the tracked mono label. `.ds-eyebrow-muted` for the quiet variant.
+- `.ds-pill` — bordered chip for stack entries, tags and status.
+- `.ds-card` — surface panel. `.ds-card-quiet` for transparent, `.ds-card-link`
+  adds hover and focus.
+
+Global CSS rather than Svelte components because they carry no behaviour — a
+component per class buys an import and a wrapper element for nothing.
+
+### The reference page
+
+`/lab/system` renders every token and primitive, reading values from the live
+stylesheet at runtime rather than restating them. A style guide that hardcodes
+its own tokens is a second source of truth and starts drifting the day after it
+is written; that one cannot be wrong about the CSS because it asks the CSS.
+
+### Enforced by `bun run check:tokens`
+
+A fixed `font-size` that is not a `--text-*` or `--display-*` token fails the
+build, as does a raw hex colour outside `layout.css`. Both run in CI.
+
+Exemptions are real rather than convenient:
+
+- **`clamp()` and `vw` sizes** are allowed. Fluid display type is doing
+  something a fixed step cannot, and the oversized hero and marquee faces are
+  bespoke per page by design.
+- **`@media print`** blocks may state their own colours. Printed output must not
+  follow the screen theme.
+- **`<meta name="theme-color">`** cannot reference a custom property at all.
+  Those two literals do duplicate `--color-bg` and can drift; no markup avoids it.
+- **`/lab` is exempt entirely.** Directions B and C carry deliberately different
+  palettes and type systems — they exist to be different, and holding them to
+  the site's scale would defeat the point.
+
+The ceilings in the script are ceilings, not targets: lower them as call sites
+migrate, never raise them. One raw hex is currently permitted — the accent
+fallback in `NetworkBackground` for the frame before the stylesheet resolves.
+That component used to hardcode both theme accents, which meant a palette change
+left the particle field on the old colour with nothing to catch it.
+
 ## Diagrams
 
 A case study about a distributed system with no picture in it asks the reader to

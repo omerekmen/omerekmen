@@ -95,6 +95,11 @@
 		{/each}
 	</ul>
 
+	<p class="intro">
+		<a class="system-link" href="/lab/system">Design system reference &rarr;</a>
+		Every token and primitive, read live from the stylesheet.
+	</p>
+
 	<footer>
 		<p>
 			Nothing here is wired into the live site. The lab stays put: it is where an interaction gets
@@ -233,6 +238,18 @@
 		align-self: center;
 		font-size: 1.1rem;
 		color: var(--dim);
+	}
+
+	.system-link {
+		display: block;
+		margin-bottom: 0.35rem;
+		color: var(--accent);
+		font-weight: 600;
+		text-decoration: none;
+	}
+
+	.system-link:hover {
+		text-decoration: underline;
 	}
 
 	footer {

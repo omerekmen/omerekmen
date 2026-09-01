@@ -200,7 +200,7 @@
 
 	.cursor-label {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
+		font-size: var(--text-2xs);
 		font-weight: 600;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;

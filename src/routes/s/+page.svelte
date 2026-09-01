@@ -304,7 +304,7 @@
 
 	.avatar-initials {
 		font-family: 'Bagel Fat One', sans-serif;
-		font-size: 2rem;
+		font-size: var(--text-5xl);
 		color: var(--color-accent-text);
 		letter-spacing: 0.05em;
 		line-height: 1;

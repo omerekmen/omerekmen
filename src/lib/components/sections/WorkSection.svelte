@@ -380,10 +380,10 @@
 
 					<div class="chips">
 						{#each project.stack.slice(0, 5) as tech (tech)}
-							<span class="chip">{tech}</span>
+							<span class="ds-pill">{tech}</span>
 						{/each}
 						{#if project.stack.length > 5}
-							<span class="chip">+{project.stack.length - 5}</span>
+							<span class="ds-pill">+{project.stack.length - 5}</span>
 						{/if}
 					</div>
 
@@ -532,7 +532,7 @@
 
 	.position {
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: var(--text-sm);
 		letter-spacing: 0.1em;
 		color: var(--color-text-muted);
 		font-variant-numeric: tabular-nums;
@@ -634,7 +634,7 @@
 
 	.index {
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: var(--text-sm);
 		letter-spacing: 0.12em;
 		color: var(--color-text-muted);
 		font-variant-numeric: tabular-nums;
@@ -642,7 +642,7 @@
 
 	.title {
 		margin: 0.35rem 0 0;
-		font-size: 1.3rem;
+		font-size: var(--text-3xl);
 		font-weight: 700;
 		letter-spacing: -0.015em;
 		line-height: 1.2;
@@ -672,14 +672,14 @@
 	.role {
 		margin: 0;
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: var(--text-sm);
 		line-height: 1.5;
 		color: var(--color-text-muted);
 	}
 
 	.summary {
 		margin: 0.5rem 0 0;
-		font-size: 0.9rem;
+		font-size: var(--text-base);
 		line-height: 1.65;
 		color: var(--color-text-secondary);
 	}
@@ -700,7 +700,7 @@
 	.metrics dd {
 		margin: 0;
 		font-family: var(--font-mono);
-		font-size: 1.25rem;
+		font-size: var(--text-3xl);
 		font-weight: 700;
 		color: var(--color-accent-text);
 		font-variant-numeric: tabular-nums;
@@ -708,7 +708,7 @@
 
 	.metrics dt {
 		font-family: var(--font-mono);
-		font-size: 0.625rem;
+		font-size: var(--text-2xs);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
@@ -734,21 +734,12 @@
 		}
 	}
 
-	.chip {
-		border: 1px solid var(--color-border-subtle);
-		border-radius: 999px;
-		padding: 0.2rem 0.6rem;
-		font-family: var(--font-mono);
-		font-size: 0.625rem;
-		color: var(--color-text-muted);
-	}
-
 	.cta {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.4rem;
 		margin-top: 0.9rem;
-		font-size: 0.75rem;
+		font-size: var(--text-sm);
 		font-weight: 600;
 		letter-spacing: 0.04em;
 		color: var(--color-accent-text);
@@ -778,13 +769,13 @@
 
 	.more-count {
 		font-family: 'Bagel Fat One', sans-serif;
-		font-size: 3rem;
+		font-size: var(--text-6xl);
 		line-height: 1;
 		color: var(--color-accent);
 	}
 
 	.more-label {
-		font-size: 1rem;
+		font-size: var(--text-xl);
 		font-weight: 600;
 	}
 
@@ -801,7 +792,7 @@
 		margin: 0;
 		padding-inline: clamp(1.5rem, 5vw, 4rem);
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);

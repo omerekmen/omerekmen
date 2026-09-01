@@ -99,7 +99,7 @@
 
 	.label {
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
 		color: var(--color-accent-text);
@@ -116,7 +116,7 @@
 	.intro {
 		margin: 0;
 		max-width: 36rem;
-		font-size: 1.05rem;
+		font-size: var(--text-xl);
 		line-height: 1.65;
 		color: var(--color-text-secondary);
 	}
@@ -144,7 +144,7 @@
 
 	.num {
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: var(--text-sm);
 		letter-spacing: 0.12em;
 		color: var(--color-accent-text);
 		font-variant-numeric: tabular-nums;
@@ -152,7 +152,7 @@
 
 	h3 {
 		margin: 0 0 0.6rem;
-		font-size: 1.15rem;
+		font-size: var(--text-2xl);
 		font-weight: 700;
 		letter-spacing: -0.015em;
 		line-height: 1.3;
@@ -161,7 +161,7 @@
 
 	.position p {
 		margin: 0;
-		font-size: 0.95rem;
+		font-size: var(--text-lg);
 		line-height: 1.72;
 		color: var(--color-text-secondary);
 	}
@@ -170,7 +170,7 @@
 		display: block;
 		margin-top: 2rem;
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: var(--text-sm);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--color-accent-text);

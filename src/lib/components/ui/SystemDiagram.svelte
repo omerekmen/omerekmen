@@ -361,7 +361,7 @@
 
 	.node-label {
 		fill: var(--color-text);
-		font-size: 13px;
+		font-size: var(--text-md);
 		font-weight: 600;
 		text-anchor: middle;
 	}
@@ -369,7 +369,7 @@
 	.node-detail {
 		fill: var(--color-text-muted);
 		font-family: var(--font-mono);
-		font-size: 10.5px;
+		font-size: var(--text-2xs);
 		text-anchor: middle;
 	}
 
@@ -391,7 +391,7 @@
 	.wire-label {
 		fill: var(--color-text-muted);
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-2xs);
 		text-anchor: middle;
 		paint-order: stroke;
 		stroke: var(--color-bg-secondary);
@@ -422,7 +422,7 @@
 	.group-label {
 		fill: var(--color-text-muted);
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-2xs);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
@@ -436,7 +436,7 @@
 
 	.caption-text {
 		color: var(--color-text-muted);
-		font-size: 0.875rem;
+		font-size: var(--text-base);
 		line-height: 1.6;
 	}
 
@@ -452,7 +452,7 @@
 		gap: 0.4rem;
 		color: var(--color-text-muted);
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 	}

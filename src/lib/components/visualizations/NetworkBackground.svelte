@@ -6,8 +6,18 @@
 	let canvasEl: HTMLCanvasElement | undefined = $state();
 	let scene: NetworkScene | undefined = $state();
 
-	function accentFor(theme: string): string {
-		return theme === 'dark' ? '#b8d8b0' : '#7cb67a';
+	/**
+	 * The canvas cannot use a CSS variable directly, so it reads the resolved one.
+	 *
+	 * These two colours used to be hardcoded here, which meant a palette change in
+	 * layout.css silently left the particle field on the old accent — a drift
+	 * nothing would have caught, because nothing compares a canvas to a token.
+	 */
+	function accentFor(_theme: string): string {
+		const value = getComputedStyle(document.documentElement)
+			.getPropertyValue('--color-accent')
+			.trim();
+		return value || '#7cb67a';
 	}
 
 	$effect(() => {

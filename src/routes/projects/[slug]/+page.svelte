@@ -345,7 +345,7 @@
 		background: var(--color-bg-secondary);
 		padding: 0.3rem 0.8rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 11px;
+		font-size: var(--text-xs);
 		color: var(--color-text-muted);
 	}
 
@@ -422,7 +422,7 @@
 
 	.section-label {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
+		font-size: var(--text-2xs);
 		font-weight: 600;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
@@ -430,7 +430,7 @@
 	}
 
 	.link {
-		font-size: 14px;
+		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--color-accent-text);
 		transition: color 0.15s ease;
@@ -446,14 +446,14 @@
 		background: var(--color-bg-secondary);
 		padding: 0.4rem 0.9rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 12px;
+		font-size: var(--text-sm);
 		color: var(--color-text-secondary);
 	}
 
 	.read-time {
 		margin-bottom: 2rem;
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
@@ -462,7 +462,7 @@
 	/* ── Case-study prose ── */
 	.prose-body :global(h2) {
 		margin: 3rem 0 1rem;
-		font-size: 1.35rem;
+		font-size: var(--text-3xl);
 		font-weight: 700;
 		letter-spacing: -0.015em;
 		color: var(--color-text);
@@ -474,7 +474,7 @@
 
 	.prose-body :global(h3) {
 		margin: 2rem 0 0.75rem;
-		font-size: 1.05rem;
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--color-text);
 	}

@@ -52,7 +52,7 @@
 					<h2>{note.title}</h2>
 					<p class="summary">{note.summary}</p>
 					<div class="tags">
-						{#each note.tags as tag (tag)}<span class="tag">{tag}</span>{/each}
+						{#each note.tags as tag (tag)}<span class="ds-pill">{tag}</span>{/each}
 					</div>
 				</a>
 			</li>
@@ -86,7 +86,7 @@
 	.intro {
 		margin: 0;
 		max-width: 40rem;
-		font-size: 1.05rem;
+		font-size: var(--text-xl);
 		line-height: 1.7;
 		color: var(--color-text-secondary);
 	}
@@ -96,7 +96,7 @@
 		gap: 0.5rem;
 		margin: 0;
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
@@ -106,7 +106,7 @@
 		margin: 0;
 		border-left: 2px solid var(--color-border);
 		padding-left: 0.9rem;
-		font-size: 0.8125rem;
+		font-size: var(--text-md);
 		line-height: 1.6;
 		color: var(--color-text-muted);
 	}
@@ -135,7 +135,7 @@
 		flex-wrap: wrap;
 		gap: 0.5rem;
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
@@ -143,7 +143,7 @@
 
 	.list h2 {
 		margin: 0;
-		font-size: 1.5rem;
+		font-size: var(--text-4xl);
 		font-weight: 700;
 		letter-spacing: -0.02em;
 		line-height: 1.25;
@@ -159,7 +159,7 @@
 	.summary {
 		margin: 0;
 		max-width: 42rem;
-		font-size: 0.95rem;
+		font-size: var(--text-lg);
 		line-height: 1.7;
 		color: var(--color-text-secondary);
 	}
@@ -169,15 +169,6 @@
 		flex-wrap: wrap;
 		gap: 0.35rem;
 		margin-top: 0.35rem;
-	}
-
-	.tag {
-		border: 1px solid var(--color-border-subtle);
-		border-radius: 999px;
-		padding: 0.2rem 0.6rem;
-		font-family: var(--font-mono);
-		font-size: 0.625rem;
-		color: var(--color-text-muted);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

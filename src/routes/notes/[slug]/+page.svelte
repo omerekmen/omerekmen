@@ -61,7 +61,7 @@
 		<h1>{meta.title}</h1>
 		<p class="standfirst">{meta.summary}</p>
 		<div class="tags">
-			{#each meta.tags as tag (tag)}<span class="tag">{tag}</span>{/each}
+			{#each meta.tags as tag (tag)}<span class="ds-pill">{tag}</span>{/each}
 		</div>
 	</header>
 
@@ -72,7 +72,10 @@
 	{#if data.related}
 		<!-- The work the argument came out of, so it can be checked rather than
 		     taken on trust. -->
-		<a class="related" href={localizeHref(`/projects/${data.related.slug}`)}>
+		<a
+			class="related ds-card ds-card-quiet ds-card-link"
+			href={localizeHref(`/projects/${data.related.slug}`)}
+		>
 			<span class="related-label">{m.notes_from_project()}</span>
 			<span class="related-title">{data.related.title}</span>
 		</a>
@@ -85,7 +88,10 @@
 	{/if}
 
 	{#if data.next && data.next.slug !== meta.slug}
-		<a class="next" href={localizeHref(`/notes/${data.next.slug}`)}>
+		<a
+			class="next ds-card ds-card-quiet ds-card-link"
+			href={localizeHref(`/notes/${data.next.slug}`)}
+		>
 			<span class="next-label">{m.notes_next()}</span>
 			<span class="next-title">{data.next.title}</span>
 		</a>
@@ -102,7 +108,7 @@
 	.crumb {
 		margin-bottom: 2.5rem;
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 	}
@@ -127,7 +133,7 @@
 		flex-wrap: wrap;
 		gap: 0.5rem;
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
@@ -144,7 +150,7 @@
 
 	.standfirst {
 		margin: 0;
-		font-size: 1.1rem;
+		font-size: var(--text-2xl);
 		line-height: 1.65;
 		color: var(--color-text-secondary);
 	}
@@ -155,20 +161,11 @@
 		gap: 0.35rem;
 	}
 
-	.tag {
-		border: 1px solid var(--color-border-subtle);
-		border-radius: 999px;
-		padding: 0.2rem 0.6rem;
-		font-family: var(--font-mono);
-		font-size: 0.625rem;
-		color: var(--color-text-muted);
-	}
-
 	.english-note {
 		margin: 2rem 0 0;
 		border-left: 2px solid var(--color-border);
 		padding-left: 0.9rem;
-		font-size: 0.8125rem;
+		font-size: var(--text-md);
 		line-height: 1.6;
 		color: var(--color-text-muted);
 	}
@@ -177,12 +174,8 @@
 	.next {
 		display: flex;
 		flex-direction: column;
-		gap: 0.3rem;
-		border: 1px solid var(--color-border-subtle);
-		border-radius: 12px;
-		padding: 1rem 1.25rem;
-		text-decoration: none;
-		transition: border-color 0.2s ease;
+		gap: var(--space-1);
+		padding: var(--space-4) var(--space-5);
 	}
 
 	.related {
@@ -193,17 +186,10 @@
 		margin-top: 4rem;
 	}
 
-	.related:hover,
-	.related:focus-visible,
-	.next:hover,
-	.next:focus-visible {
-		border-color: rgba(var(--color-accent-rgb), 0.5);
-	}
-
 	.related-label,
 	.next-label {
 		font-family: var(--font-mono);
-		font-size: 0.625rem;
+		font-size: var(--text-2xs);
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		color: var(--color-accent-text);
@@ -211,7 +197,7 @@
 
 	.related-title,
 	.next-title {
-		font-size: 1rem;
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--color-text);
 	}
@@ -223,7 +209,7 @@
 
 	.prose-body :global(h2) {
 		margin: 2.75rem 0 0.9rem;
-		font-size: 1.25rem;
+		font-size: var(--text-3xl);
 		font-weight: 700;
 		letter-spacing: -0.015em;
 		color: var(--color-text);
@@ -231,7 +217,7 @@
 
 	.prose-body :global(p) {
 		margin-bottom: 1.15rem;
-		font-size: 1.0125rem;
+		font-size: var(--text-xl);
 		line-height: 1.78;
 		color: var(--color-text-secondary);
 	}
@@ -264,12 +250,5 @@
 		padding: 0.1rem 0.35rem;
 		font-family: var(--font-mono);
 		font-size: 0.875em;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.related,
-		.next {
-			transition: none;
-		}
 	}
 </style>

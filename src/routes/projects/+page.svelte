@@ -171,7 +171,7 @@
 		width: 3.5rem;
 		flex-shrink: 0;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
+		font-size: var(--text-2xs);
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		color: var(--color-text-muted);
@@ -182,7 +182,7 @@
 		border: 1px solid var(--color-border-subtle);
 		background: var(--color-bg-secondary);
 		padding: 0.3rem 0.75rem;
-		font-size: 12px;
+		font-size: var(--text-sm);
 		font-weight: 500;
 		color: var(--color-text-muted);
 		transition:
@@ -232,7 +232,7 @@
 		background: var(--color-bg-tertiary);
 		padding: 0.2rem 0.6rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 11px;
+		font-size: var(--text-xs);
 		color: var(--color-text-muted);
 	}
 </style>

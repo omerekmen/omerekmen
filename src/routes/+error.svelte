@@ -97,7 +97,7 @@
 	.body {
 		margin: 1rem auto 0;
 		max-width: 46ch;
-		font-size: 0.98rem;
+		font-size: var(--text-xl);
 		line-height: 1.7;
 		color: var(--color-text-secondary);
 	}
@@ -115,7 +115,7 @@
 		border-radius: 999px;
 		background: var(--color-bg-secondary);
 		padding: 0.6rem 1.15rem;
-		font-size: 0.85rem;
+		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--color-text-secondary);
 		text-decoration: none;

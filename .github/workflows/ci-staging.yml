@@ -38,6 +38,7 @@ jobs:
       - run: bun run lint
       - run: bun run check
       - run: bun run check:contrast
+      - run: bun run check:tokens
 
       - name: Build as staging
         run: bun run build
